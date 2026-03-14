@@ -8,7 +8,7 @@ import {
   Users,
   UserCheck,
   TrendingUp,
-  DollarSign,
+  BarChart3,
   Copy,
   ExternalLink,
 } from "lucide-react";
@@ -22,7 +22,7 @@ interface Stats {
   qualifiedLeads: number;
   disqualifiedLeads: number;
   qualificationRate: number;
-  projectedRevenue: number;
+  averageScore: number;
 }
 
 interface Lead {
@@ -114,7 +114,7 @@ export default function DashboardPage() {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-500">Total Leads</p>
+                <p className="text-sm text-gray-500">Leads Collected</p>
                 <p className="text-3xl font-bold text-gray-900">
                   {stats?.totalLeads || 0}
                 </p>
@@ -162,13 +162,13 @@ export default function DashboardPage() {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-500">Projected Revenue</p>
-                <p className="text-3xl font-bold text-gray-900">
-                  ${(stats?.projectedRevenue || 0).toLocaleString()}
+                <p className="text-sm text-gray-500">Average Lead Score</p>
+                <p className="text-3xl font-bold text-amber-600">
+                  {stats?.averageScore || "N/A"}
                 </p>
               </div>
               <div className="h-12 w-12 rounded-xl bg-amber-100 flex items-center justify-center">
-                <DollarSign className="h-6 w-6 text-amber-600" />
+                <BarChart3 className="h-6 w-6 text-amber-600" />
               </div>
             </div>
           </CardContent>

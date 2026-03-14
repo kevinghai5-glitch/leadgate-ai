@@ -11,7 +11,7 @@ export async function GET() {
 
     const userId = session.user.id;
 
-    const [totalLeads, qualifiedLeads, disqualifiedLeads, leads] =
+    const [totalLeads, qualifiedLeads, disqualifiedLeads, leads, scoreAgg] =
       await Promise.all([
         prisma.lead.count({ where: { userId } }),
         prisma.lead.count({ where: { userId, status: "QUALIFIED" } }),
@@ -19,6 +19,10 @@ export async function GET() {
         prisma.lead.findMany({
           where: { userId, status: "QUALIFIED" },
           select: { budget: true },
+        }),
+        prisma.lead.aggregate({
+          where: { userId, aiScore: { not: null } },
+          _avg: { aiScore: true },
         }),
       ]);
 
@@ -50,12 +54,17 @@ export async function GET() {
       orderBy: { createdAt: "asc" },
     });
 
+    const averageScore = scoreAgg._avg.aiScore
+      ? Math.round(scoreAgg._avg.aiScore * 10) / 10
+      : 0;
+
     return NextResponse.json({
       totalLeads,
       qualifiedLeads,
       disqualifiedLeads,
       qualificationRate,
       projectedRevenue,
+      averageScore,
       recentLeads,
     });
   } catch (error) {

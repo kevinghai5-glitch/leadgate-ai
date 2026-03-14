@@ -22,6 +22,8 @@ import {
   Save,
   Loader2,
   LinkIcon,
+  Code,
+  Check,
 } from "lucide-react";
 
 interface Settings {
@@ -104,9 +106,20 @@ export default function SettingsPage() {
       ? `${window.location.origin}/form/${session?.user?.id}`
       : "";
 
+  const [embedCopied, setEmbedCopied] = useState(false);
+
   function copyFormLink() {
     navigator.clipboard.writeText(formLink);
     toast.success("Form link copied!");
+  }
+
+  const embedCode = `<iframe src="${formLink}" width="100%" height="700" frameborder="0"></iframe>`;
+
+  function copyEmbedCode() {
+    navigator.clipboard.writeText(embedCode);
+    setEmbedCopied(true);
+    toast.success("Embed code copied!");
+    setTimeout(() => setEmbedCopied(false), 2000);
   }
 
   const totalWeight = budgetWeight + timelineWeight + urgencyWeight + qualityWeight;
@@ -145,6 +158,41 @@ export default function SettingsPage() {
             <Button variant="outline" onClick={copyFormLink}>
               <Copy className="h-4 w-4 mr-2" />
               Copy
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Embed Code */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Code className="h-5 w-5 text-indigo-600" />
+            Embed Code
+          </CardTitle>
+          <CardDescription>
+            Add this code to your website to embed the lead qualification form
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-3">
+            <div className="relative">
+              <pre className="bg-gray-50 border rounded-lg p-4 text-sm text-gray-700 overflow-x-auto">
+                <code>{embedCode}</code>
+              </pre>
+            </div>
+            <Button variant="outline" onClick={copyEmbedCode}>
+              {embedCopied ? (
+                <>
+                  <Check className="h-4 w-4 mr-2" />
+                  Copied!
+                </>
+              ) : (
+                <>
+                  <Copy className="h-4 w-4 mr-2" />
+                  Copy to Clipboard
+                </>
+              )}
             </Button>
           </div>
         </CardContent>
@@ -228,6 +276,7 @@ export default function SettingsPage() {
                 value={budgetWeight}
                 onChange={(e) => setBudgetWeight(Number(e.target.value))}
               />
+              <p className="text-xs text-gray-400">How much the lead&apos;s budget affects their score</p>
             </div>
             <div className="space-y-2">
               <Label>Timeline Weight (%)</Label>
@@ -238,6 +287,7 @@ export default function SettingsPage() {
                 value={timelineWeight}
                 onChange={(e) => setTimelineWeight(Number(e.target.value))}
               />
+              <p className="text-xs text-gray-400">How urgent the lead&apos;s project is</p>
             </div>
             <div className="space-y-2">
               <Label>Urgency Weight (%)</Label>
@@ -248,6 +298,7 @@ export default function SettingsPage() {
                 value={urgencyWeight}
                 onChange={(e) => setUrgencyWeight(Number(e.target.value))}
               />
+              <p className="text-xs text-gray-400">How time-sensitive the lead&apos;s needs are</p>
             </div>
             <div className="space-y-2">
               <Label>Quality Weight (%)</Label>
@@ -258,6 +309,7 @@ export default function SettingsPage() {
                 value={qualityWeight}
                 onChange={(e) => setQualityWeight(Number(e.target.value))}
               />
+              <p className="text-xs text-gray-400">How clear their problem description is</p>
             </div>
           </div>
 

@@ -245,6 +245,23 @@ export default function LeadDetailPage({
                   {lead.aiScore || "—"}
                 </div>
                 <p className="mt-2 text-sm text-gray-500">out of 10</p>
+                {lead.aiScore !== null && (
+                  <Badge
+                    className={`mt-3 text-sm px-3 py-1 ${
+                      lead.aiScore >= 8
+                        ? "bg-green-100 text-green-700 hover:bg-green-100"
+                        : lead.aiScore >= 6
+                        ? "bg-yellow-100 text-yellow-700 hover:bg-yellow-100"
+                        : "bg-red-100 text-red-600 hover:bg-red-100"
+                    }`}
+                  >
+                    {lead.aiScore >= 8
+                      ? "High Intent"
+                      : lead.aiScore >= 6
+                      ? "Medium Intent"
+                      : "Low Intent"}
+                  </Badge>
+                )}
               </div>
             </CardContent>
           </Card>
