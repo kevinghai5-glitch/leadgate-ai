@@ -1,6 +1,8 @@
+import { redirect } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Navbar } from "@/components/navbar";
+import { auth } from "@/lib/auth";
 import {
   Zap,
   Shield,
@@ -14,7 +16,12 @@ import {
   Clock,
 } from "lucide-react";
 
-export default function HomePage() {
+export default async function HomePage() {
+  const session = await auth();
+
+  if (session) {
+    redirect("/dashboard");
+  }
   return (
     <div className="min-h-screen bg-white">
       <Navbar />
@@ -45,8 +52,8 @@ export default function HomePage() {
                 asChild
                 className="bg-indigo-600 hover:bg-indigo-700 text-lg px-8 py-6"
               >
-                <Link href="/signup">
-                  Start Free Trial
+                <Link href="#pricing">
+                  See Pricing
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Link>
               </Button>
@@ -199,7 +206,7 @@ export default function HomePage() {
             ].map((feature) => (
               <div
                 key={feature.title}
-                className="p-6 rounded-xl border bg-white"
+                className="p-6 rounded-xl border bg-white transition-shadow hover:shadow-lg"
               >
                 <div className="h-10 w-10 rounded-lg bg-indigo-100 flex items-center justify-center mb-3">
                   <feature.icon className="h-5 w-5 text-indigo-600" />
@@ -215,7 +222,7 @@ export default function HomePage() {
       </section>
 
       {/* Pricing */}
-      <section className="py-24">
+      <section id="pricing" className="py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl sm:text-4xl font-bold text-gray-900">
@@ -257,7 +264,7 @@ export default function HomePage() {
                 asChild
                 className="w-full mt-8 bg-indigo-600 hover:bg-indigo-700"
               >
-                <Link href="/signup">Start Free Trial</Link>
+                <Link href="/signup">See Pricing</Link>
               </Button>
             </div>
           </div>

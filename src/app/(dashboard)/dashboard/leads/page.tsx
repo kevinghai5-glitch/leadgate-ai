@@ -13,7 +13,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Search, ArrowUpDown, Eye, Users } from "lucide-react";
+import { Search, ArrowUpDown, ArrowUp, ArrowDown, Eye, Users } from "lucide-react";
 import { format } from "date-fns";
 
 interface Lead {
@@ -69,6 +69,15 @@ export default function LeadsPage() {
           aVal = a.aiScore || 0;
           bVal = b.aiScore || 0;
           break;
+        case "budget": {
+          const extractNum = (s: string) => {
+            const m = s.match(/[\d,]+/);
+            return m ? parseInt(m[0].replace(/,/g, ""), 10) : 0;
+          };
+          aVal = extractNum(a.budget);
+          bVal = extractNum(b.budget);
+          break;
+        }
         case "createdAt":
           aVal = new Date(a.createdAt).getTime();
           bVal = new Date(b.createdAt).getTime();
@@ -95,6 +104,15 @@ export default function LeadsPage() {
       setSortField(field);
       setSortDir("desc");
     }
+  }
+
+  function SortIcon({ field }: { field: string }) {
+    if (sortField !== field) return <ArrowUpDown className="h-3 w-3" />;
+    return sortDir === "asc" ? (
+      <ArrowUp className="h-3 w-3" />
+    ) : (
+      <ArrowDown className="h-3 w-3" />
+    );
   }
 
   if (loading) {
@@ -169,14 +187,20 @@ export default function LeadsPage() {
                         className="flex items-center gap-1 text-sm font-medium text-gray-500 hover:text-gray-900"
                       >
                         Name
-                        <ArrowUpDown className="h-3 w-3" />
+                        <SortIcon field="name" />
                       </button>
                     </th>
                     <th className="px-6 py-3 text-sm font-medium text-gray-500">
                       Company
                     </th>
-                    <th className="px-6 py-3 text-sm font-medium text-gray-500">
-                      Budget
+                    <th className="px-6 py-3">
+                      <button
+                        onClick={() => toggleSort("budget")}
+                        className="flex items-center gap-1 text-sm font-medium text-gray-500 hover:text-gray-900"
+                      >
+                        Budget
+                        <SortIcon field="budget" />
+                      </button>
                     </th>
                     <th className="px-6 py-3">
                       <button
@@ -184,7 +208,7 @@ export default function LeadsPage() {
                         className="flex items-center gap-1 text-sm font-medium text-gray-500 hover:text-gray-900"
                       >
                         AI Score
-                        <ArrowUpDown className="h-3 w-3" />
+                        <SortIcon field="aiScore" />
                       </button>
                     </th>
                     <th className="px-6 py-3 text-sm font-medium text-gray-500">
@@ -199,7 +223,7 @@ export default function LeadsPage() {
                         className="flex items-center gap-1 text-sm font-medium text-gray-500 hover:text-gray-900"
                       >
                         Date
-                        <ArrowUpDown className="h-3 w-3" />
+                        <SortIcon field="createdAt" />
                       </button>
                     </th>
                     <th className="px-6 py-3 text-sm font-medium text-gray-500">

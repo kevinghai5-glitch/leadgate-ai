@@ -125,5 +125,32 @@
   }
   html {
     @apply font-sans;
+    scroll-behavior: smooth;
+  }
+}
+
+/* Transition utilities for interactive elements */
+@layer utilities {
+  .transition-card {
+    transition: box-shadow 0.2s ease, transform 0.2s ease;
+  }
+  .transition-card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  }
+}
+
+/* Mobile responsiveness fixes */
+@media (max-width: 640px) {
+  /* Prevent horizontal overflow on small screens */
+  body {
+    overflow-x: hidden;
+  }
+  /* Ensure dashboard content doesn't overflow */
+  main {
+    min-width: 0;
+  }
+  /* Fix table overflow on mobile */
+  table {
+    font-size: 0.85rem;
   }
 }
