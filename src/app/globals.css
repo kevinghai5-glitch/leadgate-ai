@@ -126,6 +126,12 @@
   html {
     @apply font-sans;
     scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  /* Typography improvements */
+  h1, h2, h3, h4, h5, h6 {
+    letter-spacing: -0.02em;
   }
 }
 
@@ -141,16 +147,17 @@
 
 /* Mobile responsiveness fixes */
 @media (max-width: 640px) {
-  /* Prevent horizontal overflow on small screens */
   body {
     overflow-x: hidden;
   }
-  /* Ensure dashboard content doesn't overflow */
   main {
     min-width: 0;
   }
-  /* Fix table overflow on mobile */
   table {
     font-size: 0.85rem;
+  }
+  /* Better mobile spacing for dashboard cards */
+  .grid {
+    gap: 0.75rem;
   }
 }
