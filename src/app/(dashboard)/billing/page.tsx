@@ -47,10 +47,15 @@ export default function BillingPage() {
       if (data.url) {
         window.location.href = data.url;
       } else {
-        toast.error("Failed to create checkout session");
+        toast.error(
+          data.error ||
+            "Stripe is not configured yet. Please set up your Stripe keys in your environment variables."
+        );
       }
     } catch {
-      toast.error("Something went wrong");
+      toast.error(
+        "Unable to start checkout. Please ensure Stripe is configured."
+      );
     } finally {
       setCheckoutLoading(false);
     }
@@ -64,10 +69,15 @@ export default function BillingPage() {
       if (data.url) {
         window.location.href = data.url;
       } else {
-        toast.error("Failed to open billing portal");
+        toast.error(
+          data.error ||
+            "Stripe is not configured yet. Please set up your Stripe keys in your environment variables."
+        );
       }
     } catch {
-      toast.error("Something went wrong");
+      toast.error(
+        "Unable to open billing portal. Please ensure Stripe is configured."
+      );
     } finally {
       setPortalLoading(false);
     }
@@ -162,9 +172,10 @@ export default function BillingPage() {
                     "Slack notifications",
                     "Lead analytics dashboard",
                     "Custom scoring rules",
+                    "Custom form questions",
                   ].map((feature) => (
                     <li key={feature} className="flex items-center gap-2">
-                      <CheckCircle2 className="h-4 w-4 text-indigo-600" />
+                      <CheckCircle2 className="h-4 w-4 text-indigo-600 flex-shrink-0" />
                       <span className="text-sm text-gray-700">{feature}</span>
                     </li>
                   ))}

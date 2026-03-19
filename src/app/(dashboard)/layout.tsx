@@ -4,6 +4,8 @@ import { prisma } from "@/lib/prisma";
 import { DashboardSidebar } from "@/components/dashboard-sidebar";
 import { MobileNav } from "@/components/mobile-nav";
 
+const ADMIN_EMAILS = ["leafsbuzztv@gmail.com"];
+
 export default async function DashboardLayout({
   children,
 }: {
@@ -15,18 +17,14 @@ export default async function DashboardLayout({
     redirect("/login");
   }
 
-  // Paywall check: redirect unpaid users to pricing
   const user = await prisma.user.findUnique({
     where: { id: session.user.id },
-    select: { stripeSubscriptionStatus: true },
+    select: { stripeSubscriptionStatus: true, email: true },
   });
 
-  if (!user || user.stripeSubscriptionStatus !== "active") {
-    // Allow access to billing page so they can subscribe
-    // The redirect is handled client-side for billing
-  }
-
-  const isPaid = user?.stripeSubscriptionStatus === "active";
+  const isAdmin = ADMIN_EMAILS.includes(user?.email || "");
+  const isPaid =
+    isAdmin || user?.stripeSubscriptionStatus === "active";
 
   return (
     <div className="flex h-screen overflow-hidden">
@@ -40,7 +38,7 @@ export default async function DashboardLayout({
             {isPaid ? (
               children
             ) : (
-              <PaywallBanner>{children}</PaywallBanner>
+              <SoftPaywallBanner>{children}</SoftPaywallBanner>
             )}
           </div>
         </main>
@@ -49,7 +47,7 @@ export default async function DashboardLayout({
   );
 }
 
-function PaywallBanner({ children }: { children: React.ReactNode }) {
+function SoftPaywallBanner({ children }: { children: React.ReactNode }) {
   return (
     <div className="space-y-6">
       <div className="rounded-xl border-2 border-amber-200 bg-gradient-to-r from-amber-50 to-orange-50 p-6">
@@ -59,7 +57,7 @@ function PaywallBanner({ children }: { children: React.ReactNode }) {
               Activate your account
             </h3>
             <p className="text-sm text-amber-700 mt-1">
-              Subscribe to unlock your dashboard, lead scoring, and all premium features.
+              Subscribe to unlock AI lead scoring, analytics, and all premium features.
             </p>
           </div>
           <a
@@ -70,9 +68,7 @@ function PaywallBanner({ children }: { children: React.ReactNode }) {
           </a>
         </div>
       </div>
-      <div className="opacity-50 pointer-events-none select-none">
-        {children}
-      </div>
+      {children}
     </div>
   );
 }
