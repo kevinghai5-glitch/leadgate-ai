@@ -103,21 +103,20 @@ export default function LeadDetailPage({
 
   return (
     <div className="space-y-6 max-w-4xl">
+      {/* Back button - prominent on mobile */}
+      <button
+        onClick={() => router.back()}
+        className="inline-flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-900 transition-colors md:mb-0 -mb-2"
+      >
+        <ArrowLeft className="h-4 w-4" />
+        Back to leads
+      </button>
+
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-4">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => router.back()}
-          >
-            <ArrowLeft className="h-4 w-4 mr-1" />
-            Back
-          </Button>
-          <div>
-            <h1 className="text-2xl font-bold text-gray-900">{lead.name}</h1>
-            <p className="text-gray-500">{lead.email}</p>
-          </div>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900">{lead.name}</h1>
+          <p className="text-gray-500">{lead.email}</p>
         </div>
         <div className="flex items-center gap-3">
           <Badge

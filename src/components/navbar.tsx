@@ -26,9 +26,12 @@ export function Navbar() {
     <nav className="border-b bg-white/80 backdrop-blur-sm sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
-          <Link href={session ? "/dashboard" : "/"} className="flex items-center gap-2">
-            <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-indigo-600 to-purple-600 flex items-center justify-center">
-              <Zap className="h-5 w-5 text-white" />
+          <Link href={session ? "/dashboard" : "/"} className="flex items-center gap-2.5">
+            <div className="relative h-8 w-8">
+              <div className="absolute inset-0 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 shadow-lg shadow-indigo-500/25" />
+              <div className="relative h-full w-full rounded-lg flex items-center justify-center">
+                <Zap className="h-[18px] w-[18px] text-white drop-shadow-sm" />
+              </div>
             </div>
             <span className="text-xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
               LeadGate AI

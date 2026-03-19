@@ -235,7 +235,12 @@ export default function LeadsPage() {
                   {filteredLeads.map((lead) => (
                     <tr key={lead.id} className="hover:bg-gray-50">
                       <td className="px-6 py-4">
-                        <p className="font-medium text-gray-900">{lead.name}</p>
+                        <Link
+                          href={`/dashboard/leads/${lead.id}`}
+                          className="font-medium text-gray-900 hover:text-indigo-600 transition-colors"
+                        >
+                          {lead.name}
+                        </Link>
                         <p className="text-sm text-gray-500">{lead.email}</p>
                       </td>
                       <td className="px-6 py-4 text-sm text-gray-600">
