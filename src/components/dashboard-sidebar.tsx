@@ -38,8 +38,8 @@ export function DashboardSidebar() {
     <TooltipProvider delayDuration={0}>
       <div
         className={cn(
-          "flex h-full flex-col bg-gradient-to-b from-gray-950 via-gray-950 to-gray-900 text-white transition-all duration-200",
-          collapsed ? "w-16" : "w-64"
+          "flex h-full flex-col bg-gradient-to-b from-gray-950 via-gray-950 to-gray-900 text-white transition-all duration-200 border-r border-white/[0.04]",
+          collapsed ? "w-[68px]" : "w-64"
         )}
       >
         {/* Logo */}
@@ -56,12 +56,23 @@ export function DashboardSidebar() {
             </div>
           </div>
           {!collapsed && (
-            <span className="text-lg font-bold tracking-tight">LeadGate AI</span>
+            <span className="text-lg font-bold tracking-tight bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
+              LeadGate AI
+            </span>
           )}
         </div>
 
+        {/* Section label */}
+        {!collapsed && (
+          <div className="px-5 pt-5 pb-1">
+            <span className="text-[10px] font-semibold uppercase tracking-widest text-gray-500">
+              Menu
+            </span>
+          </div>
+        )}
+
         {/* Navigation */}
-        <nav className="flex-1 px-3 py-4 space-y-1">
+        <nav className={cn("flex-1 px-3 space-y-0.5", collapsed ? "py-4" : "py-1")}>
           {navigation.map((item) => {
             const isActive =
               pathname === item.href ||
@@ -72,14 +83,17 @@ export function DashboardSidebar() {
                 key={item.name}
                 href={item.href}
                 className={cn(
-                  "flex items-center rounded-lg py-2.5 text-sm font-medium transition-colors",
+                  "group relative flex items-center rounded-lg py-2.5 text-[13px] font-medium transition-all duration-150",
                   collapsed ? "justify-center px-2" : "gap-3 px-3",
                   isActive
-                    ? "bg-indigo-600/20 text-indigo-400"
-                    : "text-gray-400 hover:bg-white/[0.06] hover:text-white"
+                    ? "bg-indigo-500/15 text-indigo-400"
+                    : "text-gray-400 hover:bg-white/[0.06] hover:text-gray-200"
                 )}
               >
-                <item.icon className="h-5 w-5 flex-shrink-0" />
+                {isActive && (
+                  <span className="absolute left-0 top-1/2 -translate-y-1/2 h-5 w-[3px] rounded-r-full bg-indigo-500" />
+                )}
+                <item.icon className={cn("h-[18px] w-[18px] flex-shrink-0 transition-colors", isActive && "text-indigo-400")} />
                 {!collapsed && item.name}
               </Link>
             );
@@ -88,7 +102,9 @@ export function DashboardSidebar() {
               return (
                 <Tooltip key={item.name}>
                   <TooltipTrigger asChild>{link}</TooltipTrigger>
-                  <TooltipContent side="right">{item.name}</TooltipContent>
+                  <TooltipContent side="right" className="text-xs">
+                    {item.name}
+                  </TooltipContent>
                 </Tooltip>
               );
             }
@@ -103,15 +119,15 @@ export function DashboardSidebar() {
             onClick={() => setCollapsed(!collapsed)}
             title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
             className={cn(
-              "flex w-full items-center rounded-lg py-2.5 text-sm font-medium text-gray-500 hover:bg-white/[0.06] hover:text-gray-300 transition-colors",
+              "flex w-full items-center rounded-lg py-2.5 text-[13px] font-medium text-gray-500 hover:bg-white/[0.06] hover:text-gray-300 transition-colors",
               collapsed ? "justify-center px-2" : "px-3"
             )}
           >
             {collapsed ? (
-              <PanelLeft className="h-5 w-5" />
+              <PanelLeft className="h-[18px] w-[18px]" />
             ) : (
               <>
-                <PanelLeftClose className="h-5 w-5" />
+                <PanelLeftClose className="h-[18px] w-[18px]" />
                 <span className="ml-3">Collapse</span>
               </>
             )}
@@ -125,19 +141,19 @@ export function DashboardSidebar() {
               <TooltipTrigger asChild>
                 <button
                   onClick={() => signOut({ callbackUrl: "/" })}
-                  className="flex w-full items-center justify-center rounded-lg px-2 py-2.5 text-sm font-medium text-gray-500 hover:bg-white/[0.06] hover:text-red-400 transition-colors"
+                  className="flex w-full items-center justify-center rounded-lg px-2 py-2.5 text-[13px] font-medium text-gray-500 hover:bg-white/[0.06] hover:text-red-400 transition-colors"
                 >
-                  <LogOut className="h-5 w-5" />
+                  <LogOut className="h-[18px] w-[18px]" />
                 </button>
               </TooltipTrigger>
-              <TooltipContent side="right">Log out</TooltipContent>
+              <TooltipContent side="right" className="text-xs">Log out</TooltipContent>
             </Tooltip>
           ) : (
             <button
               onClick={() => signOut({ callbackUrl: "/" })}
-              className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-gray-500 hover:bg-white/[0.06] hover:text-red-400 transition-colors"
+              className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-[13px] font-medium text-gray-500 hover:bg-white/[0.06] hover:text-red-400 transition-colors"
             >
-              <LogOut className="h-5 w-5 flex-shrink-0" />
+              <LogOut className="h-[18px] w-[18px] flex-shrink-0" />
               Log out
             </button>
           )}
@@ -146,10 +162,10 @@ export function DashboardSidebar() {
         {/* Form Link - fixed layout */}
         {!collapsed && (
           <div className="px-3 pb-4">
-            <div className="rounded-lg bg-white/[0.04] border border-white/[0.06] p-3">
-              <div className="flex items-center gap-2 text-sm text-gray-400">
-                <LinkIcon className="h-4 w-4 flex-shrink-0" />
-                <span className="truncate">Your Form Link</span>
+            <div className="rounded-lg bg-gradient-to-br from-indigo-500/[0.08] to-purple-500/[0.06] border border-indigo-500/10 p-3">
+              <div className="flex items-center gap-2 text-sm text-gray-300">
+                <LinkIcon className="h-4 w-4 flex-shrink-0 text-indigo-400" />
+                <span className="truncate font-medium">Your Form Link</span>
               </div>
               <p className="mt-1 text-xs text-gray-500 leading-relaxed">
                 Share your unique form link from Settings

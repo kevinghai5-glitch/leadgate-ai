@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, use } from "react";
+import { useState, useEffect, use } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -38,6 +38,15 @@ interface ScoreResult {
   summary: string | null;
 }
 
+interface CustomQuestion {
+  id: string;
+  label: string;
+  type: string;
+  options: string | null;
+  required: boolean;
+  order: number;
+}
+
 export default function LeadFormPage({
   params,
 }: {
@@ -46,6 +55,21 @@ export default function LeadFormPage({
   const { userId } = use(params);
   const [formState, setFormState] = useState<FormState>("form");
   const [result, setResult] = useState<ScoreResult | null>(null);
+  const [customQuestions, setCustomQuestions] = useState<CustomQuestion[]>([]);
+  const [customAnswers, setCustomAnswers] = useState<Record<string, string>>({});
+
+  useEffect(() => {
+    fetch(`/api/custom-questions?userId=${userId}`)
+      .then((r) => r.json())
+      .then((data) => {
+        if (Array.isArray(data)) {
+          setCustomQuestions(data);
+        }
+      })
+      .catch(() => {
+        // Silently fail — custom questions are optional
+      });
+  }, [userId]);
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -61,6 +85,7 @@ export default function LeadFormPage({
       budget: formData.get("budget") as string,
       timeline: formData.get("timeline") as string,
       problemDescription: formData.get("problemDescription") as string,
+      customAnswers: customQuestions.length > 0 ? customAnswers : undefined,
     };
 
     try {
@@ -314,6 +339,69 @@ export default function LeadFormPage({
                   minLength={20}
                 />
               </div>
+
+              {/* Custom Questions */}
+              {customQuestions.map((q) => (
+                <div key={q.id} className="space-y-2">
+                  <Label>
+                    {q.label} {q.required && "*"}
+                  </Label>
+                  {q.type === "text" && (
+                    <Input
+                      placeholder={`Enter ${q.label.toLowerCase()}`}
+                      required={q.required}
+                      value={customAnswers[q.id] || ""}
+                      onChange={(e) =>
+                        setCustomAnswers((prev) => ({
+                          ...prev,
+                          [q.id]: e.target.value,
+                        }))
+                      }
+                    />
+                  )}
+                  {q.type === "textarea" && (
+                    <Textarea
+                      placeholder={`Enter ${q.label.toLowerCase()}`}
+                      rows={3}
+                      required={q.required}
+                      value={customAnswers[q.id] || ""}
+                      onChange={(e) =>
+                        setCustomAnswers((prev) => ({
+                          ...prev,
+                          [q.id]: e.target.value,
+                        }))
+                      }
+                    />
+                  )}
+                  {q.type === "select" && q.options && (
+                    <Select
+                      value={customAnswers[q.id] || ""}
+                      onValueChange={(val) =>
+                        setCustomAnswers((prev) => ({
+                          ...prev,
+                          [q.id]: val,
+                        }))
+                      }
+                      required={q.required}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder={`Select ${q.label.toLowerCase()}`} />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {q.options
+                          .split(",")
+                          .map((opt) => opt.trim())
+                          .filter(Boolean)
+                          .map((opt) => (
+                            <SelectItem key={opt} value={opt}>
+                              {opt}
+                            </SelectItem>
+                          ))}
+                      </SelectContent>
+                    </Select>
+                  )}
+                </div>
+              ))}
             </CardContent>
             <div className="px-6 pb-6">
               <Button

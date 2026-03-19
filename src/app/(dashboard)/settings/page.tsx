@@ -13,6 +13,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { toast } from "sonner";
 import {
   Calendar,
@@ -24,6 +31,10 @@ import {
   LinkIcon,
   Code,
   Check,
+  Plus,
+  Trash2,
+  GripVertical,
+  ListChecks,
 } from "lucide-react";
 
 interface Settings {
@@ -41,6 +52,14 @@ interface Settings {
   } | null;
 }
 
+interface CustomQuestion {
+  id?: string;
+  label: string;
+  type: string;
+  options?: string;
+  required: boolean;
+}
+
 export default function SettingsPage() {
   const { data: session } = useSession();
   const [, setSettings] = useState<Settings | null>(null);
@@ -55,22 +74,30 @@ export default function SettingsPage() {
   const [qualityWeight, setQualityWeight] = useState(20);
   const [minScore, setMinScore] = useState(6);
 
+  // Custom questions state
+  const [customQuestions, setCustomQuestions] = useState<CustomQuestion[]>([]);
+  const [savingQuestions, setSavingQuestions] = useState(false);
+
   useEffect(() => {
-    fetch("/api/settings")
-      .then((r) => r.json())
-      .then((data) => {
-        setSettings(data);
-        setCalendarLink(data.calendarLink || "");
-        setSlackWebhookUrl(data.slackWebhookUrl || "");
-        if (data.rules) {
-          setBudgetWeight(data.rules.budgetWeight);
-          setTimelineWeight(data.rules.timelineWeight);
-          setUrgencyWeight(data.rules.urgencyWeight);
-          setQualityWeight(data.rules.qualityWeight);
-          setMinScore(data.rules.minScore);
-        }
-        setLoading(false);
-      });
+    Promise.all([
+      fetch("/api/settings").then((r) => r.json()),
+      fetch("/api/custom-questions").then((r) => r.json()),
+    ]).then(([data, questions]) => {
+      setSettings(data);
+      setCalendarLink(data.calendarLink || "");
+      setSlackWebhookUrl(data.slackWebhookUrl || "");
+      if (data.rules) {
+        setBudgetWeight(data.rules.budgetWeight);
+        setTimelineWeight(data.rules.timelineWeight);
+        setUrgencyWeight(data.rules.urgencyWeight);
+        setQualityWeight(data.rules.qualityWeight);
+        setMinScore(data.rules.minScore);
+      }
+      if (Array.isArray(questions)) {
+        setCustomQuestions(questions);
+      }
+      setLoading(false);
+    });
   }, []);
 
   async function handleSave() {
@@ -99,6 +126,41 @@ export default function SettingsPage() {
     } finally {
       setSaving(false);
     }
+  }
+
+  async function handleSaveQuestions() {
+    setSavingQuestions(true);
+    try {
+      const res = await fetch("/api/custom-questions", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ questions: customQuestions }),
+      });
+
+      if (!res.ok) throw new Error();
+      toast.success("Custom questions saved!");
+    } catch {
+      toast.error("Failed to save custom questions");
+    } finally {
+      setSavingQuestions(false);
+    }
+  }
+
+  function addQuestion() {
+    setCustomQuestions([
+      ...customQuestions,
+      { label: "", type: "text", required: false },
+    ]);
+  }
+
+  function removeQuestion(index: number) {
+    setCustomQuestions(customQuestions.filter((_, i) => i !== index));
+  }
+
+  function updateQuestion(index: number, field: keyof CustomQuestion, value: string | boolean) {
+    const updated = [...customQuestions];
+    updated[index] = { ...updated[index], [field]: value };
+    setCustomQuestions(updated);
   }
 
   const formLink =
@@ -194,6 +256,112 @@ export default function SettingsPage() {
                 </>
               )}
             </Button>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Custom Questions */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <ListChecks className="h-5 w-5 text-indigo-600" />
+            Custom Form Questions
+          </CardTitle>
+          <CardDescription>
+            Add extra questions to your lead form. These appear after the default fields (name, email, budget, etc).
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          {customQuestions.length === 0 && (
+            <p className="text-sm text-gray-400 text-center py-4">
+              No custom questions yet. Click &quot;Add Question&quot; to get started.
+            </p>
+          )}
+
+          {customQuestions.map((q, i) => (
+            <div
+              key={i}
+              className="flex items-start gap-3 p-4 rounded-lg border bg-gray-50/50"
+            >
+              <GripVertical className="h-5 w-5 text-gray-300 mt-2 flex-shrink-0" />
+              <div className="flex-1 space-y-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div className="space-y-1">
+                    <Label className="text-xs text-gray-500">Question Label</Label>
+                    <Input
+                      placeholder="e.g. How did you hear about us?"
+                      value={q.label}
+                      onChange={(e) => updateQuestion(i, "label", e.target.value)}
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <Label className="text-xs text-gray-500">Field Type</Label>
+                    <Select
+                      value={q.type}
+                      onValueChange={(val) => updateQuestion(i, "type", val)}
+                    >
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="text">Short Text</SelectItem>
+                        <SelectItem value="textarea">Long Text</SelectItem>
+                        <SelectItem value="select">Dropdown</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+                {q.type === "select" && (
+                  <div className="space-y-1">
+                    <Label className="text-xs text-gray-500">
+                      Options (comma-separated)
+                    </Label>
+                    <Input
+                      placeholder="Option 1, Option 2, Option 3"
+                      value={q.options || ""}
+                      onChange={(e) => updateQuestion(i, "options", e.target.value)}
+                    />
+                  </div>
+                )}
+                <label className="flex items-center gap-2 text-sm text-gray-600">
+                  <input
+                    type="checkbox"
+                    checked={q.required}
+                    onChange={(e) => updateQuestion(i, "required", e.target.checked)}
+                    className="rounded border-gray-300"
+                  />
+                  Required field
+                </label>
+              </div>
+              <button
+                onClick={() => removeQuestion(i)}
+                className="p-1.5 text-gray-400 hover:text-red-500 transition-colors mt-1"
+              >
+                <Trash2 className="h-4 w-4" />
+              </button>
+            </div>
+          ))}
+
+          <div className="flex items-center gap-3 pt-2">
+            <Button variant="outline" size="sm" onClick={addQuestion}>
+              <Plus className="h-4 w-4 mr-1" />
+              Add Question
+            </Button>
+            {customQuestions.length > 0 && (
+              <Button
+                size="sm"
+                onClick={handleSaveQuestions}
+                disabled={savingQuestions}
+                className="bg-indigo-600 hover:bg-indigo-700"
+              >
+                {savingQuestions ? (
+                  <Loader2 className="h-4 w-4 animate-spin mr-1" />
+                ) : (
+                  <Save className="h-4 w-4 mr-1" />
+                )}
+                Save Questions
+              </Button>
+            )}
           </div>
         </CardContent>
       </Card>
