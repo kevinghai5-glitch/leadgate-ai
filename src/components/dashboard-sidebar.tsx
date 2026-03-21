@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { signOut } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import { cn } from "@/lib/utils";
 import {
   Tooltip,
@@ -21,6 +21,7 @@ import {
   LogOut,
   PanelLeftClose,
   PanelLeft,
+  ExternalLink,
 } from "lucide-react";
 
 const navigation = [
@@ -33,6 +34,12 @@ const navigation = [
 export function DashboardSidebar() {
   const pathname = usePathname();
   const [collapsed, setCollapsed] = useState(false);
+  const { data: session } = useSession();
+
+  const formLink =
+    typeof window !== "undefined" && session?.user?.id
+      ? `${window.location.origin}/form/${session.user.id}`
+      : null;
 
   return (
     <TooltipProvider delayDuration={0}>
@@ -72,7 +79,12 @@ export function DashboardSidebar() {
         )}
 
         {/* Navigation */}
-        <nav className={cn("flex-1 px-3 space-y-0.5", collapsed ? "py-4" : "py-1")}>
+        <nav
+          className={cn(
+            "flex-1 px-3 space-y-0.5",
+            collapsed ? "py-4" : "py-1"
+          )}
+        >
           {navigation.map((item) => {
             const isActive =
               pathname === item.href ||
@@ -93,7 +105,12 @@ export function DashboardSidebar() {
                 {isActive && (
                   <span className="absolute left-0 top-1/2 -translate-y-1/2 h-5 w-[3px] rounded-r-full bg-indigo-500" />
                 )}
-                <item.icon className={cn("h-[18px] w-[18px] flex-shrink-0 transition-colors", isActive && "text-indigo-400")} />
+                <item.icon
+                  className={cn(
+                    "h-[18px] w-[18px] flex-shrink-0 transition-colors",
+                    isActive && "text-indigo-400"
+                  )}
+                />
                 {!collapsed && item.name}
               </Link>
             );
@@ -146,7 +163,9 @@ export function DashboardSidebar() {
                   <LogOut className="h-[18px] w-[18px]" />
                 </button>
               </TooltipTrigger>
-              <TooltipContent side="right" className="text-xs">Log out</TooltipContent>
+              <TooltipContent side="right" className="text-xs">
+                Log out
+              </TooltipContent>
             </Tooltip>
           ) : (
             <button
@@ -159,18 +178,40 @@ export function DashboardSidebar() {
           )}
         </div>
 
-        {/* Form Link - fixed layout */}
+        {/* Form Link — clickable, opens in new tab */}
         {!collapsed && (
           <div className="px-3 pb-4">
-            <div className="rounded-lg bg-gradient-to-br from-indigo-500/[0.08] to-purple-500/[0.06] border border-indigo-500/10 p-3">
-              <div className="flex items-center gap-2 text-sm text-gray-300">
-                <LinkIcon className="h-4 w-4 flex-shrink-0 text-indigo-400" />
-                <span className="truncate font-medium">Your Form Link</span>
+            {formLink ? (
+              <a
+                href={formLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block rounded-lg bg-gradient-to-br from-indigo-500/[0.08] to-purple-500/[0.06] border border-indigo-500/10 p-3 hover:border-indigo-500/25 hover:from-indigo-500/[0.12] hover:to-purple-500/[0.10] transition-all group"
+              >
+                <div className="flex items-center justify-between text-sm text-gray-300">
+                  <div className="flex items-center gap-2">
+                    <LinkIcon className="h-4 w-4 flex-shrink-0 text-indigo-400" />
+                    <span className="truncate font-medium">
+                      Your Form Link
+                    </span>
+                  </div>
+                  <ExternalLink className="h-3.5 w-3.5 text-gray-500 group-hover:text-indigo-400 transition-colors" />
+                </div>
+                <p className="mt-1 text-xs text-gray-500 leading-relaxed">
+                  Click to preview your public lead form
+                </p>
+              </a>
+            ) : (
+              <div className="rounded-lg bg-gradient-to-br from-indigo-500/[0.08] to-purple-500/[0.06] border border-indigo-500/10 p-3">
+                <div className="flex items-center gap-2 text-sm text-gray-300">
+                  <LinkIcon className="h-4 w-4 flex-shrink-0 text-indigo-400" />
+                  <span className="truncate font-medium">Your Form Link</span>
+                </div>
+                <p className="mt-1 text-xs text-gray-500 leading-relaxed">
+                  Share your unique form link from Settings
+                </p>
               </div>
-              <p className="mt-1 text-xs text-gray-500 leading-relaxed">
-                Share your unique form link from Settings
-              </p>
-            </div>
+            )}
           </div>
         )}
       </div>

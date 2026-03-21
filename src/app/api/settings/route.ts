@@ -22,6 +22,10 @@ export async function GET() {
       },
     });
 
+    if (!user) {
+      return NextResponse.json({ error: "User not found" }, { status: 404 });
+    }
+
     return NextResponse.json(user);
   } catch (error) {
     console.error("Get settings error:", error);
@@ -39,12 +43,13 @@ export async function PATCH(req: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
+    const userId = session.user.id;
     const body = await req.json();
     const { calendarLink, slackWebhookUrl, scoringRules } = body;
 
     // Update user settings
     await prisma.user.update({
-      where: { id: session.user.id },
+      where: { id: userId },
       data: {
         ...(calendarLink !== undefined && { calendarLink }),
         ...(slackWebhookUrl !== undefined && { slackWebhookUrl }),
@@ -54,21 +59,21 @@ export async function PATCH(req: Request) {
     // Update scoring rules if provided
     if (scoringRules) {
       await prisma.scoringRules.upsert({
-        where: { userId: session.user.id },
+        where: { userId },
         update: {
-          budgetWeight: scoringRules.budgetWeight,
-          timelineWeight: scoringRules.timelineWeight,
-          urgencyWeight: scoringRules.urgencyWeight,
-          qualityWeight: scoringRules.qualityWeight,
-          minScore: scoringRules.minScore,
+          budgetWeight: Number(scoringRules.budgetWeight),
+          timelineWeight: Number(scoringRules.timelineWeight),
+          urgencyWeight: Number(scoringRules.urgencyWeight),
+          qualityWeight: Number(scoringRules.qualityWeight),
+          minScore: Number(scoringRules.minScore),
         },
         create: {
-          userId: session.user.id,
-          budgetWeight: scoringRules.budgetWeight,
-          timelineWeight: scoringRules.timelineWeight,
-          urgencyWeight: scoringRules.urgencyWeight,
-          qualityWeight: scoringRules.qualityWeight,
-          minScore: scoringRules.minScore,
+          userId,
+          budgetWeight: Number(scoringRules.budgetWeight),
+          timelineWeight: Number(scoringRules.timelineWeight),
+          urgencyWeight: Number(scoringRules.urgencyWeight),
+          qualityWeight: Number(scoringRules.qualityWeight),
+          minScore: Number(scoringRules.minScore),
         },
       });
     }
@@ -76,9 +81,7 @@ export async function PATCH(req: Request) {
     return NextResponse.json({ message: "Settings updated" });
   } catch (error) {
     console.error("Update settings error:", error);
-    return NextResponse.json(
-      { error: "Failed to update settings" },
-      { status: 500 }
-    );
+    const message = error instanceof Error ? error.message : "Failed to update settings";
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }

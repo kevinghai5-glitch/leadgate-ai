@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
-import { stripe } from "@/lib/stripe";
 import { prisma } from "@/lib/prisma";
+import Stripe from "stripe";
 
 export async function POST() {
   try {
@@ -9,6 +9,27 @@ export async function POST() {
     if (!session?.user?.id) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
+
+    // Validate Stripe config
+    const stripeKey = process.env.STRIPE_SECRET_KEY;
+    const priceId = process.env.NEXT_PUBLIC_STRIPE_PRICE_ID;
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+
+    if (!stripeKey || stripeKey === "sk_test_your-stripe-secret-key") {
+      return NextResponse.json(
+        { error: "Stripe is not configured. Add your STRIPE_SECRET_KEY to environment variables." },
+        { status: 503 }
+      );
+    }
+
+    if (!priceId || priceId === "price_your-stripe-price-id") {
+      return NextResponse.json(
+        { error: "Stripe price ID is not configured. Add NEXT_PUBLIC_STRIPE_PRICE_ID to environment variables." },
+        { status: 503 }
+      );
+    }
+
+    const stripe = new Stripe(stripeKey, { typescript: true });
 
     const user = await prisma.user.findUnique({
       where: { id: session.user.id },
@@ -38,21 +59,20 @@ export async function POST() {
       payment_method_types: ["card"],
       line_items: [
         {
-          price: process.env.NEXT_PUBLIC_STRIPE_PRICE_ID!,
+          price: priceId,
           quantity: 1,
         },
       ],
-      success_url: `${process.env.NEXT_PUBLIC_APP_URL}/dashboard?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/billing`,
+      success_url: `${appUrl}/dashboard?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${appUrl}/billing`,
       metadata: { userId: user.id },
     });
 
     return NextResponse.json({ url: checkoutSession.url });
   } catch (error) {
     console.error("Stripe checkout error:", error);
-    return NextResponse.json(
-      { error: "Failed to create checkout session" },
-      { status: 500 }
-    );
+    const message =
+      error instanceof Error ? error.message : "Failed to create checkout session";
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }
