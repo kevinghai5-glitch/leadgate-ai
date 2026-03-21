@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, ReactNode } from "react";
 import { useSession } from "next-auth/react";
 import {
   Card,
@@ -35,8 +35,58 @@ import {
   Trash2,
   GripVertical,
   ListChecks,
+  ChevronDown,
 } from "lucide-react";
 
+// ─── Collapsible Section ─────────────────────────────────────────────
+function CollapsibleCard({
+  icon,
+  title,
+  description,
+  children,
+  defaultOpen = false,
+}: {
+  icon: ReactNode;
+  title: string;
+  description: string;
+  children: ReactNode;
+  defaultOpen?: boolean;
+}) {
+  const [open, setOpen] = useState(defaultOpen);
+
+  return (
+    <Card>
+      <CardHeader
+        className="cursor-pointer select-none"
+        onClick={() => setOpen(!open)}
+      >
+        <div className="flex items-center justify-between">
+          <div>
+            <CardTitle className="flex items-center gap-2">
+              {icon}
+              {title}
+            </CardTitle>
+            <CardDescription className="mt-1">{description}</CardDescription>
+          </div>
+          <ChevronDown
+            className={`h-5 w-5 text-gray-400 transition-transform duration-200 ${
+              open ? "rotate-180" : ""
+            }`}
+          />
+        </div>
+      </CardHeader>
+      <div
+        className={`overflow-hidden transition-all duration-200 ${
+          open ? "max-h-[2000px] opacity-100" : "max-h-0 opacity-0"
+        }`}
+      >
+        <CardContent>{children}</CardContent>
+      </div>
+    </Card>
+  );
+}
+
+// ─── Interfaces ──────────────────────────────────────────────────────
 interface Settings {
   id: string;
   email: string;
@@ -60,6 +110,7 @@ interface CustomQuestion {
   required: boolean;
 }
 
+// ─── Main Page ───────────────────────────────────────────────────────
 export default function SettingsPage() {
   const { data: session } = useSession();
   const [, setSettings] = useState<Settings | null>(null);
@@ -82,22 +133,27 @@ export default function SettingsPage() {
     Promise.all([
       fetch("/api/settings").then((r) => r.json()),
       fetch("/api/custom-questions").then((r) => r.json()),
-    ]).then(([data, questions]) => {
-      setSettings(data);
-      setCalendarLink(data.calendarLink || "");
-      setSlackWebhookUrl(data.slackWebhookUrl || "");
-      if (data.rules) {
-        setBudgetWeight(data.rules.budgetWeight);
-        setTimelineWeight(data.rules.timelineWeight);
-        setUrgencyWeight(data.rules.urgencyWeight);
-        setQualityWeight(data.rules.qualityWeight);
-        setMinScore(data.rules.minScore);
-      }
-      if (Array.isArray(questions)) {
-        setCustomQuestions(questions);
-      }
-      setLoading(false);
-    });
+    ])
+      .then(([data, questions]) => {
+        setSettings(data);
+        setCalendarLink(data.calendarLink || "");
+        setSlackWebhookUrl(data.slackWebhookUrl || "");
+        if (data.rules) {
+          setBudgetWeight(data.rules.budgetWeight);
+          setTimelineWeight(data.rules.timelineWeight);
+          setUrgencyWeight(data.rules.urgencyWeight);
+          setQualityWeight(data.rules.qualityWeight);
+          setMinScore(data.rules.minScore);
+        }
+        if (Array.isArray(questions)) {
+          setCustomQuestions(questions);
+        }
+        setLoading(false);
+      })
+      .catch(() => {
+        toast.error("Failed to load settings");
+        setLoading(false);
+      });
   }, []);
 
   async function handleSave() {
@@ -119,16 +175,27 @@ export default function SettingsPage() {
         }),
       });
 
-      if (!res.ok) throw new Error();
+      const data = await res.json();
+      if (!res.ok) {
+        toast.error(data.error || "Failed to save settings");
+        return;
+      }
       toast.success("Settings saved successfully!");
     } catch {
-      toast.error("Failed to save settings");
+      toast.error("Failed to save settings. Please try again.");
     } finally {
       setSaving(false);
     }
   }
 
   async function handleSaveQuestions() {
+    // Validate before sending
+    const invalid = customQuestions.some((q) => !q.label.trim());
+    if (invalid) {
+      toast.error("Each question must have a label.");
+      return;
+    }
+
     setSavingQuestions(true);
     try {
       const res = await fetch("/api/custom-questions", {
@@ -137,10 +204,14 @@ export default function SettingsPage() {
         body: JSON.stringify({ questions: customQuestions }),
       });
 
-      if (!res.ok) throw new Error();
+      const data = await res.json();
+      if (!res.ok) {
+        toast.error(data.error || "Failed to save custom questions");
+        return;
+      }
       toast.success("Custom questions saved!");
     } catch {
-      toast.error("Failed to save custom questions");
+      toast.error("Failed to save custom questions. Please try again.");
     } finally {
       setSavingQuestions(false);
     }
@@ -157,7 +228,11 @@ export default function SettingsPage() {
     setCustomQuestions(customQuestions.filter((_, i) => i !== index));
   }
 
-  function updateQuestion(index: number, field: keyof CustomQuestion, value: string | boolean) {
+  function updateQuestion(
+    index: number,
+    field: keyof CustomQuestion,
+    value: string | boolean
+  ) {
     const updated = [...customQuestions];
     updated[index] = { ...updated[index], [field]: value };
     setCustomQuestions(updated);
@@ -184,7 +259,8 @@ export default function SettingsPage() {
     setTimeout(() => setEmbedCopied(false), 2000);
   }
 
-  const totalWeight = budgetWeight + timelineWeight + urgencyWeight + qualityWeight;
+  const totalWeight =
+    budgetWeight + timelineWeight + urgencyWeight + qualityWeight;
 
   if (loading) {
     return (
@@ -203,78 +279,62 @@ export default function SettingsPage() {
         </p>
       </div>
 
-      {/* Form Link */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <LinkIcon className="h-5 w-5 text-indigo-600" />
-            Your Form Link
-          </CardTitle>
-          <CardDescription>
-            Share this link with prospects to collect and qualify leads
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="flex items-center gap-2">
-            <Input value={formLink} readOnly className="bg-gray-50" />
-            <Button variant="outline" onClick={copyFormLink}>
-              <Copy className="h-4 w-4 mr-2" />
-              Copy
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
+      {/* Form Link — always open */}
+      <CollapsibleCard
+        icon={<LinkIcon className="h-5 w-5 text-indigo-600" />}
+        title="Your Form Link"
+        description="Share this link with prospects to collect and qualify leads"
+        defaultOpen
+      >
+        <div className="flex items-center gap-2">
+          <Input value={formLink} readOnly className="bg-gray-50" />
+          <Button variant="outline" onClick={copyFormLink}>
+            <Copy className="h-4 w-4 mr-2" />
+            Copy
+          </Button>
+        </div>
+      </CollapsibleCard>
 
       {/* Embed Code */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Code className="h-5 w-5 text-indigo-600" />
-            Embed Code
-          </CardTitle>
-          <CardDescription>
-            Add this code to your website to embed the lead qualification form
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-3">
-            <div className="relative">
-              <pre className="bg-gray-50 border rounded-lg p-4 text-sm text-gray-700 overflow-x-auto">
-                <code>{embedCode}</code>
-              </pre>
-            </div>
-            <Button variant="outline" onClick={copyEmbedCode}>
-              {embedCopied ? (
-                <>
-                  <Check className="h-4 w-4 mr-2" />
-                  Copied!
-                </>
-              ) : (
-                <>
-                  <Copy className="h-4 w-4 mr-2" />
-                  Copy to Clipboard
-                </>
-              )}
-            </Button>
+      <CollapsibleCard
+        icon={<Code className="h-5 w-5 text-indigo-600" />}
+        title="Embed Code"
+        description="Add this code to your website to embed the lead qualification form"
+      >
+        <div className="space-y-3">
+          <div className="relative">
+            <pre className="bg-gray-50 border rounded-lg p-4 text-sm text-gray-700 overflow-x-auto">
+              <code>{embedCode}</code>
+            </pre>
           </div>
-        </CardContent>
-      </Card>
+          <Button variant="outline" onClick={copyEmbedCode}>
+            {embedCopied ? (
+              <>
+                <Check className="h-4 w-4 mr-2" />
+                Copied!
+              </>
+            ) : (
+              <>
+                <Copy className="h-4 w-4 mr-2" />
+                Copy to Clipboard
+              </>
+            )}
+          </Button>
+        </div>
+      </CollapsibleCard>
 
       {/* Custom Questions */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <ListChecks className="h-5 w-5 text-indigo-600" />
-            Custom Form Questions
-          </CardTitle>
-          <CardDescription>
-            Add extra questions to your lead form. These appear after the default fields (name, email, budget, etc).
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
+      <CollapsibleCard
+        icon={<ListChecks className="h-5 w-5 text-indigo-600" />}
+        title="Custom Form Questions"
+        description="Add extra questions to your lead form. These appear after the default fields (name, email, budget, etc)."
+        defaultOpen
+      >
+        <div className="space-y-4">
           {customQuestions.length === 0 && (
             <p className="text-sm text-gray-400 text-center py-4">
-              No custom questions yet. Click &quot;Add Question&quot; to get started.
+              No custom questions yet. Click &quot;Add Question&quot; to get
+              started.
             </p>
           )}
 
@@ -287,11 +347,15 @@ export default function SettingsPage() {
               <div className="flex-1 space-y-3">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div className="space-y-1">
-                    <Label className="text-xs text-gray-500">Question Label</Label>
+                    <Label className="text-xs text-gray-500">
+                      Question Label
+                    </Label>
                     <Input
                       placeholder="e.g. How did you hear about us?"
                       value={q.label}
-                      onChange={(e) => updateQuestion(i, "label", e.target.value)}
+                      onChange={(e) =>
+                        updateQuestion(i, "label", e.target.value)
+                      }
                     />
                   </div>
                   <div className="space-y-1">
@@ -319,7 +383,9 @@ export default function SettingsPage() {
                     <Input
                       placeholder="Option 1, Option 2, Option 3"
                       value={q.options || ""}
-                      onChange={(e) => updateQuestion(i, "options", e.target.value)}
+                      onChange={(e) =>
+                        updateQuestion(i, "options", e.target.value)
+                      }
                     />
                   </div>
                 )}
@@ -327,7 +393,9 @@ export default function SettingsPage() {
                   <input
                     type="checkbox"
                     checked={q.required}
-                    onChange={(e) => updateQuestion(i, "required", e.target.checked)}
+                    onChange={(e) =>
+                      updateQuestion(i, "required", e.target.checked)
+                    }
                     className="rounded border-gray-300"
                   />
                   Required field
@@ -363,77 +431,59 @@ export default function SettingsPage() {
               </Button>
             )}
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </CollapsibleCard>
 
       {/* Calendar Integration */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Calendar className="h-5 w-5 text-indigo-600" />
-            Calendar Integration
-          </CardTitle>
-          <CardDescription>
-            Qualified leads will be shown a booking link after form submission
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-2">
-            <Label htmlFor="calendarLink">Calendly Link</Label>
-            <Input
-              id="calendarLink"
-              placeholder="https://calendly.com/your-name/30min"
-              value={calendarLink}
-              onChange={(e) => setCalendarLink(e.target.value)}
-            />
-            <p className="text-sm text-gray-500">
-              Enter your Calendly scheduling link. Qualified leads will see this
-              after submitting the form.
-            </p>
-          </div>
-        </CardContent>
-      </Card>
+      <CollapsibleCard
+        icon={<Calendar className="h-5 w-5 text-indigo-600" />}
+        title="Calendar Integration"
+        description="Qualified leads will be shown a booking link after form submission"
+      >
+        <div className="space-y-2">
+          <Label htmlFor="calendarLink">Calendly Link</Label>
+          <Input
+            id="calendarLink"
+            placeholder="https://calendly.com/your-name/30min"
+            value={calendarLink}
+            onChange={(e) => setCalendarLink(e.target.value)}
+          />
+          <p className="text-sm text-gray-500">
+            Enter your Calendly scheduling link. Qualified leads will see this
+            after submitting the form.
+          </p>
+        </div>
+      </CollapsibleCard>
 
       {/* Slack Integration */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Bell className="h-5 w-5 text-indigo-600" />
-            Slack Notifications
-          </CardTitle>
-          <CardDescription>
-            Get notified instantly when a qualified lead comes through
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-2">
-            <Label htmlFor="slackWebhook">Slack Webhook URL</Label>
-            <Input
-              id="slackWebhook"
-              placeholder="https://hooks.slack.com/services/..."
-              value={slackWebhookUrl}
-              onChange={(e) => setSlackWebhookUrl(e.target.value)}
-            />
-            <p className="text-sm text-gray-500">
-              Create an incoming webhook in your Slack workspace and paste the
-              URL here.
-            </p>
-          </div>
-        </CardContent>
-      </Card>
+      <CollapsibleCard
+        icon={<Bell className="h-5 w-5 text-indigo-600" />}
+        title="Slack Notifications"
+        description="Get notified instantly when a qualified lead comes through"
+      >
+        <div className="space-y-2">
+          <Label htmlFor="slackWebhook">Slack Webhook URL</Label>
+          <Input
+            id="slackWebhook"
+            placeholder="https://hooks.slack.com/services/..."
+            value={slackWebhookUrl}
+            onChange={(e) => setSlackWebhookUrl(e.target.value)}
+          />
+          <p className="text-sm text-gray-500">
+            Create an incoming webhook in your Slack workspace and paste the URL
+            here.
+          </p>
+        </div>
+      </CollapsibleCard>
 
       {/* Scoring Rules */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Sliders className="h-5 w-5 text-indigo-600" />
-            Scoring Rules
-          </CardTitle>
-          <CardDescription>
-            Customize how the AI evaluates and scores leads
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-6">
+      <CollapsibleCard
+        icon={<Sliders className="h-5 w-5 text-indigo-600" />}
+        title="Scoring Rules"
+        description="Customize how the AI evaluates and scores leads"
+        defaultOpen
+      >
+        <div className="space-y-6">
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label>Budget Weight (%)</Label>
@@ -444,7 +494,9 @@ export default function SettingsPage() {
                 value={budgetWeight}
                 onChange={(e) => setBudgetWeight(Number(e.target.value))}
               />
-              <p className="text-xs text-gray-400">How much the lead&apos;s budget affects their score</p>
+              <p className="text-xs text-gray-400">
+                How much the lead&apos;s budget affects their score
+              </p>
             </div>
             <div className="space-y-2">
               <Label>Timeline Weight (%)</Label>
@@ -455,7 +507,9 @@ export default function SettingsPage() {
                 value={timelineWeight}
                 onChange={(e) => setTimelineWeight(Number(e.target.value))}
               />
-              <p className="text-xs text-gray-400">How urgent the lead&apos;s project is</p>
+              <p className="text-xs text-gray-400">
+                How urgent the lead&apos;s project is
+              </p>
             </div>
             <div className="space-y-2">
               <Label>Urgency Weight (%)</Label>
@@ -466,7 +520,9 @@ export default function SettingsPage() {
                 value={urgencyWeight}
                 onChange={(e) => setUrgencyWeight(Number(e.target.value))}
               />
-              <p className="text-xs text-gray-400">How time-sensitive the lead&apos;s needs are</p>
+              <p className="text-xs text-gray-400">
+                How time-sensitive the lead&apos;s needs are
+              </p>
             </div>
             <div className="space-y-2">
               <Label>Quality Weight (%)</Label>
@@ -477,7 +533,9 @@ export default function SettingsPage() {
                 value={qualityWeight}
                 onChange={(e) => setQualityWeight(Number(e.target.value))}
               />
-              <p className="text-xs text-gray-400">How clear their problem description is</p>
+              <p className="text-xs text-gray-400">
+                How clear their problem description is
+              </p>
             </div>
           </div>
 
@@ -503,8 +561,8 @@ export default function SettingsPage() {
               and shown the booking calendar.
             </p>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </CollapsibleCard>
 
       {/* Save Button */}
       <div className="flex justify-end">

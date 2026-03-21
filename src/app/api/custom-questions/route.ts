@@ -44,7 +44,8 @@ export async function PUT(req: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { questions } = await req.json();
+    const body = await req.json();
+    const { questions } = body;
 
     if (!Array.isArray(questions)) {
       return NextResponse.json(
@@ -53,32 +54,44 @@ export async function PUT(req: Request) {
       );
     }
 
-    // Delete all existing custom questions and replace
-    await prisma.$transaction([
-      prisma.customQuestion.deleteMany({
-        where: { userId: session.user.id },
-      }),
-      ...questions.map(
-        (q: { label: string; type: string; options?: string; required: boolean }, i: number) =>
-          prisma.customQuestion.create({
-            data: {
-              userId: session.user.id,
-              label: q.label,
-              type: q.type || "text",
-              options: q.options || null,
-              required: q.required ?? false,
-              order: i,
-            },
+    // Capture userId outside the transaction to avoid closure issues
+    const userId = session.user.id;
+
+    // Validate questions before saving
+    for (const q of questions) {
+      if (!q.label || typeof q.label !== "string" || q.label.trim() === "") {
+        return NextResponse.json(
+          { error: "Each question must have a label" },
+          { status: 400 }
+        );
+      }
+    }
+
+    // Delete existing then create new — use sequential operations instead of
+    // $transaction array which can have closure issues
+    await prisma.customQuestion.deleteMany({
+      where: { userId },
+    });
+
+    if (questions.length > 0) {
+      await prisma.customQuestion.createMany({
+        data: questions.map(
+          (q: { label: string; type?: string; options?: string; required?: boolean }, i: number) => ({
+            userId,
+            label: q.label.trim(),
+            type: q.type || "text",
+            options: q.options || null,
+            required: q.required ?? false,
+            order: i,
           })
-      ),
-    ]);
+        ),
+      });
+    }
 
     return NextResponse.json({ message: "Custom questions saved" });
   } catch (error) {
     console.error("Save custom questions error:", error);
-    return NextResponse.json(
-      { error: "Failed to save custom questions" },
-      { status: 500 }
-    );
+    const message = error instanceof Error ? error.message : "Failed to save custom questions";
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }

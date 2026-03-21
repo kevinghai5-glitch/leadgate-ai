@@ -1,10 +1,21 @@
 import { NextResponse } from "next/server";
 import { headers } from "next/headers";
-import { stripe } from "@/lib/stripe";
 import { prisma } from "@/lib/prisma";
 import Stripe from "stripe";
 
 export async function POST(req: Request) {
+  const stripeKey = process.env.STRIPE_SECRET_KEY;
+  const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
+
+  if (!stripeKey || !webhookSecret) {
+    return NextResponse.json(
+      { error: "Stripe not configured" },
+      { status: 503 }
+    );
+  }
+
+  const stripe = new Stripe(stripeKey, { typescript: true });
+
   const body = await req.text();
   const headersList = await headers();
   const signature = headersList.get("Stripe-Signature") as string;
@@ -12,11 +23,7 @@ export async function POST(req: Request) {
   let event: Stripe.Event;
 
   try {
-    event = stripe.webhooks.constructEvent(
-      body,
-      signature,
-      process.env.STRIPE_WEBHOOK_SECRET!
-    );
+    event = stripe.webhooks.constructEvent(body, signature, webhookSecret);
   } catch (err) {
     console.error("Webhook signature verification failed:", err);
     return NextResponse.json(
@@ -44,12 +51,12 @@ export async function POST(req: Request) {
 
       case "customer.subscription.updated": {
         const subscription = event.data.object as Stripe.Subscription;
-        const user = await prisma.user.findFirst({
+        const userUpdated = await prisma.user.findFirst({
           where: { stripeSubscriptionId: subscription.id },
         });
-        if (user) {
+        if (userUpdated) {
           await prisma.user.update({
-            where: { id: user.id },
+            where: { id: userUpdated.id },
             data: {
               stripeSubscriptionStatus: subscription.status,
             },
@@ -60,12 +67,12 @@ export async function POST(req: Request) {
 
       case "customer.subscription.deleted": {
         const subscription = event.data.object as Stripe.Subscription;
-        const user = await prisma.user.findFirst({
+        const userDeleted = await prisma.user.findFirst({
           where: { stripeSubscriptionId: subscription.id },
         });
-        if (user) {
+        if (userDeleted) {
           await prisma.user.update({
-            where: { id: user.id },
+            where: { id: userDeleted.id },
             data: {
               stripeSubscriptionStatus: "canceled",
               stripeSubscriptionId: null,
