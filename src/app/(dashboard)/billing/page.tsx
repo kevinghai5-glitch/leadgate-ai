@@ -44,18 +44,17 @@ export default function BillingPage() {
     try {
       const res = await fetch("/api/stripe/checkout", { method: "POST" });
       const data = await res.json();
+
       if (data.url) {
         window.location.href = data.url;
+      } else if (res.status === 503) {
+        // Stripe not configured
+        alert("Stripe not configured");
       } else {
-        toast.error(
-          data.error ||
-            "Stripe is not configured yet. Please set up your Stripe keys in your environment variables."
-        );
+        toast.error(data.error || "Failed to start checkout");
       }
     } catch {
-      toast.error(
-        "Unable to start checkout. Please ensure Stripe is configured."
-      );
+      alert("Stripe not configured");
     } finally {
       setCheckoutLoading(false);
     }
@@ -68,16 +67,13 @@ export default function BillingPage() {
       const data = await res.json();
       if (data.url) {
         window.location.href = data.url;
+      } else if (res.status === 503) {
+        alert("Stripe not configured");
       } else {
-        toast.error(
-          data.error ||
-            "Stripe is not configured yet. Please set up your Stripe keys in your environment variables."
-        );
+        toast.error(data.error || "Failed to open billing portal");
       }
     } catch {
-      toast.error(
-        "Unable to open billing portal. Please ensure Stripe is configured."
-      );
+      alert("Stripe not configured");
     } finally {
       setPortalLoading(false);
     }

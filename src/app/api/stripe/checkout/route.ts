@@ -3,6 +3,8 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import Stripe from "stripe";
 
+const PRICE_ID = "price_1TDTPg1ZnLZcdJPzDFRgir9w";
+
 export async function POST() {
   try {
     const session = await auth();
@@ -10,21 +12,12 @@ export async function POST() {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    // Validate Stripe config
     const stripeKey = process.env.STRIPE_SECRET_KEY;
-    const priceId = process.env.NEXT_PUBLIC_STRIPE_PRICE_ID;
     const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
 
     if (!stripeKey || stripeKey === "sk_test_your-stripe-secret-key") {
       return NextResponse.json(
-        { error: "Stripe is not configured. Add your STRIPE_SECRET_KEY to environment variables." },
-        { status: 503 }
-      );
-    }
-
-    if (!priceId || priceId === "price_your-stripe-price-id") {
-      return NextResponse.json(
-        { error: "Stripe price ID is not configured. Add NEXT_PUBLIC_STRIPE_PRICE_ID to environment variables." },
+        { error: "Stripe not configured" },
         { status: 503 }
       );
     }
@@ -59,12 +52,12 @@ export async function POST() {
       payment_method_types: ["card"],
       line_items: [
         {
-          price: priceId,
+          price: PRICE_ID,
           quantity: 1,
         },
       ],
-      success_url: `${appUrl}/dashboard?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${appUrl}/billing`,
+      success_url: `${appUrl}/dashboard?success=true`,
+      cancel_url: `${appUrl}/billing?canceled=true`,
       metadata: { userId: user.id },
     });
 
