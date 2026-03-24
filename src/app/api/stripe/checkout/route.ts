@@ -3,7 +3,7 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import Stripe from "stripe";
 
-const PRICE_ID = "price_1TDTPg1ZnLZcdJPzDFRgir9w";
+const PRICE_ID = "price_1TEYD31ZnlZcdJPz9BhtDIeX";
 
 export async function POST() {
   try {
