@@ -102,8 +102,8 @@ export default function LeadDetailPage({
   }
 
   return (
-    <div className="space-y-6 max-w-4xl">
-      {/* Back button - prominent on mobile */}
+    <div className="space-y-6 max-w-6xl">
+      {/* Back button */}
       <button
         onClick={() => router.back()}
         className="inline-flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-900 transition-colors md:mb-0 -mb-2"
@@ -144,38 +144,41 @@ export default function LeadDetailPage({
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Lead Info */}
-        <div className="lg:col-span-2 space-y-6">
+      {/* Two-column layout: Left = Contact + Answers, Right = Score + Reasoning + Summary */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Left Column: Contact Info & Form Answers */}
+        <div className="space-y-6">
           <Card>
             <CardHeader>
               <CardTitle>Contact Information</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="flex items-center gap-3">
-                  <Mail className="h-4 w-4 text-gray-400" />
+                  <Mail className="h-4 w-4 text-gray-400 flex-shrink-0" />
                   <div>
                     <p className="text-sm text-gray-500">Email</p>
                     <p className="font-medium">{lead.email}</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
-                  <Phone className="h-4 w-4 text-gray-400" />
+                  <Phone className="h-4 w-4 text-gray-400 flex-shrink-0" />
                   <div>
                     <p className="text-sm text-gray-500">Phone</p>
                     <p className="font-medium">{lead.phone || "Not provided"}</p>
                   </div>
                 </div>
-                <div className="flex items-center gap-3">
-                  <Building2 className="h-4 w-4 text-gray-400" />
-                  <div>
-                    <p className="text-sm text-gray-500">Company</p>
-                    <p className="font-medium">{lead.company || "Not provided"}</p>
+                {lead.company && (
+                  <div className="flex items-center gap-3">
+                    <Building2 className="h-4 w-4 text-gray-400 flex-shrink-0" />
+                    <div>
+                      <p className="text-sm text-gray-500">Company</p>
+                      <p className="font-medium">{lead.company}</p>
+                    </div>
                   </div>
-                </div>
+                )}
                 <div className="flex items-center gap-3">
-                  <Clock className="h-4 w-4 text-gray-400" />
+                  <Clock className="h-4 w-4 text-gray-400 flex-shrink-0" />
                   <div>
                     <p className="text-sm text-gray-500">Submitted</p>
                     <p className="font-medium">
@@ -189,19 +192,19 @@ export default function LeadDetailPage({
 
           <Card>
             <CardHeader>
-              <CardTitle>Project Details</CardTitle>
+              <CardTitle>Form Answers</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="flex items-center gap-3">
-                  <DollarSign className="h-4 w-4 text-gray-400" />
+                  <DollarSign className="h-4 w-4 text-gray-400 flex-shrink-0" />
                   <div>
                     <p className="text-sm text-gray-500">Budget</p>
                     <p className="font-medium">{lead.budget}</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
-                  <Clock className="h-4 w-4 text-gray-400" />
+                  <Clock className="h-4 w-4 text-gray-400 flex-shrink-0" />
                   <div>
                     <p className="text-sm text-gray-500">Timeline</p>
                     <p className="font-medium">{lead.timeline}</p>
@@ -210,8 +213,8 @@ export default function LeadDetailPage({
               </div>
               <Separator />
               <div>
-                <p className="text-sm text-gray-500 mb-2">Problem Description</p>
-                <p className="text-gray-900 whitespace-pre-wrap">
+                <p className="text-sm text-gray-500 mb-2">Responses</p>
+                <p className="text-gray-900 whitespace-pre-wrap text-sm leading-relaxed">
                   {lead.problemDescription}
                 </p>
               </div>
@@ -219,7 +222,7 @@ export default function LeadDetailPage({
           </Card>
         </div>
 
-        {/* AI Analysis */}
+        {/* Right Column: AI Score, Reasoning, Summary */}
         <div className="space-y-6">
           <Card>
             <CardHeader>

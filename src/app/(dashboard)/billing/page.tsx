@@ -165,9 +165,7 @@ export default function BillingPage() {
                     "Unlimited lead qualification",
                     "AI-powered scoring & summaries",
                     "Calendly integration",
-                    "Slack notifications",
                     "Lead analytics dashboard",
-                    "Custom scoring rules",
                     "Custom form questions",
                   ].map((feature) => (
                     <li key={feature} className="flex items-center gap-2">

@@ -25,7 +25,6 @@ export const loginSchema = z.object({
 
 export const settingsSchema = z.object({
   calendarLink: z.string().url("Invalid URL").optional().or(z.literal("")),
-  slackWebhookUrl: z.string().url("Invalid URL").optional().or(z.literal("")),
 });
 
 export const scoringRulesSchema = z.object({

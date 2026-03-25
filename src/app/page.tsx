@@ -60,7 +60,7 @@ export default async function HomePage() {
               <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-gray-900 leading-[1.1]">
                 Sign{" "}
                 <span className="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
-                  1–2 premium clients
+                  MORE premium clients
                 </span>{" "}
                 every month
               </h1>
@@ -327,9 +327,8 @@ export default async function HomePage() {
                     "AI-powered scoring & summaries",
                     "High-ticket coaching form questions",
                     "Calendly integration",
-                    "Slack notifications",
                     "Lead analytics dashboard",
-                    "Custom scoring rules",
+                    "Custom form questions",
                     "Embeddable form for your website",
                     "Priority support",
                   ].map((feature) => (
