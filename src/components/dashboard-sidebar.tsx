@@ -19,9 +19,9 @@ import {
   LinkIcon,
   Zap,
   LogOut,
-  PanelLeftClose,
   PanelLeft,
   ExternalLink,
+  CheckSquare,
 } from "lucide-react";
 
 const navigation = [
@@ -45,7 +45,7 @@ export function DashboardSidebar() {
     <TooltipProvider delayDuration={0}>
       <div
         className={cn(
-          "flex h-full flex-col bg-gradient-to-b from-gray-950 via-gray-950 to-gray-900 text-white transition-all duration-200 border-r border-white/[0.04]",
+          "flex h-full flex-col bg-[#0b0f1a] text-white transition-all duration-200 border-r border-white/[0.06]",
           collapsed ? "w-[68px]" : "w-64"
         )}
       >
@@ -73,7 +73,7 @@ export function DashboardSidebar() {
         {!collapsed && (
           <div className="px-5 pt-5 pb-1">
             <span className="text-[10px] font-semibold uppercase tracking-widest text-gray-500">
-              Menu
+              Overview
             </span>
           </div>
         )}
@@ -98,7 +98,7 @@ export function DashboardSidebar() {
                   "group relative flex items-center rounded-lg py-2.5 text-[13px] font-medium transition-all duration-150",
                   collapsed ? "justify-center px-2" : "gap-3 px-3",
                   isActive
-                    ? "bg-indigo-500/15 text-indigo-400"
+                    ? "bg-gradient-to-r from-indigo-500/20 to-purple-500/10 text-white"
                     : "text-gray-400 hover:bg-white/[0.06] hover:text-gray-200"
                 )}
               >
@@ -144,12 +144,52 @@ export function DashboardSidebar() {
               <PanelLeft className="h-[18px] w-[18px]" />
             ) : (
               <>
-                <PanelLeftClose className="h-[18px] w-[18px]" />
+                <CheckSquare className="h-[18px] w-[18px]" />
                 <span className="ml-3">Collapse</span>
               </>
             )}
           </button>
         </div>
+
+        {/* Form Link — clickable, opens in new tab */}
+        {!collapsed && (
+          <div className="px-3 pb-3">
+            {formLink ? (
+              <a
+                href={formLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block rounded-lg bg-gradient-to-br from-indigo-500/[0.08] to-purple-500/[0.06] border border-indigo-500/10 p-3 hover:border-indigo-500/25 hover:from-indigo-500/[0.12] hover:to-purple-500/[0.10] transition-all group"
+              >
+                <div className="flex items-center justify-between text-sm text-gray-300">
+                  <div className="flex items-center gap-2">
+                    <Users className="h-4 w-4 flex-shrink-0 text-indigo-400" />
+                    <span className="truncate font-medium">
+                      Your Form Link
+                    </span>
+                  </div>
+                  <ExternalLink className="h-3.5 w-3.5 text-gray-500 group-hover:text-indigo-400 transition-colors" />
+                </div>
+                <p className="mt-1 text-xs text-gray-500 leading-relaxed">
+                  Preview your lead capture form on a public link
+                </p>
+                <div className="mt-2 px-2 py-1.5 rounded bg-white/[0.04] text-[11px] text-gray-500 truncate font-mono">
+                  {formLink.replace(/^https?:\/\//, "").slice(0, 30)}...
+                </div>
+              </a>
+            ) : (
+              <div className="rounded-lg bg-gradient-to-br from-indigo-500/[0.08] to-purple-500/[0.06] border border-indigo-500/10 p-3">
+                <div className="flex items-center gap-2 text-sm text-gray-300">
+                  <LinkIcon className="h-4 w-4 flex-shrink-0 text-indigo-400" />
+                  <span className="truncate font-medium">Your Form Link</span>
+                </div>
+                <p className="mt-1 text-xs text-gray-500 leading-relaxed">
+                  Share your unique form link from Settings
+                </p>
+              </div>
+            )}
+          </div>
+        )}
 
         {/* Logout */}
         <div className="border-t border-white/[0.06] px-3 py-3">
@@ -177,43 +217,6 @@ export function DashboardSidebar() {
             </button>
           )}
         </div>
-
-        {/* Form Link — clickable, opens in new tab */}
-        {!collapsed && (
-          <div className="px-3 pb-4">
-            {formLink ? (
-              <a
-                href={formLink}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block rounded-lg bg-gradient-to-br from-indigo-500/[0.08] to-purple-500/[0.06] border border-indigo-500/10 p-3 hover:border-indigo-500/25 hover:from-indigo-500/[0.12] hover:to-purple-500/[0.10] transition-all group"
-              >
-                <div className="flex items-center justify-between text-sm text-gray-300">
-                  <div className="flex items-center gap-2">
-                    <LinkIcon className="h-4 w-4 flex-shrink-0 text-indigo-400" />
-                    <span className="truncate font-medium">
-                      Your Form Link
-                    </span>
-                  </div>
-                  <ExternalLink className="h-3.5 w-3.5 text-gray-500 group-hover:text-indigo-400 transition-colors" />
-                </div>
-                <p className="mt-1 text-xs text-gray-500 leading-relaxed">
-                  Click to preview your public lead form
-                </p>
-              </a>
-            ) : (
-              <div className="rounded-lg bg-gradient-to-br from-indigo-500/[0.08] to-purple-500/[0.06] border border-indigo-500/10 p-3">
-                <div className="flex items-center gap-2 text-sm text-gray-300">
-                  <LinkIcon className="h-4 w-4 flex-shrink-0 text-indigo-400" />
-                  <span className="truncate font-medium">Your Form Link</span>
-                </div>
-                <p className="mt-1 text-xs text-gray-500 leading-relaxed">
-                  Share your unique form link from Settings
-                </p>
-              </div>
-            )}
-          </div>
-        )}
       </div>
     </TooltipProvider>
   );

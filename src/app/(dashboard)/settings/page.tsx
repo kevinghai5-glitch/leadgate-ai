@@ -2,23 +2,6 @@
 
 import { useEffect, useState, useCallback, useRef, ReactNode } from "react";
 import { useSession } from "next-auth/react";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { toast } from "sonner";
 import {
   Calendar,
@@ -61,7 +44,7 @@ function CollapsibleCard({
   const [open, setOpen] = useState(defaultOpen);
 
   return (
-    <Card
+    <div
       {...(dragHandleProps
         ? {
             draggable: dragHandleProps.draggable,
@@ -71,42 +54,42 @@ function CollapsibleCard({
             onDrop: dragHandleProps.onDrop,
           }
         : {})}
-      className="transition-shadow"
+      className="glass-card rounded-xl transition-shadow"
     >
-      <CardHeader className="cursor-pointer select-none" onClick={() => setOpen(!open)}>
+      <div className="cursor-pointer select-none p-6" onClick={() => setOpen(!open)}>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3 flex-1">
             {dragHandleProps && (
               <div
-                className="cursor-grab active:cursor-grabbing text-gray-300 hover:text-gray-500 transition-colors"
+                className="cursor-grab active:cursor-grabbing text-gray-600 hover:text-gray-400 transition-colors"
                 onMouseDown={(e) => e.stopPropagation()}
               >
                 <GripVertical className="h-5 w-5" />
               </div>
             )}
             <div>
-              <CardTitle className="flex items-center gap-2">
+              <div className="flex items-center gap-2 text-lg font-semibold text-white">
                 {icon}
                 {title}
-              </CardTitle>
-              <CardDescription className="mt-1">{description}</CardDescription>
+              </div>
+              <p className="text-sm text-gray-500 mt-1">{description}</p>
             </div>
           </div>
           <ChevronDown
-            className={`h-5 w-5 text-gray-400 transition-transform duration-200 ${
+            className={`h-5 w-5 text-gray-500 transition-transform duration-200 ${
               open ? "rotate-180" : ""
             }`}
           />
         </div>
-      </CardHeader>
+      </div>
       <div
         className={`overflow-hidden transition-all duration-200 ${
           open ? "max-h-[2000px] opacity-100" : "max-h-0 opacity-0"
         }`}
       >
-        <CardContent>{children}</CardContent>
+        <div className="px-6 pb-6">{children}</div>
       </div>
-    </Card>
+    </div>
   );
 }
 
@@ -321,7 +304,7 @@ export default function SettingsPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
-        <Loader2 className="h-8 w-8 animate-spin text-indigo-600" />
+        <Loader2 className="h-8 w-8 animate-spin text-indigo-400" />
       </div>
     );
   }
@@ -343,18 +326,25 @@ export default function SettingsPage() {
         return (
           <CollapsibleCard
             key={section.id}
-            icon={<LinkIcon className="h-5 w-5 text-indigo-600" />}
+            icon={<LinkIcon className="h-5 w-5 text-indigo-400" />}
             title="Your Form Link"
             description="Share this link with prospects to collect and qualify leads"
             defaultOpen
             dragHandleProps={dragProps}
           >
             <div className="flex items-center gap-2">
-              <Input value={formLink} readOnly className="bg-gray-50 font-mono text-sm" />
-              <Button variant="outline" onClick={copyFormLink}>
-                <Copy className="h-4 w-4 mr-2" />
+              <input
+                value={formLink}
+                readOnly
+                className="flex h-10 w-full rounded-lg border border-white/10 bg-white/[0.04] px-3 py-2 text-sm text-gray-300 font-mono focus:outline-none"
+              />
+              <button
+                onClick={copyFormLink}
+                className="inline-flex items-center gap-2 h-10 px-4 rounded-lg border border-white/10 bg-white/[0.05] hover:bg-white/[0.1] text-gray-300 text-sm font-medium transition-colors"
+              >
+                <Copy className="h-4 w-4" />
                 Copy
-              </Button>
+              </button>
             </div>
           </CollapsibleCard>
         );
@@ -363,31 +353,34 @@ export default function SettingsPage() {
         return (
           <CollapsibleCard
             key={section.id}
-            icon={<Code className="h-5 w-5 text-indigo-600" />}
+            icon={<Code className="h-5 w-5 text-indigo-400" />}
             title="Embed Form"
             description="Add this code to your website to embed the lead qualification form"
             dragHandleProps={dragProps}
           >
             <div className="space-y-3">
               <div className="relative">
-                <pre className="bg-gray-50 border rounded-lg p-4 text-sm text-gray-700 overflow-x-auto">
+                <pre className="bg-white/[0.04] border border-white/10 rounded-lg p-4 text-sm text-gray-400 overflow-x-auto">
                   <code>{embedCode}</code>
                 </pre>
               </div>
               <div className="flex items-center gap-3">
-                <Button variant="outline" onClick={copyEmbedCode}>
+                <button
+                  onClick={copyEmbedCode}
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-white/10 bg-white/[0.05] hover:bg-white/[0.1] text-gray-300 text-sm font-medium transition-colors"
+                >
                   {embedCopied ? (
                     <>
-                      <Check className="h-4 w-4 mr-2" />
+                      <Check className="h-4 w-4" />
                       Copied!
                     </>
                   ) : (
                     <>
-                      <Copy className="h-4 w-4 mr-2" />
+                      <Copy className="h-4 w-4" />
                       Copy to Clipboard
                     </>
                   )}
-                </Button>
+                </button>
               </div>
               <p className="text-sm text-gray-500">
                 Paste this code into any HTML page to embed your lead form.
@@ -401,7 +394,7 @@ export default function SettingsPage() {
         return (
           <CollapsibleCard
             key={section.id}
-            icon={<ListChecks className="h-5 w-5 text-indigo-600" />}
+            icon={<ListChecks className="h-5 w-5 text-indigo-400" />}
             title="Custom Form Questions"
             description="Add extra questions to your lead form. These appear after the default fitness questions."
             defaultOpen
@@ -409,7 +402,7 @@ export default function SettingsPage() {
           >
             <div className="space-y-4">
               {customQuestions.length === 0 && (
-                <p className="text-sm text-gray-400 text-center py-4">
+                <p className="text-sm text-gray-500 text-center py-4">
                   No custom questions yet. Click &quot;Add Question&quot; to get
                   started.
                 </p>
@@ -418,69 +411,67 @@ export default function SettingsPage() {
               {customQuestions.map((q, i) => (
                 <div
                   key={i}
-                  className="flex items-start gap-3 p-4 rounded-lg border bg-gray-50/50"
+                  className="flex items-start gap-3 p-4 rounded-lg border border-white/10 bg-white/[0.03]"
                 >
-                  <GripVertical className="h-5 w-5 text-gray-300 mt-2 flex-shrink-0" />
+                  <GripVertical className="h-5 w-5 text-gray-600 mt-2 flex-shrink-0" />
                   <div className="flex-1 space-y-3">
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                       <div className="space-y-1">
-                        <Label className="text-xs text-gray-500">
+                        <label className="text-xs text-gray-500">
                           Question Label
-                        </Label>
-                        <Input
+                        </label>
+                        <input
                           placeholder="e.g. How did you hear about us?"
                           value={q.label}
                           onChange={(e) =>
                             updateQuestion(i, "label", e.target.value)
                           }
+                          className="flex h-10 w-full rounded-lg border border-white/10 bg-white/[0.05] px-3 py-2 text-sm text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
                         />
                       </div>
                       <div className="space-y-1">
-                        <Label className="text-xs text-gray-500">Field Type</Label>
-                        <Select
+                        <label className="text-xs text-gray-500">Field Type</label>
+                        <select
                           value={q.type}
-                          onValueChange={(val) => updateQuestion(i, "type", val)}
+                          onChange={(e) => updateQuestion(i, "type", e.target.value)}
+                          className="flex h-10 w-full rounded-lg border border-white/10 bg-white/[0.05] px-3 py-2 text-sm text-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
                         >
-                          <SelectTrigger>
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="text">Short Text</SelectItem>
-                            <SelectItem value="textarea">Long Text</SelectItem>
-                            <SelectItem value="select">Dropdown</SelectItem>
-                          </SelectContent>
-                        </Select>
+                          <option value="text" className="bg-[#111827]">Short Text</option>
+                          <option value="textarea" className="bg-[#111827]">Long Text</option>
+                          <option value="select" className="bg-[#111827]">Dropdown</option>
+                        </select>
                       </div>
                     </div>
                     {q.type === "select" && (
                       <div className="space-y-1">
-                        <Label className="text-xs text-gray-500">
+                        <label className="text-xs text-gray-500">
                           Options (comma-separated)
-                        </Label>
-                        <Input
+                        </label>
+                        <input
                           placeholder="Option 1, Option 2, Option 3"
                           value={q.options || ""}
                           onChange={(e) =>
                             updateQuestion(i, "options", e.target.value)
                           }
+                          className="flex h-10 w-full rounded-lg border border-white/10 bg-white/[0.05] px-3 py-2 text-sm text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
                         />
                       </div>
                     )}
-                    <label className="flex items-center gap-2 text-sm text-gray-600">
+                    <label className="flex items-center gap-2 text-sm text-gray-400">
                       <input
                         type="checkbox"
                         checked={q.required}
                         onChange={(e) =>
                           updateQuestion(i, "required", e.target.checked)
                         }
-                        className="rounded border-gray-300"
+                        className="rounded border-gray-600 bg-white/[0.05]"
                       />
                       Required field
                     </label>
                   </div>
                   <button
                     onClick={() => removeQuestion(i)}
-                    className="p-1.5 text-gray-400 hover:text-red-500 transition-colors mt-1"
+                    className="p-1.5 text-gray-500 hover:text-rose-400 transition-colors mt-1"
                   >
                     <Trash2 className="h-4 w-4" />
                   </button>
@@ -488,24 +479,26 @@ export default function SettingsPage() {
               ))}
 
               <div className="flex items-center gap-3 pt-2">
-                <Button variant="outline" size="sm" onClick={addQuestion}>
-                  <Plus className="h-4 w-4 mr-1" />
+                <button
+                  onClick={addQuestion}
+                  className="inline-flex items-center gap-1 px-3 py-2 rounded-lg border border-white/10 bg-white/[0.05] hover:bg-white/[0.1] text-gray-300 text-sm font-medium transition-colors"
+                >
+                  <Plus className="h-4 w-4" />
                   Add Question
-                </Button>
+                </button>
                 {customQuestions.length > 0 && (
-                  <Button
-                    size="sm"
+                  <button
                     onClick={handleSaveQuestions}
                     disabled={savingQuestions}
-                    className="bg-indigo-600 hover:bg-indigo-700"
+                    className="inline-flex items-center gap-1 px-3 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium transition-colors disabled:opacity-50"
                   >
                     {savingQuestions ? (
-                      <Loader2 className="h-4 w-4 animate-spin mr-1" />
+                      <Loader2 className="h-4 w-4 animate-spin" />
                     ) : (
-                      <Save className="h-4 w-4 mr-1" />
+                      <Save className="h-4 w-4" />
                     )}
                     Save Questions
-                  </Button>
+                  </button>
                 )}
               </div>
             </div>
@@ -516,18 +509,18 @@ export default function SettingsPage() {
         return (
           <CollapsibleCard
             key={section.id}
-            icon={<Calendar className="h-5 w-5 text-indigo-600" />}
+            icon={<Calendar className="h-5 w-5 text-indigo-400" />}
             title="Calendly Integration"
             description="Qualified leads will be shown a booking link after form submission"
             dragHandleProps={dragProps}
           >
             <div className="space-y-2">
-              <Label htmlFor="calendarLink">Calendly Link</Label>
-              <Input
-                id="calendarLink"
+              <label className="text-sm font-medium text-gray-300">Calendly Link</label>
+              <input
                 placeholder="https://calendly.com/your-name/30min"
                 value={calendarLink}
                 onChange={(e) => setCalendarLink(e.target.value)}
+                className="flex h-10 w-full rounded-lg border border-white/10 bg-white/[0.05] px-3 py-2 text-sm text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
               />
               <p className="text-sm text-gray-500">
                 Enter your Calendly scheduling link. Qualified leads will see
@@ -541,20 +534,21 @@ export default function SettingsPage() {
         return (
           <CollapsibleCard
             key={section.id}
-            icon={<Sliders className="h-5 w-5 text-indigo-600" />}
+            icon={<Sliders className="h-5 w-5 text-indigo-400" />}
             title="Minimum Qualifying Score"
             description="Set the threshold for lead qualification"
             defaultOpen
             dragHandleProps={dragProps}
           >
             <div className="space-y-2">
-              <Label>Minimum Qualifying Score (1-10)</Label>
-              <Input
+              <label className="text-sm font-medium text-gray-300">Minimum Qualifying Score (1-10)</label>
+              <input
                 type="number"
                 min={1}
                 max={10}
                 value={minScore}
                 onChange={(e) => setMinScore(Number(e.target.value))}
+                className="flex h-10 w-full rounded-lg border border-white/10 bg-white/[0.05] px-3 py-2 text-sm text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
               />
               <p className="text-sm text-gray-500">
                 Leads scoring at or above this number will be marked as qualified
@@ -569,7 +563,7 @@ export default function SettingsPage() {
   return (
     <div className="space-y-6 max-w-3xl">
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">Settings</h1>
+        <h1 className="text-2xl font-bold text-white">Settings</h1>
         <p className="text-gray-500">
           Configure your lead qualification pipeline. Drag sections to reorder.
         </p>
@@ -579,23 +573,23 @@ export default function SettingsPage() {
 
       {/* Save Button */}
       <div className="flex justify-end">
-        <Button
+        <button
           onClick={handleSave}
           disabled={saving}
-          className="bg-indigo-600 hover:bg-indigo-700"
+          className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium transition-colors disabled:opacity-50"
         >
           {saving ? (
             <>
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              <Loader2 className="h-4 w-4 animate-spin" />
               Saving...
             </>
           ) : (
             <>
-              <Save className="mr-2 h-4 w-4" />
+              <Save className="h-4 w-4" />
               Save Settings
             </>
           )}
-        </Button>
+        </button>
       </div>
     </div>
   );
