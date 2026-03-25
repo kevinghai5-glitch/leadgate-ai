@@ -1,15 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import {
   CheckCircle2,
@@ -48,7 +39,6 @@ export default function BillingPage() {
       if (data.url) {
         window.location.href = data.url;
       } else if (res.status === 503) {
-        // Stripe not configured
         alert("Stripe not configured");
       } else {
         toast.error(data.error || "Failed to start checkout");
@@ -84,7 +74,7 @@ export default function BillingPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
-        <Loader2 className="h-8 w-8 animate-spin text-indigo-600" />
+        <Loader2 className="h-8 w-8 animate-spin text-indigo-400" />
       </div>
     );
   }
@@ -92,68 +82,67 @@ export default function BillingPage() {
   return (
     <div className="space-y-6 max-w-3xl">
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">Billing</h1>
+        <h1 className="text-2xl font-bold text-white">Billing</h1>
         <p className="text-gray-500">Manage your subscription and billing</p>
       </div>
 
       {/* Current Plan */}
-      <Card>
-        <CardHeader>
-          <div className="flex items-center justify-between">
+      <div className="glass-card rounded-xl overflow-hidden">
+        <div className="p-6">
+          <div className="flex items-center justify-between mb-1">
             <div>
-              <CardTitle className="flex items-center gap-2">
-                <CreditCard className="h-5 w-5 text-indigo-600" />
+              <div className="flex items-center gap-2 text-lg font-semibold text-white">
+                <CreditCard className="h-5 w-5 text-indigo-400" />
                 Current Plan
-              </CardTitle>
-              <CardDescription>
+              </div>
+              <p className="text-sm text-gray-500 mt-1">
                 Your current subscription status
-              </CardDescription>
+              </p>
             </div>
-            <Badge
-              variant={isActive ? "default" : "secondary"}
-              className={
+            <span
+              className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold ${
                 isActive
-                  ? "bg-green-100 text-green-700"
-                  : "bg-yellow-100 text-yellow-700"
-              }
+                  ? "bg-emerald-500/15 text-emerald-400"
+                  : "bg-amber-500/15 text-amber-400"
+              }`}
             >
               {isActive ? "Active" : "Inactive"}
-            </Badge>
+            </span>
           </div>
-        </CardHeader>
-        <CardContent>
+        </div>
+        <div className="px-6 pb-6">
           {isActive ? (
             <div className="space-y-4">
-              <div className="flex items-center justify-between p-4 rounded-lg bg-green-50 border border-green-200">
+              <div className="flex items-center justify-between p-4 rounded-lg bg-emerald-500/10 border border-emerald-500/20">
                 <div>
-                  <p className="font-semibold text-green-900">Pro Plan</p>
-                  <p className="text-sm text-green-700">$499/month</p>
+                  <p className="font-semibold text-emerald-300">Pro Plan</p>
+                  <p className="text-sm text-emerald-400/70">$499/month</p>
                 </div>
-                <CheckCircle2 className="h-6 w-6 text-green-600" />
+                <CheckCircle2 className="h-6 w-6 text-emerald-400" />
               </div>
-              <Button
-                variant="outline"
+              <button
                 onClick={handlePortal}
                 disabled={portalLoading}
+                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg border border-white/10 bg-white/[0.05] hover:bg-white/[0.1] text-gray-300 text-sm font-medium transition-colors disabled:opacity-50"
               >
                 {portalLoading ? (
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  <Loader2 className="h-4 w-4 animate-spin" />
                 ) : (
-                  <ExternalLink className="mr-2 h-4 w-4" />
+                  <ExternalLink className="h-4 w-4" />
                 )}
                 Manage Subscription
-              </Button>
+              </button>
             </div>
           ) : (
             <div className="space-y-6">
-              <div className="rounded-2xl border-2 border-indigo-600 p-6">
+              <div className="rounded-2xl border-2 border-indigo-500/30 p-6 bg-indigo-500/[0.04]">
                 <div className="flex items-center justify-between mb-4">
                   <div>
-                    <h3 className="text-xl font-bold text-gray-900">
+                    <h3 className="text-xl font-bold text-white">
                       Pro Plan
                     </h3>
                     <div className="flex items-baseline gap-1 mt-1">
-                      <span className="text-3xl font-bold text-gray-900">
+                      <span className="text-3xl font-bold text-white">
                         $499
                       </span>
                       <span className="text-gray-500">/month</span>
@@ -169,30 +158,30 @@ export default function BillingPage() {
                     "Custom form questions",
                   ].map((feature) => (
                     <li key={feature} className="flex items-center gap-2">
-                      <CheckCircle2 className="h-4 w-4 text-indigo-600 flex-shrink-0" />
-                      <span className="text-sm text-gray-700">{feature}</span>
+                      <CheckCircle2 className="h-4 w-4 text-indigo-400 flex-shrink-0" />
+                      <span className="text-sm text-gray-400">{feature}</span>
                     </li>
                   ))}
                 </ul>
-                <Button
-                  className="w-full bg-indigo-600 hover:bg-indigo-700"
+                <button
+                  className="w-full py-3 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium transition-colors disabled:opacity-50"
                   onClick={handleCheckout}
                   disabled={checkoutLoading}
                 >
                   {checkoutLoading ? (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    <span className="inline-flex items-center gap-2">
+                      <Loader2 className="h-4 w-4 animate-spin" />
                       Processing...
-                    </>
+                    </span>
                   ) : (
                     "Subscribe to Pro"
                   )}
-                </Button>
+                </button>
               </div>
             </div>
           )}
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </div>
   );
 }
