@@ -14,13 +14,6 @@ interface LeadData {
   problemDescription: string;
 }
 
-interface ScoringRules {
-  budgetWeight: number;
-  timelineWeight: number;
-  urgencyWeight: number;
-  qualityWeight: number;
-}
-
 interface ScoreResult {
   score: number;
   reasoning: string;
@@ -31,45 +24,35 @@ interface LeadSummary {
   salesAngle: string;
 }
 
-export async function scoreLead(
-  lead: LeadData,
-  rules?: ScoringRules
-): Promise<ScoreResult> {
-  const weights = rules || {
-    budgetWeight: 30,
-    timelineWeight: 25,
-    urgencyWeight: 25,
-    qualityWeight: 20,
-  };
+export async function scoreLead(lead: LeadData): Promise<ScoreResult> {
+  const prompt = `You are a fitness coaching lead qualification assistant. Evaluate the following prospect based on their answers to determine how likely they are to become a premium coaching client.
 
-  const prompt = `You are a sales lead qualification assistant. Evaluate the following lead based on the criteria below.
-
-Lead Information:
+Prospect Information:
 - Name: ${lead.name}
 - Email: ${lead.email}
 - Phone: ${lead.phone || "Not provided"}
-- Company: ${lead.company || "Not provided"}
 - Budget: ${lead.budget}
 - Timeline: ${lead.timeline}
-- Problem Description: ${lead.problemDescription}
+- Answers: ${lead.problemDescription}
 
-Scoring Weights:
-- Budget fit: ${weights.budgetWeight}%
-- Timeline urgency: ${weights.timelineWeight}%
-- Problem urgency: ${weights.urgencyWeight}%
-- Problem quality/clarity: ${weights.qualityWeight}%
+Evaluate the prospect holistically on:
+- Commitment level and readiness to change
+- Financial readiness and investment level
+- Timeline urgency (how soon they want to start)
+- Clarity of goals and motivation
+- Previous coaching experience and attitude
 
 Return a JSON object with exactly this structure:
 {
   "score": <number from 1 to 10>,
-  "reasoning": "<short explanation of why the lead received this score>"
+  "reasoning": "<short explanation of why the prospect received this score>"
 }
 
 Score guidelines:
-- 1-3: Low quality lead (vague problem, no budget, no timeline)
-- 4-5: Medium quality lead (some potential but missing key signals)
-- 6-7: Good lead (clear problem, reasonable budget, decent timeline)
-- 8-10: Excellent lead (urgent problem, strong budget, immediate timeline)
+- 1-3: Low quality (just exploring, low budget, vague goals, not committed)
+- 4-5: Medium quality (some interest but lacking key buying signals)
+- 6-7: Good prospect (clear goals, reasonable budget, decent timeline)
+- 8-10: Excellent prospect (highly committed, strong budget, wants to start immediately)
 
 Return ONLY the JSON object, no other text.`;
 
@@ -95,21 +78,20 @@ Return ONLY the JSON object, no other text.`;
 export async function generateLeadSummary(
   lead: LeadData & { aiScore: number; aiReasoning: string }
 ): Promise<LeadSummary> {
-  const prompt = `You are a sales preparation assistant. Generate a brief summary and suggested sales angle for this qualified lead.
+  const prompt = `You are a sales preparation assistant for a fitness coaching business. Generate a brief summary and suggested sales angle for this qualified prospect.
 
-Lead Information:
+Prospect Information:
 - Name: ${lead.name}
-- Company: ${lead.company || "Not provided"}
 - Budget: ${lead.budget}
 - Timeline: ${lead.timeline}
-- Problem: ${lead.problemDescription}
+- Answers: ${lead.problemDescription}
 - AI Score: ${lead.aiScore}/10
 - AI Assessment: ${lead.aiReasoning}
 
 Return a JSON object with exactly this structure:
 {
-  "summary": "<2-3 sentence overview of the lead and their needs>",
-  "salesAngle": "<1-2 sentence suggested approach for the sales call>"
+  "summary": "<2-3 sentence overview of the prospect and their needs>",
+  "salesAngle": "<1-2 sentence suggested approach for the discovery call>"
 }
 
 Return ONLY the JSON object, no other text.`;

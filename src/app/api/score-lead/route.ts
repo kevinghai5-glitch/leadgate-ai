@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { scoreLead, generateLeadSummary } from "@/lib/openai";
-import { sendSlackNotification } from "@/lib/slack";
 import { leadFormSchema } from "@/lib/validations";
 
 export async function POST(req: Request) {
@@ -29,18 +28,8 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
-    // Score the lead with AI
-    const scoreResult = await scoreLead(
-      validatedData,
-      user.rules
-        ? {
-            budgetWeight: user.rules.budgetWeight,
-            timelineWeight: user.rules.timelineWeight,
-            urgencyWeight: user.rules.urgencyWeight,
-            qualityWeight: user.rules.qualityWeight,
-          }
-        : undefined
-    );
+    // Score the lead with AI (no manual scoring rules)
+    const scoreResult = await scoreLead(validatedData);
 
     const minScore = user.rules?.minScore ?? 6;
     const isQualified = scoreResult.score >= minScore;
@@ -78,19 +67,6 @@ export async function POST(req: Request) {
         source: "form",
       },
     });
-
-    // Send Slack notification for qualified leads
-    if (isQualified && user.slackWebhookUrl) {
-      await sendSlackNotification(user.slackWebhookUrl, {
-        name: lead.name,
-        company: lead.company,
-        budget: lead.budget,
-        timeline: lead.timeline,
-        aiScore: scoreResult.score,
-        aiReasoning: scoreResult.reasoning,
-        formUrl: `${process.env.NEXT_PUBLIC_APP_URL}/form/${userId}`,
-      });
-    }
 
     return NextResponse.json({
       leadId: lead.id,

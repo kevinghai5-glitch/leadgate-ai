@@ -16,7 +16,7 @@ export async function GET() {
         email: true,
         name: true,
         calendarLink: true,
-        slackWebhookUrl: true,
+
         stripeSubscriptionStatus: true,
         rules: true,
       },
@@ -45,14 +45,14 @@ export async function PATCH(req: Request) {
 
     const userId = session.user.id;
     const body = await req.json();
-    const { calendarLink, slackWebhookUrl, scoringRules } = body;
+    const { calendarLink, scoringRules } = body;
 
     // Update user settings
     await prisma.user.update({
       where: { id: userId },
       data: {
         ...(calendarLink !== undefined && { calendarLink }),
-        ...(slackWebhookUrl !== undefined && { slackWebhookUrl }),
+
       },
     });
 
