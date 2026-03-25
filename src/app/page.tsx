@@ -55,19 +55,19 @@ export default async function HomePage() {
             <div className="text-center max-w-4xl mx-auto">
               <div className="inline-flex items-center gap-2 rounded-full bg-indigo-100 px-4 py-1.5 text-sm font-medium text-indigo-700 mb-8">
                 <Dumbbell className="h-4 w-4" />
-                Built for Fitness Coaches
+                Built for High-Ticket Online Fitness Coaches
               </div>
               <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-gray-900 leading-[1.1]">
-                Get{" "}
+                Sign{" "}
                 <span className="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
-                  1–2 extra clients
+                  1–2 premium clients
                 </span>{" "}
                 every month
               </h1>
               <p className="mt-6 text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
                 LeadGate AI pre-qualifies every prospect before they book a
                 call — so you only spend time with people who are ready to
-                commit to their fitness journey.
+                invest in high-ticket online coaching.
               </p>
               <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
                 <Button
@@ -109,8 +109,8 @@ export default async function HomePage() {
           <AnimateOnScroll>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
               {[
-                { label: "Fitness Coaches Served", value: "500+" },
-                { label: "Leads Qualified", value: "50,000+" },
+                { label: "Online Coaches Served", value: "500+" },
+                { label: "High-Ticket Leads Qualified", value: "50,000+" },
                 { label: "Avg Close Rate Increase", value: "3.2x" },
                 { label: "Hours Saved per Week", value: "10+" },
               ].map((stat) => (
@@ -132,11 +132,11 @@ export default async function HomePage() {
           <AnimateOnScroll>
             <div className="text-center mb-16">
               <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-gray-900">
-                How You Get More Clients
+                How You Land More Premium Clients
               </h2>
               <p className="mt-4 text-lg text-gray-600 max-w-2xl mx-auto">
-                Three simple steps — set it up once, and let AI do the
-                filtering so every call you take is worth your time.
+                Three simple steps — set it up once, and let AI filter out
+                tire-kickers so every discovery call is with a serious buyer.
               </p>
             </div>
           </AnimateOnScroll>
@@ -148,21 +148,21 @@ export default async function HomePage() {
                 icon: Users,
                 title: "Prospects Fill Out Your Form",
                 description:
-                  "Share your unique link or embed the form on your site. Prospects answer fitness-specific questions about their goals, budget, and timeline.",
+                  "Share your unique link or embed the form on your site. Prospects answer questions about their goals, commitment level, and investment readiness.",
               },
               {
                 step: "02",
                 icon: Target,
                 title: "AI Identifies Serious Buyers",
                 description:
-                  "Our AI scores every prospect on commitment level, budget fit, and readiness — so you know exactly who's ready to invest in coaching.",
+                  "Our AI scores every prospect on commitment level, budget fit, and readiness — so you know exactly who's ready to invest in high-ticket online coaching.",
               },
               {
                 step: "03",
                 icon: CalendarCheck,
                 title: "Qualified Leads Book Instantly",
                 description:
-                  "High-scoring prospects see your Calendly link and book a call on the spot. Low-intent leads get a polite follow-up page.",
+                  "High-scoring prospects see your Calendly link and book a discovery call on the spot. Low-intent leads get a polite follow-up — your calendar stays protected.",
               },
             ].map((item, i) => (
               <AnimateOnScroll key={item.step} delay={i * 120}>
@@ -190,11 +190,11 @@ export default async function HomePage() {
           <AnimateOnScroll>
             <div className="text-center mb-16">
               <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-gray-900">
-                Results That Grow Your Business
+                Results That Scale Your Online Coaching Business
               </h2>
               <p className="mt-4 text-lg text-gray-600 max-w-2xl mx-auto">
-                Stop chasing cold leads. Start closing clients who are ready
-                to train.
+                Stop chasing cold leads. Start closing premium clients who are
+                ready to invest in themselves.
               </p>
             </div>
           </AnimateOnScroll>
@@ -202,9 +202,9 @@ export default async function HomePage() {
             {[
               {
                 icon: TrendingUp,
-                title: "1–2 Extra Clients per Month",
+                title: "1–2 Extra Premium Clients per Month",
                 description:
-                  "By filtering out tire-kickers before they reach your calendar, every sales call has a higher chance of converting.",
+                  "By filtering out tire-kickers before they reach your calendar, every discovery call has a higher chance of converting into a high-ticket sign-up.",
               },
               {
                 icon: Clock,
@@ -214,9 +214,9 @@ export default async function HomePage() {
               },
               {
                 icon: UserCheck,
-                title: "Know Who's Ready to Buy",
+                title: "Know Who's Ready to Invest",
                 description:
-                  "AI scoring tells you exactly which prospects have the budget, motivation, and timeline to commit.",
+                  "AI scoring tells you exactly which prospects have the budget, motivation, and timeline to commit to premium online coaching.",
               },
               {
                 icon: CalendarCheck,
@@ -232,9 +232,9 @@ export default async function HomePage() {
               },
               {
                 icon: Dumbbell,
-                title: "Built for Fitness Coaches",
+                title: "Built for High-Ticket Online Coaches",
                 description:
-                  "Pre-built questions about fitness goals, training preferences, and budget — designed for your niche.",
+                  "Pre-built questions about transformation goals, investment readiness, and coaching format — designed for premium online fitness programs.",
               },
             ].map((feature, i) => (
               <AnimateOnScroll key={feature.title} delay={(i % 3) * 100}>
@@ -267,16 +267,16 @@ export default async function HomePage() {
             </div>
             <div className="divide-y divide-gray-200 rounded-2xl border bg-white px-6">
               <FAQItem
-                question="How does LeadGate AI help me get more clients?"
-                answer="LeadGate AI pre-qualifies every prospect that fills out your form using AI scoring. By filtering out people who aren't ready to commit, you only spend time on calls with serious buyers — which means higher close rates and more paying clients each month."
+                question="How does LeadGate AI help me sign more high-ticket clients?"
+                answer="LeadGate AI pre-qualifies every prospect that fills out your form using AI scoring. By filtering out people who aren't ready to invest in premium online coaching, you only spend time on discovery calls with serious buyers — which means higher close rates and more high-ticket sign-ups each month."
               />
               <FAQItem
                 question="Do I need technical skills to set up?"
                 answer="Not at all. Sign up, customize your form questions if you like, and share your unique link — or paste the embed code onto your website. The entire setup takes about 5 minutes."
               />
               <FAQItem
-                question="Can I customize the questions for my fitness niche?"
-                answer="Yes! The form comes pre-loaded with fitness-specific questions (goals, budget, training preferences), but you can add, remove, or reorder questions from your Settings page to match your exact niche."
+                question="Can I customize the questions for my coaching niche?"
+                answer="Yes! The form comes pre-loaded with questions tailored for high-ticket online fitness coaching (transformation goals, investment readiness, commitment level), but you can add, remove, or reorder questions from your Settings page to match your exact niche."
               />
               <FAQItem
                 question="How does the lead scoring work?"
@@ -301,11 +301,11 @@ export default async function HomePage() {
           <AnimateOnScroll>
             <div className="text-center mb-16">
               <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-gray-900">
-                One Simple Plan. More Clients.
+                One Simple Plan. More Premium Clients.
               </h2>
               <p className="mt-4 text-lg text-gray-600">
-                Everything you need to fill your calendar with qualified
-                prospects. No hidden fees.
+                Everything you need to fill your calendar with qualified,
+                high-ticket prospects. No hidden fees.
               </p>
             </div>
 
@@ -318,14 +318,14 @@ export default async function HomePage() {
                     <span className="text-gray-500">/month</span>
                   </div>
                   <p className="mt-2 text-sm text-gray-500">
-                    Pays for itself with one extra client
+                    Pays for itself with one high-ticket client
                   </p>
                 </div>
                 <ul className="mt-8 space-y-3">
                   {[
                     "Unlimited lead qualification",
                     "AI-powered scoring & summaries",
-                    "Fitness-specific form questions",
+                    "High-ticket coaching form questions",
                     "Calendly integration",
                     "Slack notifications",
                     "Lead analytics dashboard",
@@ -357,10 +357,10 @@ export default async function HomePage() {
         <AnimateOnScroll>
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <h2 className="text-3xl sm:text-4xl font-bold text-white">
-              Ready to fill your calendar with serious clients?
+              Ready to fill your calendar with premium coaching clients?
             </h2>
             <p className="mt-4 text-xl text-indigo-100">
-              Set up in 5 minutes. Start getting better leads today.
+              Set up in 5 minutes. Start attracting high-ticket leads today.
             </p>
             <div className="mt-8 flex items-center justify-center gap-4">
               <Button
@@ -395,7 +395,7 @@ export default async function HomePage() {
             </div>
             <div className="flex items-center gap-6 text-sm">
               <Dumbbell className="h-4 w-4" />
-              <span>Built for fitness coaches who want more clients</span>
+              <span>Built for high-ticket online fitness coaches</span>
             </div>
             <p className="text-sm">
               &copy; {new Date().getFullYear()} LeadGate AI. All rights reserved.
