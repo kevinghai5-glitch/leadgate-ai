@@ -86,13 +86,13 @@ export default function LeadFormPage({
 
     const formData = new FormData(e.currentTarget);
 
-    // Build a detailed problemDescription from the fitness-specific answers
+    // Build a detailed problemDescription from the coaching-specific answers
     const problemDescription = [
-      `Fitness Goals: ${fitnessGoals}`,
+      `Transformation Goal: ${fitnessGoals}`,
       `Current Exercise Frequency: ${exerciseFrequency}`,
-      `Previous Trainer Experience: ${trainerExperience}`,
+      `Previous Online Coaching Experience: ${trainerExperience}`,
       `Biggest Challenge: ${biggestChallenge}`,
-      `Preferred Training Format: ${trainingFormat}`,
+      `Preferred Coaching Format: ${trainingFormat}`,
     ].join("\n");
 
     const data = {
@@ -136,10 +136,10 @@ export default function LeadFormPage({
         <div className="text-center">
           <Loader2 className="h-12 w-12 animate-spin text-indigo-600 mx-auto" />
           <h2 className="mt-4 text-xl font-semibold text-gray-900">
-            Analyzing your submission...
+            Reviewing your application...
           </h2>
           <p className="mt-2 text-gray-600">
-            We&apos;re reviewing your fitness profile
+            We&apos;re assessing if our online coaching program is right for you
           </p>
         </div>
       </div>
@@ -155,18 +155,18 @@ export default function LeadFormPage({
               <CheckCircle2 className="h-8 w-8 text-green-600" />
             </div>
             <CardTitle className="text-2xl">
-              Great news! You&apos;re a perfect fit.
+              Great news! You&apos;re a strong fit for our program.
             </CardTitle>
             <CardDescription className="text-base">
-              Based on our analysis, we&apos;d love to help you reach your
-              fitness goals. Let&apos;s set up a time to chat.
+              Based on your application, we&apos;d love to help you hit your
+              goals with our online coaching. Let&apos;s set up a quick call.
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
             {result?.summary && (
               <div className="text-left bg-indigo-50 rounded-lg p-4">
                 <p className="text-sm text-indigo-900 font-medium mb-1">
-                  Your Fitness Profile
+                  Your Coaching Profile
                 </p>
                 <p className="text-sm text-indigo-700">
                   {result.summary.split("\n\n")[0]}
@@ -176,7 +176,7 @@ export default function LeadFormPage({
             {result?.calendarLink ? (
               <div>
                 <p className="text-sm text-gray-600 mb-3">
-                  Book a free consultation:
+                  Book a free discovery call:
                 </p>
                 <Button
                   size="lg"
@@ -189,14 +189,14 @@ export default function LeadFormPage({
                     rel="noopener noreferrer"
                   >
                     <Calendar className="mr-2 h-5 w-5" />
-                    Book Your Free Consultation
+                    Book Your Free Discovery Call
                   </a>
                 </Button>
               </div>
             ) : (
               <div className="bg-yellow-50 rounded-lg p-4">
                 <p className="text-sm text-yellow-800">
-                  Our coach will reach out to schedule your free consultation
+                  Our team will reach out to schedule your free discovery call
                   shortly.
                 </p>
               </div>
@@ -217,15 +217,15 @@ export default function LeadFormPage({
             </div>
             <CardTitle className="text-2xl">Thank you for your interest</CardTitle>
             <CardDescription className="text-base">
-              We&apos;ve received your submission. Based on our current
-              availability and coaching programs, we may not be the best fit
-              right now. We&apos;ll reach out if anything changes.
+              We&apos;ve reviewed your application. Based on our current
+              availability, we may not be the best fit right now — but
+              we&apos;ll reach out if a spot opens up.
             </CardDescription>
           </CardHeader>
           <CardContent>
             <p className="text-sm text-gray-500">
-              In the meantime, feel free to check out our free fitness
-              resources and guides.
+              In the meantime, check out our free resources to start
+              making progress on your goals.
             </p>
           </CardContent>
         </Card>
@@ -239,23 +239,23 @@ export default function LeadFormPage({
         <div className="text-center mb-8">
           <div className="inline-flex items-center gap-2 rounded-full bg-indigo-100 px-4 py-1.5 text-sm font-medium text-indigo-700 mb-4">
             <Dumbbell className="h-4 w-4" />
-            Free Fitness Assessment
+            Free Coaching Assessment
           </div>
           <h1 className="text-3xl font-bold text-gray-900">
-            Let&apos;s Find Your Perfect Training Plan
+            Let&apos;s See If Online Coaching Is Right for You
           </h1>
           <p className="mt-2 text-gray-600">
-            Answer a few quick questions and we&apos;ll see if we&apos;re the
-            right fit for your fitness goals.
+            Answer a few quick questions and we&apos;ll see if our
+            online coaching program is the right fit for your goals.
           </p>
         </div>
 
         <Card>
           <CardHeader>
-            <CardTitle>Your Fitness Profile</CardTitle>
+            <CardTitle>Your Coaching Application</CardTitle>
             <CardDescription>
-              Tell us about yourself so we can match you with the right coaching
-              program.
+              Tell us about yourself so we can see if our online coaching
+              program is the right fit.
             </CardDescription>
           </CardHeader>
           <form onSubmit={onSubmit}>
@@ -296,7 +296,7 @@ export default function LeadFormPage({
 
               {/* Fitness Goals */}
               <div className="space-y-2">
-                <Label>What are your fitness goals? *</Label>
+                <Label>What&apos;s your #1 transformation goal? *</Label>
                 <Select
                   value={fitnessGoals}
                   onValueChange={setFitnessGoals}
@@ -306,11 +306,11 @@ export default function LeadFormPage({
                     <SelectValue placeholder="Select your primary goal" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="Weight Loss">Weight Loss</SelectItem>
-                    <SelectItem value="Muscle Gain">Muscle Gain</SelectItem>
-                    <SelectItem value="Endurance & Cardio">Endurance &amp; Cardio</SelectItem>
-                    <SelectItem value="Flexibility & Mobility">Flexibility &amp; Mobility</SelectItem>
-                    <SelectItem value="General Health & Wellness">General Health &amp; Wellness</SelectItem>
+                    <SelectItem value="Fat Loss & Body Recomposition">Fat Loss &amp; Body Recomposition</SelectItem>
+                    <SelectItem value="Muscle Building & Strength">Muscle Building &amp; Strength</SelectItem>
+                    <SelectItem value="Athletic Performance">Athletic Performance</SelectItem>
+                    <SelectItem value="Lifestyle & Longevity">Lifestyle &amp; Longevity</SelectItem>
+                    <SelectItem value="Competition / Physique Prep">Competition / Physique Prep</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -337,7 +337,7 @@ export default function LeadFormPage({
 
               {/* Trainer Experience */}
               <div className="space-y-2">
-                <Label>Have you worked with a personal trainer before? *</Label>
+                <Label>Have you invested in online coaching before? *</Label>
                 <Select
                   value={trainerExperience}
                   onValueChange={setTrainerExperience}
@@ -347,15 +347,16 @@ export default function LeadFormPage({
                     <SelectValue placeholder="Select an option" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="Yes">Yes</SelectItem>
-                    <SelectItem value="No">No</SelectItem>
+                    <SelectItem value="Yes, with great results">Yes, with great results</SelectItem>
+                    <SelectItem value="Yes, but didn't get results">Yes, but didn&apos;t get the results I wanted</SelectItem>
+                    <SelectItem value="No, this would be my first time">No, this would be my first time</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
 
               {/* Biggest Challenge */}
               <div className="space-y-2">
-                <Label>What&apos;s your biggest challenge with fitness? *</Label>
+                <Label>What&apos;s holding you back from reaching your goal? *</Label>
                 <Select
                   value={biggestChallenge}
                   onValueChange={setBiggestChallenge}
@@ -365,32 +366,32 @@ export default function LeadFormPage({
                     <SelectValue placeholder="Select your biggest challenge" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="Staying Motivated">Staying Motivated</SelectItem>
-                    <SelectItem value="Finding Time">Finding Time</SelectItem>
-                    <SelectItem value="Not Knowing What to Do">Not Knowing What to Do</SelectItem>
-                    <SelectItem value="Injuries or Physical Limitations">Injuries or Physical Limitations</SelectItem>
-                    <SelectItem value="Diet & Nutrition">Diet &amp; Nutrition</SelectItem>
+                    <SelectItem value="No Accountability or Structure">No Accountability or Structure</SelectItem>
+                    <SelectItem value="Inconsistent Diet & Nutrition">Inconsistent Diet &amp; Nutrition</SelectItem>
+                    <SelectItem value="Don't Know the Right Program">Don&apos;t Know the Right Program for My Goals</SelectItem>
+                    <SelectItem value="Busy Schedule">Busy Schedule &amp; Time Management</SelectItem>
+                    <SelectItem value="Plateaued / Not Seeing Results">Plateaued / Not Seeing Results Anymore</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
 
               {/* Budget */}
               <div className="space-y-2">
-                <Label>What&apos;s your budget for personal training? *</Label>
+                <Label>What are you willing to invest in coaching monthly? *</Label>
                 <Select
                   value={budget}
                   onValueChange={setBudget}
                   required
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder="Select your budget range" />
+                    <SelectValue placeholder="Select your investment range" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="Under $100/month">Under $100/month</SelectItem>
-                    <SelectItem value="$100 - $250/month">$100 – $250/month</SelectItem>
-                    <SelectItem value="$250 - $500/month">$250 – $500/month</SelectItem>
+                    <SelectItem value="Under $200/month">Under $200/month</SelectItem>
+                    <SelectItem value="$200 - $500/month">$200 – $500/month</SelectItem>
                     <SelectItem value="$500 - $1,000/month">$500 – $1,000/month</SelectItem>
-                    <SelectItem value="$1,000+/month">$1,000+/month</SelectItem>
+                    <SelectItem value="$1,000 - $2,000/month">$1,000 – $2,000/month</SelectItem>
+                    <SelectItem value="$2,000+/month">$2,000+/month</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -417,7 +418,7 @@ export default function LeadFormPage({
 
               {/* Training Format */}
               <div className="space-y-2">
-                <Label>Preferred training format? *</Label>
+                <Label>What type of online coaching are you looking for? *</Label>
                 <Select
                   value={trainingFormat}
                   onValueChange={setTrainingFormat}
@@ -427,9 +428,10 @@ export default function LeadFormPage({
                     <SelectValue placeholder="Select your preferred format" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="In-Person">In-Person</SelectItem>
-                    <SelectItem value="Online / Virtual">Online / Virtual</SelectItem>
-                    <SelectItem value="Hybrid (Both)">Hybrid (Both)</SelectItem>
+                    <SelectItem value="1-on-1 Personalized Coaching">1-on-1 Personalized Coaching</SelectItem>
+                    <SelectItem value="Small Group Coaching">Small Group Coaching</SelectItem>
+                    <SelectItem value="Self-Paced with Check-ins">Self-Paced Program with Check-ins</SelectItem>
+                    <SelectItem value="Open to Recommendations">Open to Recommendations</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -512,7 +514,7 @@ export default function LeadFormPage({
                   !trainingFormat
                 }
               >
-                Get My Free Assessment
+                Submit My Application
               </Button>
             </div>
           </form>
