@@ -1,8 +1,10 @@
 import { redirect } from "next/navigation";
+import Link from "next/link";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { DashboardSidebar } from "@/components/dashboard-sidebar";
 import { MobileNav } from "@/components/mobile-nav";
+import { Lock } from "lucide-react";
 
 const ADMIN_EMAILS = ["leafsbuzztv@gmail.com"];
 
@@ -38,7 +40,7 @@ export default async function DashboardLayout({
             {isPaid ? (
               children
             ) : (
-              <SoftPaywallBanner>{children}</SoftPaywallBanner>
+              <HardPaywall>{children}</HardPaywall>
             )}
           </div>
         </main>
@@ -47,28 +49,38 @@ export default async function DashboardLayout({
   );
 }
 
-function SoftPaywallBanner({ children }: { children: React.ReactNode }) {
+function HardPaywall({ children }: { children: React.ReactNode }) {
   return (
-    <div className="space-y-6">
-      <div className="rounded-xl border-2 border-amber-200 bg-gradient-to-r from-amber-50 to-orange-50 p-6">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
-          <div className="flex-1">
-            <h3 className="text-lg font-semibold text-amber-900">
-              Activate your account
-            </h3>
-            <p className="text-sm text-amber-700 mt-1">
-              Subscribe to unlock AI lead scoring, analytics, and all premium features.
-            </p>
+    <div className="relative">
+      {/* Blurred locked content */}
+      <div className="blur-sm pointer-events-none select-none" aria-hidden="true">
+        {children}
+      </div>
+
+      {/* Overlay */}
+      <div className="absolute inset-0 flex items-start justify-center pt-24 z-10">
+        <div className="bg-white rounded-2xl shadow-2xl border border-gray-200 p-8 max-w-md w-full mx-4 text-center">
+          <div className="mx-auto h-14 w-14 rounded-full bg-indigo-100 flex items-center justify-center mb-5">
+            <Lock className="h-7 w-7 text-indigo-600" />
           </div>
-          <a
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">
+            Upgrade to Pro to Unlock
+          </h2>
+          <p className="text-gray-600 mb-6">
+            Subscribe to access AI lead scoring, analytics, and all premium
+            features. Start getting more qualified clients today.
+          </p>
+          <Link
             href="/billing"
-            className="inline-flex items-center justify-center rounded-lg bg-indigo-600 px-5 py-2.5 text-sm font-medium text-white hover:bg-indigo-700 transition-colors"
+            className="inline-flex items-center justify-center rounded-lg bg-indigo-600 px-6 py-3 text-sm font-medium text-white hover:bg-indigo-700 transition-colors w-full"
           >
-            View Plans
-          </a>
+            View Plans &amp; Subscribe
+          </Link>
+          <p className="mt-3 text-xs text-gray-400">
+            Cancel anytime. No hidden fees.
+          </p>
         </div>
       </div>
-      {children}
     </div>
   );
 }

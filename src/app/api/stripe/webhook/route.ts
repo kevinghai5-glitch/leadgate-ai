@@ -49,6 +49,30 @@ export async function POST(req: Request) {
         break;
       }
 
+      case "invoice.paid": {
+        // Handle recurring invoice payments to ensure status stays active
+        const invoice = event.data.object as Stripe.Invoice;
+        const subDetails = invoice.parent?.subscription_details;
+        if (subDetails?.subscription) {
+          const subscriptionId =
+            typeof subDetails.subscription === "string"
+              ? subDetails.subscription
+              : subDetails.subscription.id;
+          const userPaid = await prisma.user.findFirst({
+            where: { stripeSubscriptionId: subscriptionId },
+          });
+          if (userPaid) {
+            await prisma.user.update({
+              where: { id: userPaid.id },
+              data: {
+                stripeSubscriptionStatus: "active",
+              },
+            });
+          }
+        }
+        break;
+      }
+
       case "customer.subscription.updated": {
         const subscription = event.data.object as Stripe.Subscription;
         const userUpdated = await prisma.user.findFirst({

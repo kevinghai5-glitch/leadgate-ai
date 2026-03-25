@@ -6,16 +6,36 @@ import { AnimateOnScroll } from "@/components/animate-on-scroll";
 import { auth } from "@/lib/auth";
 import {
   Zap,
-  Shield,
-  BarChart3,
-  Calendar,
-  Bot,
   ArrowRight,
   CheckCircle2,
   Users,
   Target,
   Clock,
+  TrendingUp,
+  Dumbbell,
+  ChevronDown,
+  CalendarCheck,
+  BarChart3,
+  UserCheck,
 } from "lucide-react";
+
+function FAQItem({
+  question,
+  answer,
+}: {
+  question: string;
+  answer: string;
+}) {
+  return (
+    <details className="group border-b border-gray-200 last:border-0">
+      <summary className="flex cursor-pointer items-center justify-between py-5 text-left text-lg font-medium text-gray-900 hover:text-indigo-600 transition-colors">
+        {question}
+        <ChevronDown className="h-5 w-5 flex-shrink-0 text-gray-400 transition-transform duration-200 group-open:rotate-180" />
+      </summary>
+      <p className="pb-5 text-gray-600 leading-relaxed">{answer}</p>
+    </details>
+  );
+}
 
 export default async function HomePage() {
   const session = await auth();
@@ -34,19 +54,20 @@ export default async function HomePage() {
           <AnimateOnScroll>
             <div className="text-center max-w-4xl mx-auto">
               <div className="inline-flex items-center gap-2 rounded-full bg-indigo-100 px-4 py-1.5 text-sm font-medium text-indigo-700 mb-8">
-                <Bot className="h-4 w-4" />
-                AI-Powered Lead Qualification
+                <Dumbbell className="h-4 w-4" />
+                Built for Fitness Coaches
               </div>
               <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-gray-900 leading-[1.1]">
-                Stop wasting time on{" "}
+                Get{" "}
                 <span className="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
-                  unqualified leads
-                </span>
+                  1–2 extra clients
+                </span>{" "}
+                every month
               </h1>
               <p className="mt-6 text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
-                LeadGate AI automatically scores and qualifies your leads before
-                they book a call. Only high-value prospects get through to your
-                calendar.
+                LeadGate AI pre-qualifies every prospect before they book a
+                call — so you only spend time with people who are ready to
+                commit to their fitness journey.
               </p>
               <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
                 <Button
@@ -54,23 +75,23 @@ export default async function HomePage() {
                   asChild
                   className="bg-indigo-600 hover:bg-indigo-700 text-lg px-8 py-6"
                 >
-                  <Link href="#pricing">
-                    See Pricing
+                  <Link href="/signup">
+                    Start Getting Better Leads
                     <ArrowRight className="ml-2 h-5 w-5" />
                   </Link>
                 </Button>
                 <Button size="lg" variant="outline" asChild className="text-lg px-8 py-6">
-                  <Link href="#features">See How It Works</Link>
+                  <Link href="#how-it-works">See How It Works</Link>
                 </Button>
               </div>
               <div className="mt-8 flex flex-wrap items-center justify-center gap-4 sm:gap-6 text-sm text-gray-500">
                 <span className="flex items-center gap-1">
                   <CheckCircle2 className="h-4 w-4 text-green-500" />
-                  No credit card required
+                  Setup in 5 minutes
                 </span>
                 <span className="flex items-center gap-1">
                   <CheckCircle2 className="h-4 w-4 text-green-500" />
-                  Setup in 5 minutes
+                  No tech skills required
                 </span>
                 <span className="flex items-center gap-1">
                   <CheckCircle2 className="h-4 w-4 text-green-500" />
@@ -82,16 +103,16 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Stats */}
+      {/* Stats / Social Proof */}
       <section className="border-y bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <AnimateOnScroll>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
               {[
+                { label: "Fitness Coaches Served", value: "500+" },
                 { label: "Leads Qualified", value: "50,000+" },
-                { label: "Time Saved per Week", value: "10+ hrs" },
                 { label: "Avg Close Rate Increase", value: "3.2x" },
-                { label: "Active Agencies", value: "500+" },
+                { label: "Hours Saved per Week", value: "10+" },
               ].map((stat) => (
                 <div key={stat.label} className="text-center">
                   <div className="text-3xl font-bold text-gray-900">
@@ -106,16 +127,16 @@ export default async function HomePage() {
       </section>
 
       {/* How It Works */}
-      <section id="features" className="py-24">
+      <section id="how-it-works" className="py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <AnimateOnScroll>
             <div className="text-center mb-16">
               <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-gray-900">
-                How LeadGate AI Works
+                How You Get More Clients
               </h2>
               <p className="mt-4 text-lg text-gray-600 max-w-2xl mx-auto">
-                Three simple steps to filter out unqualified leads and focus your
-                time on high-value prospects.
+                Three simple steps — set it up once, and let AI do the
+                filtering so every call you take is worth your time.
               </p>
             </div>
           </AnimateOnScroll>
@@ -125,23 +146,23 @@ export default async function HomePage() {
               {
                 step: "01",
                 icon: Users,
-                title: "Lead Fills Your Form",
+                title: "Prospects Fill Out Your Form",
                 description:
-                  "Share your unique qualification form link. Leads submit their details including budget, timeline, and problem description.",
+                  "Share your unique link or embed the form on your site. Prospects answer fitness-specific questions about their goals, budget, and timeline.",
               },
               {
                 step: "02",
-                icon: Bot,
-                title: "AI Scores the Lead",
+                icon: Target,
+                title: "AI Identifies Serious Buyers",
                 description:
-                  "Our AI engine evaluates the lead based on budget, timeline, urgency, and problem quality. Each lead gets a score from 1-10.",
+                  "Our AI scores every prospect on commitment level, budget fit, and readiness — so you know exactly who's ready to invest in coaching.",
               },
               {
                 step: "03",
-                icon: Calendar,
-                title: "Qualified Leads Book Calls",
+                icon: CalendarCheck,
+                title: "Qualified Leads Book Instantly",
                 description:
-                  "High-scoring leads see your calendar and can book directly. Low-scoring leads get a polite thank-you page.",
+                  "High-scoring prospects see your Calendly link and book a call on the spot. Low-intent leads get a polite follow-up page.",
               },
             ].map((item, i) => (
               <AnimateOnScroll key={item.step} delay={i * 120}>
@@ -163,53 +184,57 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Features */}
+      {/* Benefits */}
       <section className="py-24 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <AnimateOnScroll>
             <div className="text-center mb-16">
               <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-gray-900">
-                Everything You Need to Qualify Leads
+                Results That Grow Your Business
               </h2>
+              <p className="mt-4 text-lg text-gray-600 max-w-2xl mx-auto">
+                Stop chasing cold leads. Start closing clients who are ready
+                to train.
+              </p>
             </div>
           </AnimateOnScroll>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[
               {
-                icon: Bot,
-                title: "AI Lead Scoring",
+                icon: TrendingUp,
+                title: "1–2 Extra Clients per Month",
                 description:
-                  "GPT-powered scoring evaluates every lead on budget, timeline, urgency, and problem quality.",
+                  "By filtering out tire-kickers before they reach your calendar, every sales call has a higher chance of converting.",
               },
               {
-                icon: Shield,
-                title: "Lead Gate",
+                icon: Clock,
+                title: "10+ Hours Saved Weekly",
                 description:
-                  "Only qualified leads see your calendar. Unqualified leads get a polite thank-you page.",
+                  "No more back-and-forth with unqualified leads. Spend your time coaching, not chasing.",
               },
               {
-                icon: Calendar,
-                title: "Calendly Integration",
+                icon: UserCheck,
+                title: "Know Who's Ready to Buy",
                 description:
-                  "Connect your Calendly link. Qualified leads book calls directly from the form.",
+                  "AI scoring tells you exactly which prospects have the budget, motivation, and timeline to commit.",
               },
               {
-                icon: Zap,
-                title: "Slack Notifications",
+                icon: CalendarCheck,
+                title: "Calls That Actually Convert",
                 description:
-                  "Get instant Slack alerts when a qualified lead comes through with full AI insights.",
+                  "Only serious prospects see your booking link. Your close rate goes up because every call is with a qualified lead.",
               },
               {
                 icon: BarChart3,
-                title: "Lead Analytics",
+                title: "Track Your Pipeline",
                 description:
-                  "Track total leads, qualification rate, and projected revenue in your dashboard.",
+                  "See your total leads, qualification rate, and projected revenue at a glance in your dashboard.",
               },
               {
-                icon: Target,
-                title: "Custom Scoring Rules",
+                icon: Dumbbell,
+                title: "Built for Fitness Coaches",
                 description:
-                  "Adjust scoring weights for budget, timeline, urgency, and quality to match your ideal client.",
+                  "Pre-built questions about fitness goals, training preferences, and budget — designed for your niche.",
               },
             ].map((feature, i) => (
               <AnimateOnScroll key={feature.title} delay={(i % 3) * 100}>
@@ -228,16 +253,59 @@ export default async function HomePage() {
         </div>
       </section>
 
+      {/* FAQ */}
+      <section id="faq" className="py-24">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+          <AnimateOnScroll>
+            <div className="text-center mb-12">
+              <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-gray-900">
+                Frequently Asked Questions
+              </h2>
+              <p className="mt-4 text-lg text-gray-600">
+                Everything you need to know before getting started.
+              </p>
+            </div>
+            <div className="divide-y divide-gray-200 rounded-2xl border bg-white px-6">
+              <FAQItem
+                question="How does LeadGate AI help me get more clients?"
+                answer="LeadGate AI pre-qualifies every prospect that fills out your form using AI scoring. By filtering out people who aren't ready to commit, you only spend time on calls with serious buyers — which means higher close rates and more paying clients each month."
+              />
+              <FAQItem
+                question="Do I need technical skills to set up?"
+                answer="Not at all. Sign up, customize your form questions if you like, and share your unique link — or paste the embed code onto your website. The entire setup takes about 5 minutes."
+              />
+              <FAQItem
+                question="Can I customize the questions for my fitness niche?"
+                answer="Yes! The form comes pre-loaded with fitness-specific questions (goals, budget, training preferences), but you can add, remove, or reorder questions from your Settings page to match your exact niche."
+              />
+              <FAQItem
+                question="How does the lead scoring work?"
+                answer="Our AI evaluates each prospect on budget fit, timeline, motivation level, and overall readiness. Each lead gets a score from 1–10. You set the minimum qualifying score, and only leads above that threshold see your booking link."
+              />
+              <FAQItem
+                question="Is there a free trial?"
+                answer="You can sign up and explore the dashboard for free. To activate AI lead scoring, analytics, and all premium features, subscribe to the Pro plan."
+              />
+              <FAQItem
+                question="Can I integrate this with my existing website?"
+                answer="Absolutely. You can embed the lead qualification form on any website with a simple iframe code snippet, or just share the direct link on social media, in emails, or anywhere you connect with prospects."
+              />
+            </div>
+          </AnimateOnScroll>
+        </div>
+      </section>
+
       {/* Pricing */}
-      <section id="pricing" className="py-24">
+      <section id="pricing" className="py-24 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <AnimateOnScroll>
             <div className="text-center mb-16">
               <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-gray-900">
-                Simple, Transparent Pricing
+                One Simple Plan. More Clients.
               </h2>
               <p className="mt-4 text-lg text-gray-600">
-                One plan. Everything included. No hidden fees.
+                Everything you need to fill your calendar with qualified
+                prospects. No hidden fees.
               </p>
             </div>
 
@@ -249,16 +317,20 @@ export default async function HomePage() {
                     <span className="text-5xl font-bold text-gray-900">$499</span>
                     <span className="text-gray-500">/month</span>
                   </div>
+                  <p className="mt-2 text-sm text-gray-500">
+                    Pays for itself with one extra client
+                  </p>
                 </div>
                 <ul className="mt-8 space-y-3">
                   {[
                     "Unlimited lead qualification",
                     "AI-powered scoring & summaries",
+                    "Fitness-specific form questions",
                     "Calendly integration",
                     "Slack notifications",
                     "Lead analytics dashboard",
                     "Custom scoring rules",
-                    "Multi-tenant form links",
+                    "Embeddable form for your website",
                     "Priority support",
                   ].map((feature) => (
                     <li key={feature} className="flex items-center gap-3">
@@ -285,10 +357,10 @@ export default async function HomePage() {
         <AnimateOnScroll>
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <h2 className="text-3xl sm:text-4xl font-bold text-white">
-              Ready to stop wasting time on bad leads?
+              Ready to fill your calendar with serious clients?
             </h2>
             <p className="mt-4 text-xl text-indigo-100">
-              Set up LeadGate AI in 5 minutes and start qualifying leads today.
+              Set up in 5 minutes. Start getting better leads today.
             </p>
             <div className="mt-8 flex items-center justify-center gap-4">
               <Button
@@ -297,7 +369,7 @@ export default async function HomePage() {
                 className="bg-white text-indigo-600 hover:bg-gray-100 text-lg px-8 py-6"
               >
                 <Link href="/signup">
-                  Get Started Now
+                  Start Getting Better Leads
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Link>
               </Button>
@@ -322,8 +394,8 @@ export default async function HomePage() {
               </span>
             </div>
             <div className="flex items-center gap-6 text-sm">
-              <Clock className="h-4 w-4" />
-              <span>Save 10+ hours per week qualifying leads</span>
+              <Dumbbell className="h-4 w-4" />
+              <span>Built for fitness coaches who want more clients</span>
             </div>
             <p className="text-sm">
               &copy; {new Date().getFullYear()} LeadGate AI. All rights reserved.
