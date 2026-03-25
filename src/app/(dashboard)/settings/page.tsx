@@ -38,6 +38,36 @@ import {
   ChevronDown,
 } from "lucide-react";
 
+// ─── Toggle Switch ─────────────────────────────────────────────────
+function ToggleSwitch({
+  enabled,
+  onToggle,
+  label,
+}: {
+  enabled: boolean;
+  onToggle: (val: boolean) => void;
+  label: string;
+}) {
+  return (
+    <button
+      type="button"
+      role="switch"
+      aria-checked={enabled}
+      aria-label={label}
+      onClick={() => onToggle(!enabled)}
+      className={`relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:ring-offset-2 ${
+        enabled ? "bg-indigo-600" : "bg-gray-200"
+      }`}
+    >
+      <span
+        className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${
+          enabled ? "translate-x-5" : "translate-x-0"
+        }`}
+      />
+    </button>
+  );
+}
+
 // ─── Collapsible Section ─────────────────────────────────────────────
 function CollapsibleCard({
   icon,
@@ -45,34 +75,52 @@ function CollapsibleCard({
   description,
   children,
   defaultOpen = false,
+  enabled,
+  onToggle,
 }: {
   icon: ReactNode;
   title: string;
   description: string;
   children: ReactNode;
   defaultOpen?: boolean;
+  enabled?: boolean;
+  onToggle?: (val: boolean) => void;
 }) {
   const [open, setOpen] = useState(defaultOpen);
 
   return (
-    <Card>
+    <Card className={enabled === false ? "opacity-60" : ""}>
       <CardHeader
         className="cursor-pointer select-none"
         onClick={() => setOpen(!open)}
       >
         <div className="flex items-center justify-between">
-          <div>
+          <div className="flex-1">
             <CardTitle className="flex items-center gap-2">
               {icon}
               {title}
             </CardTitle>
             <CardDescription className="mt-1">{description}</CardDescription>
           </div>
-          <ChevronDown
-            className={`h-5 w-5 text-gray-400 transition-transform duration-200 ${
-              open ? "rotate-180" : ""
-            }`}
-          />
+          <div className="flex items-center gap-3">
+            {onToggle !== undefined && enabled !== undefined && (
+              <div
+                onClick={(e) => e.stopPropagation()}
+                className="flex items-center"
+              >
+                <ToggleSwitch
+                  enabled={enabled}
+                  onToggle={onToggle}
+                  label={`Toggle ${title}`}
+                />
+              </div>
+            )}
+            <ChevronDown
+              className={`h-5 w-5 text-gray-400 transition-transform duration-200 ${
+                open ? "rotate-180" : ""
+              }`}
+            />
+          </div>
         </div>
       </CardHeader>
       <div
@@ -125,6 +173,11 @@ export default function SettingsPage() {
   const [qualityWeight, setQualityWeight] = useState(20);
   const [minScore, setMinScore] = useState(6);
 
+  // Toggle states
+  const [formLinkEnabled, setFormLinkEnabled] = useState(true);
+  const [embedEnabled, setEmbedEnabled] = useState(true);
+  const [calendlyEnabled, setCalendlyEnabled] = useState(true);
+
   // Custom questions state
   const [customQuestions, setCustomQuestions] = useState<CustomQuestion[]>([]);
   const [savingQuestions, setSavingQuestions] = useState(false);
@@ -138,6 +191,8 @@ export default function SettingsPage() {
         setSettings(data);
         setCalendarLink(data.calendarLink || "");
         setSlackWebhookUrl(data.slackWebhookUrl || "");
+        // Set toggles based on whether the integrations have values
+        setCalendlyEnabled(!!data.calendarLink);
         if (data.rules) {
           setBudgetWeight(data.rules.budgetWeight);
           setTimelineWeight(data.rules.timelineWeight);
@@ -163,7 +218,7 @@ export default function SettingsPage() {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          calendarLink: calendarLink || null,
+          calendarLink: calendlyEnabled ? calendarLink || null : null,
           slackWebhookUrl: slackWebhookUrl || null,
           scoringRules: {
             budgetWeight,
@@ -250,7 +305,7 @@ export default function SettingsPage() {
     toast.success("Form link copied!");
   }
 
-  const embedCode = `<iframe src="${formLink}" width="100%" height="700" frameborder="0"></iframe>`;
+  const embedCode = `<iframe src="${formLink}" width="100%" height="700" frameborder="0" style="border:none;"></iframe>`;
 
   function copyEmbedCode() {
     navigator.clipboard.writeText(embedCode);
@@ -279,55 +334,77 @@ export default function SettingsPage() {
         </p>
       </div>
 
-      {/* Form Link — always open */}
+      {/* Form Link */}
       <CollapsibleCard
         icon={<LinkIcon className="h-5 w-5 text-indigo-600" />}
         title="Your Form Link"
         description="Share this link with prospects to collect and qualify leads"
         defaultOpen
+        enabled={formLinkEnabled}
+        onToggle={setFormLinkEnabled}
       >
-        <div className="flex items-center gap-2">
-          <Input value={formLink} readOnly className="bg-gray-50" />
-          <Button variant="outline" onClick={copyFormLink}>
-            <Copy className="h-4 w-4 mr-2" />
-            Copy
-          </Button>
-        </div>
+        {formLinkEnabled ? (
+          <div className="flex items-center gap-2">
+            <Input value={formLink} readOnly className="bg-gray-50 font-mono text-sm" />
+            <Button variant="outline" onClick={copyFormLink}>
+              <Copy className="h-4 w-4 mr-2" />
+              Copy
+            </Button>
+          </div>
+        ) : (
+          <p className="text-sm text-gray-400">
+            Enable this toggle to use your direct form link.
+          </p>
+        )}
       </CollapsibleCard>
 
       {/* Embed Code */}
       <CollapsibleCard
         icon={<Code className="h-5 w-5 text-indigo-600" />}
-        title="Embed Code"
+        title="Embed Form"
         description="Add this code to your website to embed the lead qualification form"
+        enabled={embedEnabled}
+        onToggle={setEmbedEnabled}
       >
-        <div className="space-y-3">
-          <div className="relative">
-            <pre className="bg-gray-50 border rounded-lg p-4 text-sm text-gray-700 overflow-x-auto">
-              <code>{embedCode}</code>
-            </pre>
+        {embedEnabled ? (
+          <div className="space-y-3">
+            <div className="relative">
+              <pre className="bg-gray-50 border rounded-lg p-4 text-sm text-gray-700 overflow-x-auto">
+                <code>{embedCode}</code>
+              </pre>
+            </div>
+            <div className="flex items-center gap-3">
+              <Button variant="outline" onClick={copyEmbedCode}>
+                {embedCopied ? (
+                  <>
+                    <Check className="h-4 w-4 mr-2" />
+                    Copied!
+                  </>
+                ) : (
+                  <>
+                    <Copy className="h-4 w-4 mr-2" />
+                    Copy to Clipboard
+                  </>
+                )}
+              </Button>
+            </div>
+            <p className="text-sm text-gray-500">
+              Paste this code into any HTML page to embed your lead form.
+              The form will adapt to the container width.
+            </p>
           </div>
-          <Button variant="outline" onClick={copyEmbedCode}>
-            {embedCopied ? (
-              <>
-                <Check className="h-4 w-4 mr-2" />
-                Copied!
-              </>
-            ) : (
-              <>
-                <Copy className="h-4 w-4 mr-2" />
-                Copy to Clipboard
-              </>
-            )}
-          </Button>
-        </div>
+        ) : (
+          <p className="text-sm text-gray-400">
+            Enable this toggle to get an embeddable form snippet.
+          </p>
+        )}
       </CollapsibleCard>
 
       {/* Custom Questions */}
       <CollapsibleCard
         icon={<ListChecks className="h-5 w-5 text-indigo-600" />}
         title="Custom Form Questions"
-        description="Add extra questions to your lead form. These appear after the default fields (name, email, budget, etc)."
+        description="Add extra questions to your lead form. These appear after the default fitness questions."
         defaultOpen
       >
         <div className="space-y-4">
@@ -434,25 +511,34 @@ export default function SettingsPage() {
         </div>
       </CollapsibleCard>
 
-      {/* Calendar Integration */}
+      {/* Calendar / Calendly Integration */}
       <CollapsibleCard
         icon={<Calendar className="h-5 w-5 text-indigo-600" />}
-        title="Calendar Integration"
+        title="Calendly Integration"
         description="Qualified leads will be shown a booking link after form submission"
+        enabled={calendlyEnabled}
+        onToggle={setCalendlyEnabled}
       >
-        <div className="space-y-2">
-          <Label htmlFor="calendarLink">Calendly Link</Label>
-          <Input
-            id="calendarLink"
-            placeholder="https://calendly.com/your-name/30min"
-            value={calendarLink}
-            onChange={(e) => setCalendarLink(e.target.value)}
-          />
-          <p className="text-sm text-gray-500">
-            Enter your Calendly scheduling link. Qualified leads will see this
-            after submitting the form.
+        {calendlyEnabled ? (
+          <div className="space-y-2">
+            <Label htmlFor="calendarLink">Calendly Link</Label>
+            <Input
+              id="calendarLink"
+              placeholder="https://calendly.com/your-name/30min"
+              value={calendarLink}
+              onChange={(e) => setCalendarLink(e.target.value)}
+            />
+            <p className="text-sm text-gray-500">
+              Enter your Calendly scheduling link. Qualified leads will see
+              this after submitting the form and can book a call directly.
+            </p>
+          </div>
+        ) : (
+          <p className="text-sm text-gray-400">
+            Enable this toggle to connect your Calendly link. Qualified leads
+            will be able to book calls directly after submitting the form.
           </p>
-        </div>
+        )}
       </CollapsibleCard>
 
       {/* Slack Integration */}
@@ -508,7 +594,7 @@ export default function SettingsPage() {
                 onChange={(e) => setTimelineWeight(Number(e.target.value))}
               />
               <p className="text-xs text-gray-400">
-                How urgent the lead&apos;s project is
+                How urgent the lead&apos;s timeline is
               </p>
             </div>
             <div className="space-y-2">
@@ -534,7 +620,7 @@ export default function SettingsPage() {
                 onChange={(e) => setQualityWeight(Number(e.target.value))}
               />
               <p className="text-xs text-gray-400">
-                How clear their problem description is
+                How clear their fitness goals and commitment are
               </p>
             </div>
           </div>
