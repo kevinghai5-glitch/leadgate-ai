@@ -103,22 +103,38 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Stats / Social Proof */}
+      {/* Built for Serious Coaches */}
       <section className="border-y bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
           <AnimateOnScroll>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+            <h2 className="text-2xl sm:text-3xl font-bold text-center text-gray-900 mb-10">
+              Built for Serious Coaches
+            </h2>
+            <div className="grid md:grid-cols-3 gap-6">
               {[
-                { label: "Online Coaches Served", value: "500+" },
-                { label: "High-Ticket Leads Qualified", value: "50,000+" },
-                { label: "Avg Close Rate Increase", value: "3.2x" },
-                { label: "Hours Saved per Week", value: "10+" },
-              ].map((stat) => (
-                <div key={stat.label} className="text-center">
-                  <div className="text-3xl font-bold text-gray-900">
-                    {stat.value}
+                {
+                  icon: Target,
+                  text: "Built for coaches closing $1K\u2013$10K+ offers",
+                },
+                {
+                  icon: Clock,
+                  text: "Designed after watching thousands of unqualified calls waste time and kill conversions",
+                },
+                {
+                  icon: UserCheck,
+                  text: "Filters out low-quality leads before they ever hit your calendar",
+                },
+              ].map((item) => (
+                <div
+                  key={item.text}
+                  className="flex items-start gap-4 p-6 rounded-xl border bg-white"
+                >
+                  <div className="h-10 w-10 rounded-lg bg-indigo-100 flex items-center justify-center flex-shrink-0">
+                    <item.icon className="h-5 w-5 text-indigo-600" />
                   </div>
-                  <div className="mt-1 text-sm text-gray-500">{stat.label}</div>
+                  <p className="text-gray-700 font-medium leading-relaxed">
+                    {item.text}
+                  </p>
                 </div>
               ))}
             </div>

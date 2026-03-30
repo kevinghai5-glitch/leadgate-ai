@@ -282,7 +282,6 @@ export default function DashboardPage() {
                   <thead>
                     <tr className="border-b border-white/[0.06] text-left">
                       <th className="pb-3 text-sm font-medium text-gray-500">Name</th>
-                      <th className="pb-3 text-sm font-medium text-gray-500">Company</th>
                       <th className="pb-3 text-sm font-medium text-gray-500">Budget</th>
                       <th className="pb-3 text-sm font-medium text-gray-500">Close Likelihood</th>
                       <th className="pb-3 text-sm font-medium text-gray-500">Status</th>
@@ -310,9 +309,6 @@ export default function DashboardPage() {
                               <p className="text-xs text-gray-500">{lead.email}</p>
                             </div>
                           </div>
-                        </td>
-                        <td className="py-3.5 text-sm text-gray-400">
-                          {lead.company || "—"}
                         </td>
                         <td className="py-3.5 text-sm text-gray-400">
                           {lead.budget}

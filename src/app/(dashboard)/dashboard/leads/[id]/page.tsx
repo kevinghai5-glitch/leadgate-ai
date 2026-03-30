@@ -6,7 +6,6 @@ import {
   ArrowLeft,
   Mail,
   Phone,
-  Building2,
   DollarSign,
   Clock,
   Bot,
@@ -157,9 +156,9 @@ export default function LeadDetailPage({
               </div>
               {lead.company && (
                 <div className="flex items-center gap-3">
-                  <Building2 className="h-4 w-4 text-gray-500 flex-shrink-0" />
+                  <span className="h-4 w-4 text-gray-500 flex-shrink-0 text-center text-sm font-medium">@</span>
                   <div>
-                    <p className="text-sm text-gray-500">Company</p>
+                    <p className="text-sm text-gray-500">Instagram</p>
                     <p className="font-medium text-white">{lead.company}</p>
                   </div>
                 </div>

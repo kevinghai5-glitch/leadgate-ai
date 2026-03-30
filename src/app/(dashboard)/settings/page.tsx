@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback, useRef, ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { useSession } from "next-auth/react";
 import { toast } from "sonner";
 import {
@@ -14,7 +14,8 @@ import {
   Check,
   Plus,
   Trash2,
-  GripVertical,
+  ArrowUp,
+  ArrowDown,
   ListChecks,
   ChevronDown,
 } from "lucide-react";
@@ -26,47 +27,42 @@ function CollapsibleCard({
   description,
   children,
   defaultOpen = false,
-  dragHandleProps,
+  onMoveUp,
+  onMoveDown,
 }: {
   icon: ReactNode;
   title: string;
   description: string;
   children: ReactNode;
   defaultOpen?: boolean;
-  dragHandleProps?: {
-    onDragStart: (e: React.DragEvent<HTMLDivElement>) => void;
-    onDragOver: (e: React.DragEvent<HTMLDivElement>) => void;
-    onDragEnd: () => void;
-    onDrop: (e: React.DragEvent<HTMLDivElement>) => void;
-    draggable: boolean;
-  };
+  onMoveUp?: () => void;
+  onMoveDown?: () => void;
 }) {
   const [open, setOpen] = useState(defaultOpen);
 
   return (
-    <div
-      {...(dragHandleProps
-        ? {
-            draggable: dragHandleProps.draggable,
-            onDragStart: dragHandleProps.onDragStart,
-            onDragOver: dragHandleProps.onDragOver,
-            onDragEnd: dragHandleProps.onDragEnd,
-            onDrop: dragHandleProps.onDrop,
-          }
-        : {})}
-      className="glass-card rounded-xl transition-shadow"
-    >
+    <div className="glass-card rounded-xl transition-shadow">
       <div className="cursor-pointer select-none p-6" onClick={() => setOpen(!open)}>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3 flex-1">
-            {dragHandleProps && (
-              <div
-                className="cursor-grab active:cursor-grabbing text-gray-600 hover:text-gray-400 transition-colors"
-                onMouseDown={(e) => e.stopPropagation()}
+            <div className="flex flex-col gap-0.5" onClick={(e) => e.stopPropagation()}>
+              <button
+                onClick={onMoveUp}
+                disabled={!onMoveUp}
+                className="p-0.5 rounded hover:bg-white/10 text-gray-500 hover:text-white disabled:opacity-20 disabled:cursor-not-allowed transition-colors"
+                aria-label="Move up"
               >
-                <GripVertical className="h-5 w-5" />
-              </div>
-            )}
+                <ArrowUp className="h-3.5 w-3.5" />
+              </button>
+              <button
+                onClick={onMoveDown}
+                disabled={!onMoveDown}
+                className="p-0.5 rounded hover:bg-white/10 text-gray-500 hover:text-white disabled:opacity-20 disabled:cursor-not-allowed transition-colors"
+                aria-label="Move down"
+              >
+                <ArrowDown className="h-3.5 w-3.5" />
+              </button>
+            </div>
             <div>
               <div className="flex items-center gap-2 text-lg font-semibold text-white">
                 {icon}
@@ -137,16 +133,38 @@ export default function SettingsPage() {
   const [customQuestions, setCustomQuestions] = useState<CustomQuestion[]>([]);
   const [savingQuestions, setSavingQuestions] = useState(false);
 
-  // Drag-to-reorder state
-  const [sectionOrder, setSectionOrder] = useState<Section[]>([
+  const defaultSections: Section[] = [
     { id: "formLink", label: "Form Link" },
     { id: "embed", label: "Embed Form" },
     { id: "customQuestions", label: "Custom Questions" },
     { id: "calendly", label: "Calendly Integration" },
     { id: "minScore", label: "Minimum Qualifying Score" },
-  ]);
-  const dragItem = useRef<number | null>(null);
-  const dragOverItem = useRef<number | null>(null);
+  ];
+
+  const [sectionOrder, setSectionOrder] = useState<Section[]>(defaultSections);
+
+  // Load section order from localStorage
+  useEffect(() => {
+    const userEmail = session?.user?.email;
+    if (!userEmail) return;
+    try {
+      const stored = localStorage.getItem(`sectionOrder_${userEmail}`);
+      if (stored) {
+        const parsed = JSON.parse(stored) as SectionId[];
+        const reordered = parsed
+          .map((id) => defaultSections.find((s) => s.id === id))
+          .filter((s): s is Section => !!s);
+        // Add any new sections that weren't in stored order
+        for (const s of defaultSections) {
+          if (!reordered.find((r) => r.id === s.id)) reordered.push(s);
+        }
+        setSectionOrder(reordered);
+      }
+    } catch {
+      // ignore parse errors
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [session?.user?.email]);
 
   useEffect(() => {
     Promise.all([
@@ -171,13 +189,27 @@ export default function SettingsPage() {
   }, []);
 
   async function handleSave() {
+    // Validate Calendly URL if provided
+    if (calendarLink.trim()) {
+      try {
+        const url = new URL(calendarLink.trim());
+        if (!url.href.startsWith("https://calendly.com/")) {
+          toast.error("Calendly link must start with https://calendly.com/");
+          return;
+        }
+      } catch {
+        toast.error("Please enter a valid Calendly URL");
+        return;
+      }
+    }
+
     setSaving(true);
     try {
       const res = await fetch("/api/settings", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          calendarLink: calendarLink || null,
+          calendarLink: calendarLink.trim() || null,
           scoringRules: {
             budgetWeight: 30,
             timelineWeight: 25,
@@ -250,35 +282,27 @@ export default function SettingsPage() {
     setCustomQuestions(updated);
   }
 
-  const handleDragStart = useCallback((index: number) => {
-    dragItem.current = index;
-  }, []);
-
-  const handleDragOver = useCallback((e: React.DragEvent, index: number) => {
-    e.preventDefault();
-    dragOverItem.current = index;
-  }, []);
-
-  const handleDrop = useCallback(() => {
-    if (dragItem.current === null || dragOverItem.current === null) return;
-    if (dragItem.current === dragOverItem.current) return;
-
+  function moveSection(index: number, direction: "up" | "down") {
+    const newIndex = direction === "up" ? index - 1 : index + 1;
+    if (newIndex < 0 || newIndex >= sectionOrder.length) return;
     setSectionOrder((prev) => {
       const updated = [...prev];
-      const draggedItem = updated[dragItem.current!];
-      updated.splice(dragItem.current!, 1);
-      updated.splice(dragOverItem.current!, 0, draggedItem);
+      [updated[index], updated[newIndex]] = [updated[newIndex], updated[index]];
+      // Persist to localStorage
+      const userEmail = session?.user?.email;
+      if (userEmail) {
+        try {
+          localStorage.setItem(
+            `sectionOrder_${userEmail}`,
+            JSON.stringify(updated.map((s) => s.id))
+          );
+        } catch {
+          // ignore storage errors
+        }
+      }
       return updated;
     });
-
-    dragItem.current = null;
-    dragOverItem.current = null;
-  }, []);
-
-  const handleDragEnd = useCallback(() => {
-    dragItem.current = null;
-    dragOverItem.current = null;
-  }, []);
+  }
 
   const formLink =
     typeof window !== "undefined"
@@ -310,16 +334,8 @@ export default function SettingsPage() {
   }
 
   function renderSection(section: Section, index: number) {
-    const dragProps = {
-      onDragStart: (e: React.DragEvent<HTMLDivElement>) => {
-        e.dataTransfer.effectAllowed = "move";
-        handleDragStart(index);
-      },
-      onDragOver: (e: React.DragEvent<HTMLDivElement>) => handleDragOver(e, index),
-      onDrop: () => handleDrop(),
-      onDragEnd: () => handleDragEnd(),
-      draggable: true,
-    };
+    const canMoveUp = index > 0;
+    const canMoveDown = index < sectionOrder.length - 1;
 
     switch (section.id) {
       case "formLink":
@@ -330,7 +346,8 @@ export default function SettingsPage() {
             title="Your Form Link"
             description="Share this link with prospects to collect and qualify leads"
             defaultOpen
-            dragHandleProps={dragProps}
+            onMoveUp={canMoveUp ? () => moveSection(index, "up") : undefined}
+            onMoveDown={canMoveDown ? () => moveSection(index, "down") : undefined}
           >
             <div className="flex items-center gap-2">
               <input
@@ -356,7 +373,8 @@ export default function SettingsPage() {
             icon={<Code className="h-5 w-5 text-indigo-400" />}
             title="Embed Form"
             description="Add this code to your website to embed the lead qualification form"
-            dragHandleProps={dragProps}
+            onMoveUp={canMoveUp ? () => moveSection(index, "up") : undefined}
+            onMoveDown={canMoveDown ? () => moveSection(index, "down") : undefined}
           >
             <div className="space-y-3">
               <div className="relative">
@@ -398,7 +416,8 @@ export default function SettingsPage() {
             title="Custom Form Questions"
             description="Add extra questions to your lead form. These appear after the default fitness questions."
             defaultOpen
-            dragHandleProps={dragProps}
+            onMoveUp={canMoveUp ? () => moveSection(index, "up") : undefined}
+            onMoveDown={canMoveDown ? () => moveSection(index, "down") : undefined}
           >
             <div className="space-y-4">
               {customQuestions.length === 0 && (
@@ -413,7 +432,6 @@ export default function SettingsPage() {
                   key={i}
                   className="flex items-start gap-3 p-4 rounded-lg border border-white/10 bg-white/[0.03]"
                 >
-                  <GripVertical className="h-5 w-5 text-gray-600 mt-2 flex-shrink-0" />
                   <div className="flex-1 space-y-3">
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                       <div className="space-y-1">
@@ -512,7 +530,8 @@ export default function SettingsPage() {
             icon={<Calendar className="h-5 w-5 text-indigo-400" />}
             title="Calendly Integration"
             description="Qualified leads will be shown a booking link after form submission"
-            dragHandleProps={dragProps}
+            onMoveUp={canMoveUp ? () => moveSection(index, "up") : undefined}
+            onMoveDown={canMoveDown ? () => moveSection(index, "down") : undefined}
           >
             <div className="space-y-2">
               <label className="text-sm font-medium text-gray-300">Calendly Link</label>
@@ -538,7 +557,8 @@ export default function SettingsPage() {
             title="Minimum Qualifying Score"
             description="Set the threshold for lead qualification"
             defaultOpen
-            dragHandleProps={dragProps}
+            onMoveUp={canMoveUp ? () => moveSection(index, "up") : undefined}
+            onMoveDown={canMoveDown ? () => moveSection(index, "down") : undefined}
           >
             <div className="space-y-2">
               <label className="text-sm font-medium text-gray-300">Minimum Qualifying Score (1-10)</label>
@@ -565,7 +585,7 @@ export default function SettingsPage() {
       <div>
         <h1 className="text-2xl font-bold text-white">Settings</h1>
         <p className="text-gray-500">
-          Configure your lead qualification pipeline. Drag sections to reorder.
+          Configure your lead qualification pipeline. Use arrows to reorder sections.
         </p>
       </div>
 

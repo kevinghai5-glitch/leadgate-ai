@@ -40,7 +40,7 @@ export default function LeadsPage() {
       const matchesSearch =
         lead.name.toLowerCase().includes(search.toLowerCase()) ||
         lead.email.toLowerCase().includes(search.toLowerCase()) ||
-        (lead.company?.toLowerCase() || "").includes(search.toLowerCase());
+        true;
       const matchesStatus =
         statusFilter === "all" || lead.status === statusFilter;
       return matchesSearch && matchesStatus;
@@ -129,7 +129,7 @@ export default function LeadsPage() {
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500" />
           <input
-            placeholder="Search by name, email, or company..."
+            placeholder="Search by name or email..."
             className="flex h-10 w-full rounded-lg border border-white/10 bg-white/[0.05] px-3 py-2 pl-10 text-sm text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500/50"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
@@ -174,9 +174,6 @@ export default function LeadsPage() {
                       Name
                       <SortIcon field="name" />
                     </button>
-                  </th>
-                  <th className="px-6 py-3 text-sm font-medium text-gray-500">
-                    Company
                   </th>
                   <th className="px-6 py-3">
                     <button
@@ -234,9 +231,6 @@ export default function LeadsPage() {
                           <p className="text-xs text-gray-500">{lead.email}</p>
                         </div>
                       </div>
-                    </td>
-                    <td className="px-6 py-4 text-sm text-gray-400">
-                      {lead.company || "—"}
                     </td>
                     <td className="px-6 py-4 text-sm text-gray-400">
                       {lead.budget}

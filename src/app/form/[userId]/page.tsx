@@ -59,6 +59,7 @@ export default function LeadFormPage({
   const [customAnswers, setCustomAnswers] = useState<Record<string, string>>({});
 
   // Controlled state for form fields
+  const [instagram, setInstagram] = useState("");
   const [fitnessGoal, setFitnessGoal] = useState("");
   const [whyNow, setWhyNow] = useState("");
   const [biggestObstacle, setBiggestObstacle] = useState("");
@@ -104,7 +105,7 @@ export default function LeadFormPage({
       name: formData.get("name") as string,
       email: formData.get("email") as string,
       phone: formData.get("phone") as string,
-      company: "",
+      company: instagram.trim() || "",
       budget: investmentLevel,
       timeline: timeline,
       problemDescription,
@@ -305,6 +306,21 @@ export default function LeadFormPage({
                   type="tel"
                   placeholder="+1 (555) 123-4567"
                   required
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="instagram">
+                  Instagram Username{" "}
+                  <span className="text-gray-400 font-normal">(optional)</span>
+                </Label>
+                <Input
+                  id="instagram"
+                  name="instagram"
+                  type="text"
+                  placeholder="@username"
+                  value={instagram}
+                  onChange={(e) => setInstagram(e.target.value)}
                 />
               </div>
 
