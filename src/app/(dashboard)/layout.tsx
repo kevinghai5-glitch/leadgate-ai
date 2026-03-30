@@ -1,11 +1,9 @@
 import { redirect } from "next/navigation";
-import { headers } from "next/headers";
 import { auth } from "@/lib/auth";
-import { prisma } from "@/lib/prisma";
+import { getUserSubscription } from "@/lib/subscription";
 import { DashboardSidebar } from "@/components/dashboard-sidebar";
 import { MobileNav } from "@/components/mobile-nav";
-
-const ADMIN_EMAILS = ["leafsbuzztv@gmail.com"];
+import { PaywallWrapper } from "@/components/paywall-wrapper";
 
 export default async function DashboardLayout({
   children,
@@ -18,24 +16,7 @@ export default async function DashboardLayout({
     redirect("/login");
   }
 
-  const user = await prisma.user.findUnique({
-    where: { id: session.user.id },
-    select: { stripeSubscriptionStatus: true, email: true },
-  });
-
-  const isAdmin = ADMIN_EMAILS.includes(user?.email || "");
-  const isPaid =
-    isAdmin || user?.stripeSubscriptionStatus === "active";
-
-  // Determine current path to allow billing access for non-paying users
-  const headersList = await headers();
-  const pathname = headersList.get("x-pathname") || "";
-  const isBillingPage = pathname === "/billing" || pathname.startsWith("/billing");
-
-  // Non-paying, non-admin users can only access /billing — redirect everything else
-  if (!isPaid && !isBillingPage) {
-    redirect("/billing");
-  }
+  const { isPro } = await getUserSubscription(session.user.id);
 
   return (
     <div className="dashboard-dark flex h-screen overflow-hidden bg-[#070b14]">
@@ -46,11 +27,10 @@ export default async function DashboardLayout({
         <MobileNav />
         <main className="flex-1 overflow-y-auto bg-[#070b14]">
           <div className="p-4 sm:p-6 lg:p-8">
-            {children}
+            <PaywallWrapper isPro={isPro}>{children}</PaywallWrapper>
           </div>
         </main>
       </div>
     </div>
   );
 }
-
