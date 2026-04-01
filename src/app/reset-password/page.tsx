@@ -28,16 +28,16 @@ function ResetPasswordForm() {
     return (
       <Card className="w-full max-w-md">
         <CardContent className="pt-8 pb-8 text-center space-y-4">
-          <div className="mx-auto h-14 w-14 rounded-full bg-red-100 flex items-center justify-center">
-            <KeyRound className="h-7 w-7 text-red-600" />
+          <div className="mx-auto h-14 w-14 rounded-full bg-red-500/10 flex items-center justify-center">
+            <KeyRound className="h-7 w-7 text-red-400" />
           </div>
-          <h2 className="text-xl font-semibold text-gray-900">Invalid reset link</h2>
+          <h2 className="text-xl font-semibold text-white">Invalid reset link</h2>
           <p className="text-sm text-gray-500">
             This password reset link is invalid or has expired. Please request a new one.
           </p>
           <Link
             href="/forgot-password"
-            className="inline-flex items-center gap-1 text-sm text-indigo-600 hover:underline"
+            className="inline-flex items-center gap-1 text-sm text-indigo-400 hover:underline"
           >
             Request new reset link
           </Link>
@@ -50,16 +50,16 @@ function ResetPasswordForm() {
     return (
       <Card className="w-full max-w-md">
         <CardContent className="pt-8 pb-8 text-center space-y-4">
-          <div className="mx-auto h-14 w-14 rounded-full bg-green-100 flex items-center justify-center">
-            <CheckCircle2 className="h-7 w-7 text-green-600" />
+          <div className="mx-auto h-14 w-14 rounded-full bg-emerald-500/10 flex items-center justify-center">
+            <CheckCircle2 className="h-7 w-7 text-emerald-400" />
           </div>
-          <h2 className="text-xl font-semibold text-gray-900">Password updated</h2>
+          <h2 className="text-xl font-semibold text-white">Password updated</h2>
           <p className="text-sm text-gray-500">
             Your password has been reset successfully. You can now log in with your new password.
           </p>
           <Link
             href="/login"
-            className="inline-flex items-center gap-1 text-sm text-indigo-600 hover:underline mt-4"
+            className="inline-flex items-center gap-1 text-sm text-indigo-400 hover:underline mt-4"
           >
             <ArrowLeft className="h-3.5 w-3.5" />
             Go to login
@@ -151,7 +151,7 @@ function ResetPasswordForm() {
             />
           </div>
           {error && (
-            <p className="text-sm text-red-600">{error}</p>
+            <p className="text-sm text-red-400">{error}</p>
           )}
         </CardContent>
         <CardFooter className="flex flex-col gap-4">
@@ -171,7 +171,7 @@ function ResetPasswordForm() {
           </Button>
           <Link
             href="/login"
-            className="inline-flex items-center gap-1 text-sm text-indigo-600 hover:underline"
+            className="inline-flex items-center gap-1 text-sm text-indigo-400 hover:underline"
           >
             <ArrowLeft className="h-3.5 w-3.5" />
             Back to login
@@ -184,12 +184,12 @@ function ResetPasswordForm() {
 
 export default function ResetPasswordPage() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-50 via-white to-purple-50 px-4">
+    <div className="min-h-screen flex items-center justify-center dashboard-dark bg-[#070b14] px-4">
       <Suspense
         fallback={
           <Card className="w-full max-w-md">
             <CardContent className="pt-8 pb-8 flex items-center justify-center">
-              <Loader2 className="h-8 w-8 animate-spin text-indigo-600" />
+              <Loader2 className="h-8 w-8 animate-spin text-indigo-400" />
             </CardContent>
           </Card>
         }

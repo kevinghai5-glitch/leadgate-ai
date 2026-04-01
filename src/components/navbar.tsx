@@ -23,7 +23,7 @@ export function Navbar() {
   const { data: session } = useSession();
 
   return (
-    <nav className="border-b bg-white/80 backdrop-blur-sm sticky top-0 z-50">
+    <nav className="border-b border-white/10 bg-[#070b14]/80 backdrop-blur-sm sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
           <Link href={session ? "/dashboard" : "/"} className="flex items-center gap-2.5">
@@ -33,7 +33,7 @@ export function Navbar() {
                 <Zap className="h-[18px] w-[18px] text-white drop-shadow-sm" />
               </div>
             </div>
-            <span className="text-xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+            <span className="text-xl font-bold text-white">
               LeadGate AI
             </span>
           </Link>
@@ -44,48 +44,48 @@ export function Navbar() {
                 <DropdownMenuTrigger asChild>
                   <Button
                     variant="ghost"
-                    className="relative h-9 w-9 rounded-full"
+                    className="relative h-9 w-9 rounded-full hover:bg-white/10"
                   >
                     <Avatar className="h-9 w-9">
-                      <AvatarFallback className="bg-indigo-100 text-indigo-700">
+                      <AvatarFallback className="bg-indigo-500/20 text-indigo-300">
                         {session.user?.email?.charAt(0).toUpperCase()}
                       </AvatarFallback>
                     </Avatar>
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent className="w-56" align="end">
+                <DropdownMenuContent className="w-56 bg-[#1a1f35] border-white/10" align="end">
                   <div className="flex items-center gap-2 p-2">
                     <div className="flex flex-col space-y-1">
-                      <p className="text-sm font-medium">
+                      <p className="text-sm font-medium text-white">
                         {session.user?.name || "User"}
                       </p>
-                      <p className="text-xs text-muted-foreground">
+                      <p className="text-xs text-gray-400">
                         {session.user?.email}
                       </p>
                     </div>
                   </div>
-                  <DropdownMenuSeparator />
+                  <DropdownMenuSeparator className="bg-white/10" />
                   <DropdownMenuItem asChild>
-                    <Link href="/dashboard" className="cursor-pointer">
+                    <Link href="/dashboard" className="cursor-pointer text-gray-300 hover:text-white focus:text-white focus:bg-white/10">
                       <LayoutDashboard className="mr-2 h-4 w-4" />
                       Dashboard
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
-                    <Link href="/settings" className="cursor-pointer">
+                    <Link href="/settings" className="cursor-pointer text-gray-300 hover:text-white focus:text-white focus:bg-white/10">
                       <Settings className="mr-2 h-4 w-4" />
                       Settings
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
-                    <Link href="/billing" className="cursor-pointer">
+                    <Link href="/billing" className="cursor-pointer text-gray-300 hover:text-white focus:text-white focus:bg-white/10">
                       <CreditCard className="mr-2 h-4 w-4" />
                       Billing
                     </Link>
                   </DropdownMenuItem>
-                  <DropdownMenuSeparator />
+                  <DropdownMenuSeparator className="bg-white/10" />
                   <DropdownMenuItem
-                    className="cursor-pointer text-red-600"
+                    className="cursor-pointer text-red-400 hover:text-red-300 focus:text-red-300 focus:bg-white/10"
                     onClick={() => signOut({ callbackUrl: "/" })}
                   >
                     <LogOut className="mr-2 h-4 w-4" />
@@ -95,7 +95,7 @@ export function Navbar() {
               </DropdownMenu>
             ) : (
               <div className="flex items-center gap-2">
-                <Button variant="ghost" asChild>
+                <Button variant="ghost" asChild className="text-gray-300 hover:text-white hover:bg-white/10">
                   <Link href="/login">Log in</Link>
                 </Button>
                 <Button asChild className="bg-indigo-600 hover:bg-indigo-700">
