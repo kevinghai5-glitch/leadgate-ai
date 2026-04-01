@@ -58,8 +58,8 @@ export default async function HomePage() {
         <Navbar />
 
         {/* Hero */}
-        <section className="pt-20 pb-28">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <section className="pt-24 pb-28">
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <AnimateOnScroll>
               <div className="text-center max-w-4xl mx-auto">
                 <div className="inline-flex items-center gap-2 rounded-full bg-indigo-500/10 border border-indigo-500/20 px-4 py-1.5 text-sm font-medium text-indigo-400 mb-8">
@@ -113,13 +113,13 @@ export default async function HomePage() {
         </section>
 
         {/* Built for Serious Coaches */}
-        <section className="py-16">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <section className="py-24">
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <AnimateOnScroll>
-              <h2 className="text-2xl sm:text-3xl font-bold text-center text-white mb-10">
+              <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-center text-white mb-12">
                 Built for Serious Coaches
               </h2>
-              <div className="grid md:grid-cols-3 gap-5">
+              <div className="grid md:grid-cols-3 gap-6">
                 {[
                   {
                     icon: Target,
@@ -153,9 +153,9 @@ export default async function HomePage() {
 
         {/* Before vs After */}
         <section className="py-24">
-          <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <AnimateOnScroll>
-              <div className="text-center mb-14">
+              <div className="text-center mb-16">
                 <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-white">
                   What Changes When You Use LeadGate AI
                 </h2>
@@ -213,7 +213,7 @@ export default async function HomePage() {
 
         {/* How It Works */}
         <section id="how-it-works" className="py-24">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <AnimateOnScroll>
               <div className="text-center mb-16">
                 <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-white">
@@ -271,7 +271,7 @@ export default async function HomePage() {
 
         {/* Benefits */}
         <section className="py-24">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <AnimateOnScroll>
               <div className="text-center mb-16">
                 <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-white">
@@ -283,7 +283,7 @@ export default async function HomePage() {
                 </p>
               </div>
             </AnimateOnScroll>
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {[
                 {
                   icon: TrendingUp,
@@ -323,8 +323,8 @@ export default async function HomePage() {
                 },
               ].map((feature, i) => (
                 <AnimateOnScroll key={feature.title} delay={(i % 3) * 100}>
-                  <div className="p-6 rounded-xl bg-white/[0.03] border border-white/[0.06] hover:border-white/[0.1] transition-all">
-                    <div className="h-10 w-10 rounded-lg bg-indigo-500/10 flex items-center justify-center mb-3">
+                  <div className="p-6 rounded-xl bg-white/[0.03] border border-white/[0.06] hover:border-white/[0.1] transition-all h-full">
+                    <div className="h-10 w-10 rounded-lg bg-indigo-500/10 flex items-center justify-center mb-4">
                       <feature.icon className="h-5 w-5 text-indigo-400" />
                     </div>
                     <h3 className="font-semibold text-white mb-1">
@@ -342,7 +342,7 @@ export default async function HomePage() {
         <section id="faq" className="py-24">
           <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
             <AnimateOnScroll>
-              <div className="text-center mb-12">
+              <div className="text-center mb-16">
                 <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-white">
                   Frequently Asked Questions
                 </h2>
@@ -382,7 +382,7 @@ export default async function HomePage() {
 
         {/* Pricing */}
         <section id="pricing" className="py-24">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <AnimateOnScroll>
               <div className="text-center mb-16">
                 <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-white">
@@ -441,8 +441,8 @@ export default async function HomePage() {
         <section className="py-24">
           <AnimateOnScroll>
             <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-              <div className="relative rounded-3xl bg-white/[0.03] border border-white/[0.06] p-12 sm:p-16 text-center overflow-hidden">
-                <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(99,102,241,0.08)_0%,transparent_60%)]" />
+              <div className="relative rounded-3xl bg-[#050508] border border-white/[0.08] p-12 sm:p-16 text-center overflow-hidden shadow-2xl">
+                <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-indigo-500/40 to-transparent" />
                 <div className="relative">
                   <h2 className="text-3xl sm:text-4xl font-bold text-white">
                     Ready to fill your calendar with premium coaching clients?
@@ -470,7 +470,7 @@ export default async function HomePage() {
 
         {/* Footer */}
         <footer className="border-t border-white/[0.06] text-gray-500">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
             <div className="flex flex-col md:flex-row items-center justify-between gap-4">
               <div className="flex items-center gap-2">
                 <div className="relative h-8 w-8">
