@@ -44,12 +44,12 @@ export default async function HomePage() {
     redirect("/dashboard");
   }
   return (
-    <div className="min-h-screen bg-[#070b14]">
+    <div className="min-h-screen bg-gradient-to-br from-indigo-950/40 via-[#070b14] to-purple-950/30">
       <Navbar />
 
       {/* Hero */}
       <section className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-indigo-950/40 via-[#070b14] to-purple-950/30" />
+        <div className="absolute inset-0" />
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-28">
           <AnimateOnScroll>
             <div className="text-center max-w-4xl mx-auto">
@@ -80,7 +80,7 @@ export default async function HomePage() {
                     <ArrowRight className="ml-2 h-5 w-5" />
                   </Link>
                 </Button>
-                <Button size="lg" variant="outline" asChild className="text-lg px-8 py-6 border-white/10 text-gray-300 hover:bg-white/5 hover:text-white">
+                <Button size="lg" variant="outline" asChild className="text-lg px-8 py-6 border-white/15 bg-white/5 text-white hover:bg-white/10">
                   <Link href="#how-it-works">See How It Works</Link>
                 </Button>
               </div>
@@ -104,7 +104,7 @@ export default async function HomePage() {
       </section>
 
       {/* Built for Serious Coaches */}
-      <section className="border-y border-white/5 bg-[#0b0f1a]">
+      <section className="border-y border-white/5 bg-black/20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
           <AnimateOnScroll>
             <h2 className="text-2xl sm:text-3xl font-bold text-center text-white mb-10">
@@ -201,7 +201,7 @@ export default async function HomePage() {
       </section>
 
       {/* Benefits */}
-      <section className="py-24 bg-[#0b0f1a]">
+      <section className="py-24 bg-black/20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <AnimateOnScroll>
             <div className="text-center mb-16">
@@ -312,7 +312,7 @@ export default async function HomePage() {
       </section>
 
       {/* Pricing */}
-      <section id="pricing" className="py-24 bg-[#0b0f1a]">
+      <section id="pricing" className="py-24 bg-black/20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <AnimateOnScroll>
             <div className="text-center mb-16">
@@ -368,7 +368,7 @@ export default async function HomePage() {
       </section>
 
       {/* CTA */}
-      <section className="py-24 bg-gradient-to-br from-indigo-600/20 to-purple-700/20 border-y border-white/5">
+      <section className="py-24 bg-indigo-600/10 border-y border-white/5">
         <AnimateOnScroll>
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <h2 className="text-3xl sm:text-4xl font-bold text-white">
@@ -394,7 +394,7 @@ export default async function HomePage() {
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-white/5 bg-[#050810] text-gray-500">
+      <footer className="border-t border-white/5 bg-black/30 text-gray-500">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-2">
