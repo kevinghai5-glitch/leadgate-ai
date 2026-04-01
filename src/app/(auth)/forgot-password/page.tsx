@@ -64,7 +64,7 @@ export default function ForgotPasswordPage() {
           </p>
           <Link
             href="/login"
-            className="inline-flex items-center gap-1 text-sm text-indigo-600 hover:underline mt-4"
+            className="inline-flex items-center gap-1 text-sm text-indigo-400 hover:underline mt-4"
           >
             <ArrowLeft className="h-3.5 w-3.5" />
             Back to login
@@ -113,7 +113,7 @@ export default function ForgotPasswordPage() {
           </Button>
           <Link
             href="/login"
-            className="inline-flex items-center gap-1 text-sm text-indigo-600 hover:underline"
+            className="inline-flex items-center gap-1 text-sm text-indigo-400 hover:underline"
           >
             <ArrowLeft className="h-3.5 w-3.5" />
             Back to login
