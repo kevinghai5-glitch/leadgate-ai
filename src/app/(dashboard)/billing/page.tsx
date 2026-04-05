@@ -74,7 +74,7 @@ export default function BillingPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
-        <Loader2 className="h-8 w-8 animate-spin text-orange-400" />
+        <Loader2 className="h-8 w-8 animate-spin text-[#D4A017]" />
       </div>
     );
   }
@@ -92,7 +92,7 @@ export default function BillingPage() {
           <div className="flex items-center justify-between mb-1">
             <div>
               <div className="flex items-center gap-2 text-lg font-semibold text-white">
-                <CreditCard className="h-5 w-5 text-orange-400" />
+                <CreditCard className="h-5 w-5 text-[#D4A017]" />
                 Current Plan
               </div>
               <p className="text-sm text-gray-500 mt-1">
@@ -135,7 +135,7 @@ export default function BillingPage() {
             </div>
           ) : (
             <div className="space-y-6">
-              <div className="rounded-2xl border-2 border-orange-500/30 p-6 bg-orange-500/[0.04]">
+              <div className="rounded-2xl border-2 border-[#FFD700]/30 p-6 bg-[#FFD700]/[0.04]">
                 <div className="flex items-center justify-between mb-4">
                   <div>
                     <h3 className="text-xl font-bold text-white">
@@ -158,13 +158,13 @@ export default function BillingPage() {
                     "Custom form questions",
                   ].map((feature) => (
                     <li key={feature} className="flex items-center gap-2">
-                      <CheckCircle2 className="h-4 w-4 text-orange-400 flex-shrink-0" />
+                      <CheckCircle2 className="h-4 w-4 text-[#D4A017] flex-shrink-0" />
                       <span className="text-sm text-gray-400">{feature}</span>
                     </li>
                   ))}
                 </ul>
                 <button
-                  className="w-full py-3 rounded-lg bg-orange-500 hover:bg-orange-600 text-white text-sm font-medium transition-colors disabled:opacity-50"
+                  className="w-full py-3 rounded-lg bg-gradient-to-r from-[#FFD700] to-[#B8860B] hover:from-[#FFE033] hover:to-[#C9960C] text-black text-sm font-semibold transition-colors disabled:opacity-50"
                   onClick={handleCheckout}
                   disabled={checkoutLoading}
                 >
