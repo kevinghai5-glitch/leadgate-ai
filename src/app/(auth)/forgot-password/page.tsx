@@ -64,7 +64,7 @@ export default function ForgotPasswordPage() {
           </p>
           <Link
             href="/login"
-            className="inline-flex items-center gap-1 text-sm text-indigo-400 hover:underline mt-4"
+            className="inline-flex items-center gap-1 text-sm text-orange-400 hover:underline mt-4"
           >
             <ArrowLeft className="h-3.5 w-3.5" />
             Back to login
@@ -99,7 +99,7 @@ export default function ForgotPasswordPage() {
         <CardFooter className="flex flex-col gap-4">
           <Button
             type="submit"
-            className="w-full bg-indigo-600 hover:bg-indigo-700"
+            className="w-full bg-orange-500 hover:bg-orange-600"
             disabled={isLoading}
           >
             {isLoading ? (
@@ -113,7 +113,7 @@ export default function ForgotPasswordPage() {
           </Button>
           <Link
             href="/login"
-            className="inline-flex items-center gap-1 text-sm text-indigo-400 hover:underline"
+            className="inline-flex items-center gap-1 text-sm text-orange-400 hover:underline"
           >
             <ArrowLeft className="h-3.5 w-3.5" />
             Back to login

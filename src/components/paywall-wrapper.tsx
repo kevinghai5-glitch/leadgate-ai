@@ -19,9 +19,9 @@ export function PaywallWrapper({
     <div className="relative">
       {shouldLock && (
         <div className="absolute inset-0 z-50 flex items-center justify-center backdrop-blur-sm bg-black/30 rounded-lg">
-          <div className="bg-[#1a1f35] border border-white/10 rounded-xl p-8 shadow-2xl text-center max-w-sm mx-4">
-            <div className="mx-auto h-12 w-12 rounded-full bg-indigo-500/20 flex items-center justify-center mb-4">
-              <Lock className="h-6 w-6 text-indigo-400" />
+          <div className="bg-zinc-950 border border-white/10 rounded-xl p-8 shadow-2xl text-center max-w-sm mx-4">
+            <div className="mx-auto h-12 w-12 rounded-full bg-orange-500/20 flex items-center justify-center mb-4">
+              <Lock className="h-6 w-6 text-orange-400" />
             </div>
             <h2 className="text-xl font-semibold text-white">
               Upgrade to unlock
@@ -31,7 +31,7 @@ export function PaywallWrapper({
             </p>
             <Link
               href="/billing"
-              className="inline-flex items-center justify-center rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white font-medium px-6 py-2.5 transition-colors"
+              className="inline-flex items-center justify-center rounded-lg bg-orange-500 hover:bg-orange-600 text-white font-medium px-6 py-2.5 transition-colors"
             >
               Upgrade Now
             </Link>

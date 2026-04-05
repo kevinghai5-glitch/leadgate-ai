@@ -74,7 +74,7 @@ export default function LeadDetailPage({
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
-        <Loader2 className="h-8 w-8 animate-spin text-indigo-400" />
+        <Loader2 className="h-8 w-8 animate-spin text-orange-400" />
       </div>
     );
   }
@@ -206,7 +206,7 @@ export default function LeadDetailPage({
         <div className="space-y-6">
           <div className="glass-card rounded-xl p-6">
             <h3 className="text-lg font-semibold text-white flex items-center gap-2 mb-4">
-              <Bot className="h-5 w-5 text-indigo-400" />
+              <Bot className="h-5 w-5 text-orange-400" />
               AI Score
             </h3>
             <div className="text-center">
@@ -254,12 +254,12 @@ export default function LeadDetailPage({
           )}
 
           {lead.aiSummary && (
-            <div className="rounded-xl p-6 border border-indigo-500/20 bg-indigo-500/[0.06]">
-              <h3 className="text-base font-semibold text-indigo-300 mb-1">
+            <div className="rounded-xl p-6 border border-orange-500/20 bg-orange-500/[0.06]">
+              <h3 className="text-base font-semibold text-orange-300 mb-1">
                 Lead Summary
               </h3>
               <p className="text-sm text-gray-500 mb-3">AI-generated sales preparation</p>
-              <div className="text-sm text-indigo-200/80 leading-relaxed space-y-3">
+              <div className="text-sm text-orange-200/80 leading-relaxed space-y-3">
                 {lead.aiSummary.split("\n\n").map((paragraph, i) => (
                   <p key={i}>{paragraph}</p>
                 ))}

@@ -45,7 +45,7 @@ export function DashboardSidebar() {
     <TooltipProvider delayDuration={0}>
       <div
         className={cn(
-          "flex h-full flex-col bg-[#0b0f1a] text-white transition-all duration-200 border-r border-white/[0.06]",
+          "flex h-full flex-col bg-black text-white transition-all duration-200 border-r border-white/[0.06]",
           collapsed ? "w-[68px]" : "w-64"
         )}
       >
@@ -57,7 +57,7 @@ export function DashboardSidebar() {
           )}
         >
           <div className="relative h-8 w-8 flex-shrink-0">
-            <div className="absolute inset-0 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 shadow-lg shadow-indigo-500/25" />
+            <div className="absolute inset-0 rounded-lg bg-gradient-to-br from-orange-500 to-orange-600 shadow-lg shadow-orange-500/25" />
             <div className="relative h-full w-full rounded-lg flex items-center justify-center">
               <Zap className="h-[18px] w-[18px] text-white drop-shadow-sm" />
             </div>
@@ -98,17 +98,17 @@ export function DashboardSidebar() {
                   "group relative flex items-center rounded-lg py-2.5 text-[13px] font-medium transition-all duration-150",
                   collapsed ? "justify-center px-2" : "gap-3 px-3",
                   isActive
-                    ? "bg-gradient-to-r from-indigo-500/20 to-purple-500/10 text-white"
+                    ? "bg-gradient-to-r from-orange-500/20 to-orange-600/10 text-white"
                     : "text-gray-400 hover:bg-white/[0.06] hover:text-gray-200"
                 )}
               >
                 {isActive && (
-                  <span className="absolute left-0 top-1/2 -translate-y-1/2 h-5 w-[3px] rounded-r-full bg-indigo-500" />
+                  <span className="absolute left-0 top-1/2 -translate-y-1/2 h-5 w-[3px] rounded-r-full bg-orange-500" />
                 )}
                 <item.icon
                   className={cn(
                     "h-[18px] w-[18px] flex-shrink-0 transition-colors",
-                    isActive && "text-indigo-400"
+                    isActive && "text-orange-400"
                   )}
                 />
                 {!collapsed && item.name}
@@ -159,16 +159,16 @@ export function DashboardSidebar() {
                 href={formLink}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="block rounded-lg bg-gradient-to-br from-indigo-500/[0.08] to-purple-500/[0.06] border border-indigo-500/10 p-3 hover:border-indigo-500/25 hover:from-indigo-500/[0.12] hover:to-purple-500/[0.10] transition-all group"
+                className="block rounded-lg bg-gradient-to-br from-orange-500/[0.08] to-orange-600/[0.06] border border-orange-500/10 p-3 hover:border-orange-500/25 hover:from-orange-500/[0.12] hover:to-orange-600/[0.10] transition-all group"
               >
                 <div className="flex items-center justify-between text-sm text-gray-300">
                   <div className="flex items-center gap-2">
-                    <Users className="h-4 w-4 flex-shrink-0 text-indigo-400" />
+                    <Users className="h-4 w-4 flex-shrink-0 text-orange-400" />
                     <span className="truncate font-medium">
                       Your Form Link
                     </span>
                   </div>
-                  <ExternalLink className="h-3.5 w-3.5 text-gray-500 group-hover:text-indigo-400 transition-colors" />
+                  <ExternalLink className="h-3.5 w-3.5 text-gray-500 group-hover:text-orange-400 transition-colors" />
                 </div>
                 <p className="mt-1 text-xs text-gray-500 leading-relaxed">
                   Preview your lead capture form on a public link
@@ -178,9 +178,9 @@ export function DashboardSidebar() {
                 </div>
               </a>
             ) : (
-              <div className="rounded-lg bg-gradient-to-br from-indigo-500/[0.08] to-purple-500/[0.06] border border-indigo-500/10 p-3">
+              <div className="rounded-lg bg-gradient-to-br from-orange-500/[0.08] to-orange-600/[0.06] border border-orange-500/10 p-3">
                 <div className="flex items-center gap-2 text-sm text-gray-300">
-                  <LinkIcon className="h-4 w-4 flex-shrink-0 text-indigo-400" />
+                  <LinkIcon className="h-4 w-4 flex-shrink-0 text-orange-400" />
                   <span className="truncate font-medium">Your Form Link</span>
                 </div>
                 <p className="mt-1 text-xs text-gray-500 leading-relaxed">
