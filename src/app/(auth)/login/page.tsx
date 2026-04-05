@@ -75,7 +75,7 @@ export default function LoginPage() {
               <Label htmlFor="password">Password</Label>
               <Link
                 href="/forgot-password"
-                className="text-xs text-indigo-400 hover:underline"
+                className="text-xs text-orange-400 hover:underline"
               >
                 Forgot password?
               </Link>
@@ -93,7 +93,7 @@ export default function LoginPage() {
         <CardFooter className="flex flex-col gap-4">
           <Button
             type="submit"
-            className="w-full bg-indigo-600 hover:bg-indigo-700"
+            className="w-full bg-orange-500 hover:bg-orange-600"
             disabled={isLoading}
           >
             {isLoading ? (
@@ -107,7 +107,7 @@ export default function LoginPage() {
           </Button>
           <p className="text-sm text-center text-muted-foreground">
             Don&apos;t have an account?{" "}
-            <Link href="/signup" className="text-indigo-400 hover:underline">
+            <Link href="/signup" className="text-orange-400 hover:underline">
               Sign up
             </Link>
           </p>

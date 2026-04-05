@@ -102,7 +102,7 @@ export default function SignupPage() {
         <CardFooter className="flex flex-col gap-4">
           <Button
             type="submit"
-            className="w-full bg-indigo-600 hover:bg-indigo-700"
+            className="w-full bg-orange-500 hover:bg-orange-600"
             disabled={isLoading}
           >
             {isLoading ? (
@@ -116,7 +116,7 @@ export default function SignupPage() {
           </Button>
           <p className="text-sm text-center text-muted-foreground">
             Already have an account?{" "}
-            <Link href="/login" className="text-indigo-400 hover:underline">
+            <Link href="/login" className="text-orange-400 hover:underline">
               Log in
             </Link>
           </p>

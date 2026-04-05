@@ -130,7 +130,7 @@ export default function LeadsPage() {
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500" />
           <input
             placeholder="Search by name or email..."
-            className="flex h-10 w-full rounded-lg border border-white/10 bg-white/[0.05] px-3 py-2 pl-10 text-sm text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500/50"
+            className="flex h-10 w-full rounded-lg border border-white/10 bg-white/[0.05] px-3 py-2 pl-10 text-sm text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500/50"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
@@ -138,7 +138,7 @@ export default function LeadsPage() {
         <select
           value={statusFilter}
           onChange={(e) => setStatusFilter(e.target.value)}
-          className="h-10 w-[180px] rounded-lg border border-white/10 bg-white/[0.05] px-3 text-sm text-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
+          className="h-10 w-[180px] rounded-lg border border-white/10 bg-white/[0.05] px-3 text-sm text-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-500/50"
         >
           <option value="all" className="bg-[#111827]">All Statuses</option>
           <option value="QUALIFIED" className="bg-[#111827]">Qualified</option>
@@ -224,7 +224,7 @@ export default function LeadsPage() {
                         <div>
                           <Link
                             href={`/dashboard/leads/${lead.id}`}
-                            className="font-medium text-white hover:text-indigo-400 transition-colors text-sm"
+                            className="font-medium text-white hover:text-orange-400 transition-colors text-sm"
                           >
                             {lead.name}
                           </Link>

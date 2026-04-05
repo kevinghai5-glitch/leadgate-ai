@@ -118,13 +118,13 @@
 
 /* Dashboard dark theme scope — applied via .dashboard-dark wrapper */
 .dashboard-dark {
-  --background: #0b0f1a;
+  --background: #000000;
   --foreground: #ffffff;
   --card: rgba(17, 24, 39, 0.7);
   --card-foreground: #ffffff;
-  --popover: #1a1f35;
+  --popover: #0a0a0a;
   --popover-foreground: #ffffff;
-  --primary: #818cf8;
+  --primary: #f97316;
   --primary-foreground: #ffffff;
   --secondary: rgba(255, 255, 255, 0.06);
   --secondary-foreground: #9ca3af;
@@ -135,7 +135,7 @@
   --destructive: #ef4444;
   --border: rgba(255, 255, 255, 0.08);
   --input: rgba(255, 255, 255, 0.08);
-  --ring: #6366f1;
+  --ring: #f97316;
 }
 
 @layer base {
@@ -180,27 +180,27 @@
   background: linear-gradient(135deg, rgba(20, 184, 166, 0.15) 0%, rgba(6, 182, 212, 0.05) 100%);
 }
 .sparkline-blue {
-  background: linear-gradient(135deg, rgba(59, 130, 246, 0.15) 0%, rgba(99, 102, 241, 0.05) 100%);
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.15) 0%, rgba(249, 115, 22, 0.05) 100%);
 }
 .sparkline-red {
   background: linear-gradient(135deg, rgba(239, 68, 68, 0.15) 0%, rgba(244, 63, 94, 0.05) 100%);
 }
-.sparkline-purple {
-  background: linear-gradient(135deg, rgba(168, 85, 247, 0.15) 0%, rgba(139, 92, 246, 0.05) 100%);
+.sparkline-orange {
+  background: linear-gradient(135deg, rgba(249, 115, 22, 0.15) 0%, rgba(234, 88, 12, 0.05) 100%);
 }
 
 /* Revenue impact card gradients */
 .revenue-card-green {
-  background: linear-gradient(135deg, rgba(16, 185, 129, 0.12) 0%, rgba(6, 182, 212, 0.06) 50%, rgba(17, 24, 39, 0.8) 100%);
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.12) 0%, rgba(6, 182, 212, 0.06) 50%, rgba(0, 0, 0, 0.8) 100%);
   border: 1px solid rgba(16, 185, 129, 0.15);
 }
 .revenue-card-blue {
-  background: linear-gradient(135deg, rgba(59, 130, 246, 0.12) 0%, rgba(99, 102, 241, 0.06) 50%, rgba(17, 24, 39, 0.8) 100%);
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.12) 0%, rgba(249, 115, 22, 0.06) 50%, rgba(0, 0, 0, 0.8) 100%);
   border: 1px solid rgba(59, 130, 246, 0.15);
 }
-.revenue-card-purple {
-  background: linear-gradient(135deg, rgba(168, 85, 247, 0.12) 0%, rgba(236, 72, 153, 0.06) 50%, rgba(17, 24, 39, 0.8) 100%);
-  border: 1px solid rgba(168, 85, 247, 0.15);
+.revenue-card-orange {
+  background: linear-gradient(135deg, rgba(249, 115, 22, 0.12) 0%, rgba(234, 88, 12, 0.06) 50%, rgba(0, 0, 0, 0.8) 100%);
+  border: 1px solid rgba(249, 115, 22, 0.15);
 }
 
 /* Mobile responsiveness fixes */

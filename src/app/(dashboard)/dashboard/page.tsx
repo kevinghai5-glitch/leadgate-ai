@@ -50,7 +50,7 @@ function InfoTooltip({ text }: { text: string }) {
       <TooltipTrigger asChild>
         <Info className="h-3.5 w-3.5 text-gray-500 cursor-help" />
       </TooltipTrigger>
-      <TooltipContent side="top" className="max-w-[200px] bg-[#1a1f35] text-gray-200 border-white/10">
+      <TooltipContent side="top" className="max-w-[200px] bg-zinc-950 text-gray-200 border-white/10">
         {text}
       </TooltipContent>
     </Tooltip>
@@ -188,10 +188,10 @@ export default function DashboardPage() {
       label: "Avg Lead Score",
       value: stats?.averageScore || "N/A",
       change: "+1.2%",
-      changeColor: "text-purple-400",
-      borderColor: "border-t-purple-400",
-      sparkClass: "sparkline-purple",
-      sparkColor: "#a855f7",
+      changeColor: "text-orange-400",
+      borderColor: "border-t-orange-400",
+      sparkClass: "sparkline-orange",
+      sparkColor: "#f97316",
       icon: BarChart3,
       tooltip: "Mean AI-generated score across all your leads (0-10)",
     },
@@ -269,7 +269,7 @@ export default function DashboardPage() {
                   Share your form link to start receiving leads.
                 </p>
                 <button
-                  className="mt-4 inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+                  className="mt-4 inline-flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors"
                   onClick={copyFormLink}
                 >
                   <Copy className="h-4 w-4" />
@@ -302,7 +302,7 @@ export default function DashboardPage() {
                             <div>
                               <Link
                                 href={`/dashboard/leads/${lead.id}`}
-                                className="font-medium text-white hover:text-indigo-400 transition-colors text-sm"
+                                className="font-medium text-white hover:text-orange-400 transition-colors text-sm"
                               >
                                 {lead.name}
                               </Link>
@@ -408,13 +408,13 @@ export default function DashboardPage() {
             </div>
 
             {/* Calls Avoided */}
-            <div className="revenue-card-purple rounded-xl p-5 relative overflow-hidden">
+            <div className="revenue-card-orange rounded-xl p-5 relative overflow-hidden">
               <div className="absolute top-3 right-3 opacity-30">
-                <MiniChart color="#a855f7" />
+                <MiniChart color="#f97316" />
               </div>
               <div className="flex items-center gap-3 mb-3">
-                <div className="h-10 w-10 rounded-full bg-purple-500/20 flex items-center justify-center">
-                  <PhoneOff className="h-5 w-5 text-purple-400" />
+                <div className="h-10 w-10 rounded-full bg-orange-500/20 flex items-center justify-center">
+                  <PhoneOff className="h-5 w-5 text-orange-400" />
                 </div>
                 <span className="text-sm font-medium text-gray-300">Calls Avoided</span>
               </div>
@@ -427,7 +427,7 @@ export default function DashboardPage() {
                 >
                   View Lead
                 </Link>
-                <button className="inline-flex items-center px-3 py-1.5 text-xs font-medium text-white bg-purple-500/20 hover:bg-purple-500/30 rounded-lg transition-colors">
+                <button className="inline-flex items-center px-3 py-1.5 text-xs font-medium text-white bg-orange-500/20 hover:bg-orange-500/30 rounded-lg transition-colors">
                   Disqualify
                 </button>
               </div>
