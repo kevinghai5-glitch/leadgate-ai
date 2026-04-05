@@ -137,13 +137,13 @@ export default function LeadFormPage({
 
   if (formState === "loading") {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-orange-50 via-white to-amber-50">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#050505] via-[#0A0A0A] to-[#050505]">
         <div className="text-center">
-          <Loader2 className="h-12 w-12 animate-spin text-orange-600 mx-auto" />
-          <h2 className="mt-4 text-xl font-semibold text-gray-900">
+          <Loader2 className="h-12 w-12 animate-spin text-[#FFD700] mx-auto" />
+          <h2 className="mt-4 text-xl font-semibold text-white">
             Reviewing your application...
           </h2>
-          <p className="mt-2 text-gray-600">
+          <p className="mt-2 text-gray-400">
             We&apos;re assessing if our online coaching program is right for you
           </p>
         </div>
@@ -153,7 +153,7 @@ export default function LeadFormPage({
 
   if (formState === "qualified") {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-orange-50 via-white to-amber-50 px-4">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#050505] via-[#0A0A0A] to-[#050505] px-4">
         <Card className="w-full max-w-lg text-center">
           <CardHeader>
             <div className="mx-auto h-16 w-16 rounded-full bg-green-100 flex items-center justify-center mb-4">
@@ -169,24 +169,24 @@ export default function LeadFormPage({
           </CardHeader>
           <CardContent className="space-y-6">
             {result?.summary && (
-              <div className="text-left bg-orange-50 rounded-lg p-4">
-                <p className="text-sm text-orange-900 font-medium mb-1">
+              <div className="text-left bg-[#FFD700]/10 rounded-lg p-4">
+                <p className="text-sm text-[#FFD700] font-medium mb-1">
                   Your Coaching Profile
                 </p>
-                <p className="text-sm text-orange-700">
+                <p className="text-sm text-[#D4A017]">
                   {result.summary.split("\n\n")[0]}
                 </p>
               </div>
             )}
             {result?.calendarLink ? (
               <div>
-                <p className="text-sm text-gray-600 mb-3">
+                <p className="text-sm text-gray-400 mb-3">
                   Book a free discovery call:
                 </p>
                 <Button
                   size="lg"
                   asChild
-                  className="bg-orange-500 hover:bg-orange-600"
+                  className="bg-gradient-to-r from-[#FFD700] to-[#B8860B] hover:from-[#FFE033] hover:to-[#C9960C] text-black font-semibold"
                 >
                   <a
                     href={result.calendarLink}
@@ -199,8 +199,8 @@ export default function LeadFormPage({
                 </Button>
               </div>
             ) : (
-              <div className="bg-yellow-50 rounded-lg p-4">
-                <p className="text-sm text-yellow-800">
+              <div className="bg-amber-500/10 rounded-lg p-4">
+                <p className="text-sm text-amber-400">
                   Our team will reach out to schedule your free discovery call
                   shortly.
                 </p>
@@ -214,7 +214,7 @@ export default function LeadFormPage({
 
   if (formState === "disqualified") {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-orange-50 via-white to-amber-50 px-4">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#050505] via-[#0A0A0A] to-[#050505] px-4">
         <Card className="w-full max-w-lg text-center">
           <CardHeader>
             <div className="mx-auto h-16 w-16 rounded-full bg-gray-100 flex items-center justify-center mb-4">
@@ -249,17 +249,17 @@ export default function LeadFormPage({
     investmentLevel;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-amber-50 py-12 px-4">
+    <div className="min-h-screen bg-gradient-to-br from-[#050505] via-[#0A0A0A] to-[#050505] py-12 px-4 dashboard-dark">
       <div className="max-w-2xl mx-auto">
         <div className="text-center mb-8">
-          <div className="inline-flex items-center gap-2 rounded-full bg-orange-100 px-4 py-1.5 text-sm font-medium text-orange-700 mb-4">
+          <div className="inline-flex items-center gap-2 rounded-full bg-[#FFD700]/10 border border-[#FFD700]/20 px-4 py-1.5 text-sm font-medium text-[#D4A017] mb-4">
             <Dumbbell className="h-4 w-4" />
             Free Coaching Assessment
           </div>
-          <h1 className="text-3xl font-bold text-gray-900">
+          <h1 className="text-3xl font-bold text-white">
             Let&apos;s See If Online Coaching Is Right for You
           </h1>
-          <p className="mt-2 text-gray-600">
+          <p className="mt-2 text-gray-400">
             Answer a few quick questions and we&apos;ll see if our
             online coaching program is the right fit for your goals.
           </p>
@@ -543,7 +543,7 @@ export default function LeadFormPage({
               <Button
                 type="submit"
                 size="lg"
-                className="w-full bg-orange-500 hover:bg-orange-600"
+                className="w-full bg-gradient-to-r from-[#FFD700] to-[#B8860B] hover:from-[#FFE033] hover:to-[#C9960C] text-black font-semibold"
                 disabled={!isFormValid}
               >
                 Submit My Application

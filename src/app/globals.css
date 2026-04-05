@@ -118,14 +118,14 @@
 
 /* Dashboard dark theme scope — applied via .dashboard-dark wrapper */
 .dashboard-dark {
-  --background: #000000;
+  --background: #050505;
   --foreground: #ffffff;
-  --card: rgba(17, 24, 39, 0.7);
+  --card: rgba(10, 10, 10, 0.7);
   --card-foreground: #ffffff;
   --popover: #0a0a0a;
   --popover-foreground: #ffffff;
-  --primary: #f97316;
-  --primary-foreground: #ffffff;
+  --primary: #FFD700;
+  --primary-foreground: #050505;
   --secondary: rgba(255, 255, 255, 0.06);
   --secondary-foreground: #9ca3af;
   --muted: rgba(255, 255, 255, 0.06);
@@ -135,7 +135,7 @@
   --destructive: #ef4444;
   --border: rgba(255, 255, 255, 0.08);
   --input: rgba(255, 255, 255, 0.08);
-  --ring: #f97316;
+  --ring: #FFD700;
 }
 
 @layer base {
@@ -169,7 +169,7 @@
 
 /* Glass morphism card styles */
 .glass-card {
-  background: rgba(17, 24, 39, 0.5);
+  background: rgba(10, 10, 10, 0.5);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid rgba(255, 255, 255, 0.08);
@@ -180,13 +180,13 @@
   background: linear-gradient(135deg, rgba(20, 184, 166, 0.15) 0%, rgba(6, 182, 212, 0.05) 100%);
 }
 .sparkline-blue {
-  background: linear-gradient(135deg, rgba(59, 130, 246, 0.15) 0%, rgba(249, 115, 22, 0.05) 100%);
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.15) 0%, rgba(59, 130, 246, 0.05) 100%);
 }
 .sparkline-red {
   background: linear-gradient(135deg, rgba(239, 68, 68, 0.15) 0%, rgba(244, 63, 94, 0.05) 100%);
 }
-.sparkline-orange {
-  background: linear-gradient(135deg, rgba(249, 115, 22, 0.15) 0%, rgba(234, 88, 12, 0.05) 100%);
+.sparkline-gold {
+  background: linear-gradient(135deg, rgba(255, 215, 0, 0.15) 0%, rgba(184, 134, 11, 0.05) 100%);
 }
 
 /* Revenue impact card gradients */
@@ -195,12 +195,12 @@
   border: 1px solid rgba(16, 185, 129, 0.15);
 }
 .revenue-card-blue {
-  background: linear-gradient(135deg, rgba(59, 130, 246, 0.12) 0%, rgba(249, 115, 22, 0.06) 50%, rgba(0, 0, 0, 0.8) 100%);
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.12) 0%, rgba(59, 130, 246, 0.06) 50%, rgba(0, 0, 0, 0.8) 100%);
   border: 1px solid rgba(59, 130, 246, 0.15);
 }
-.revenue-card-orange {
-  background: linear-gradient(135deg, rgba(249, 115, 22, 0.12) 0%, rgba(234, 88, 12, 0.06) 50%, rgba(0, 0, 0, 0.8) 100%);
-  border: 1px solid rgba(249, 115, 22, 0.15);
+.revenue-card-gold {
+  background: linear-gradient(135deg, rgba(255, 215, 0, 0.12) 0%, rgba(184, 134, 11, 0.06) 50%, rgba(0, 0, 0, 0.8) 100%);
+  border: 1px solid rgba(255, 215, 0, 0.15);
 }
 
 /* Mobile responsiveness fixes */

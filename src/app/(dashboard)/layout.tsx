@@ -19,13 +19,13 @@ export default async function DashboardLayout({
   const { isPro } = await getUserSubscription(session.user.id);
 
   return (
-    <div className="dashboard-dark flex h-screen overflow-hidden bg-black">
+    <div className="dashboard-dark flex h-screen overflow-hidden bg-[#050505]">
       <div className="hidden md:block">
         <DashboardSidebar />
       </div>
       <div className="flex flex-1 flex-col min-w-0">
         <MobileNav />
-        <main className="flex-1 overflow-y-auto bg-black">
+        <main className="flex-1 overflow-y-auto bg-[#050505]">
           <div className="p-4 sm:p-6 lg:p-8">
             <PaywallWrapper isPro={isPro}>{children}</PaywallWrapper>
           </div>
