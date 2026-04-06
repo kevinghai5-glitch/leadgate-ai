@@ -34,10 +34,7 @@ export function Navbar() {
 
         <div className="flex items-center justify-between">
           {/* Logo */}
-          <Link
-            href={session ? "/dashboard" : "/"}
-            className="flex items-center gap-2.5 group"
-          >
+          <Link href={session ? "/dashboard" : "/"} className="flex items-center gap-2.5 group">
             <Zap className="h-5 w-5 text-[#FFD700] drop-shadow-[0_0_6px_rgba(255,215,0,0.5)] group-hover:drop-shadow-[0_0_10px_rgba(255,215,0,0.7)] transition-all duration-200" />
             <span className="text-[15px] font-semibold tracking-wide text-white">
               LeadGate <span className="text-[#FFD700]">AI</span>
