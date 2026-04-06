@@ -46,21 +46,26 @@ export default async function HomePage() {
     redirect("/dashboard");
   }
   return (
-    <div className="relative min-h-screen bg-[#050505] overflow-hidden">
-      {/* Global background — unified gradient canvas */}
+    <div className="relative min-h-screen bg-[#030303] overflow-hidden">
+      {/* Fixed depth layer */}
       <div className="pointer-events-none fixed inset-0 z-0">
-        <div className="absolute inset-0 bg-gradient-to-b from-[#0A0A0A]/30 via-[#050505] to-[#050505]" />
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[120%] h-[600px] bg-[radial-gradient(ellipse_at_center,rgba(255,215,0,0.08)_0%,transparent_70%)]" />
-        <div className="absolute top-[50%] right-0 w-[600px] h-[600px] bg-[radial-gradient(circle,rgba(184,134,11,0.05)_0%,transparent_70%)]" />
-        <div className="absolute top-[80%] left-0 w-[500px] h-[500px] bg-[radial-gradient(circle,rgba(255,215,0,0.04)_0%,transparent_70%)]" />
+        {/* Top-center gold glow — very faint */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[140%] h-[700px] bg-[radial-gradient(ellipse_at_center,rgba(255,215,0,0.05)_0%,transparent_65%)]" />
+        {/* Mid-right subtle glow */}
+        <div className="absolute top-[45%] right-0 w-[500px] h-[500px] bg-[radial-gradient(circle,rgba(184,134,11,0.04)_0%,transparent_70%)]" />
+        {/* Bottom-left subtle glow */}
+        <div className="absolute top-[80%] left-0 w-[400px] h-[400px] bg-[radial-gradient(circle,rgba(255,215,0,0.03)_0%,transparent_70%)]" />
+        {/* Overall top fade */}
+        <div className="absolute inset-0 bg-gradient-to-b from-[#0A0A0A] via-[#030303] to-[#030303]" />
       </div>
 
       <div className="relative z-10">
         <Navbar />
 
         {/* Hero */}
-        <section className="pt-32 pb-28">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <section className="pt-32 pb-28 relative">
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_40%,rgba(255,215,0,0.06)_0%,transparent_100%)] pointer-events-none" />
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
             <AnimateOnScroll>
               <div className="text-center max-w-4xl mx-auto">
                 <div className="inline-flex items-center gap-2 rounded-full bg-[#FFD700]/10 border border-[#FFD700]/20 px-4 py-1.5 text-sm font-medium text-[#D4A017] mb-8">
@@ -113,6 +118,8 @@ export default async function HomePage() {
           </div>
         </section>
 
+        <div className="h-px w-full bg-gradient-to-r from-transparent via-white/[0.04] to-transparent" />
+
         {/* Before vs After */}
         <section className="py-24">
           <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -128,7 +135,7 @@ export default async function HomePage() {
             </AnimateOnScroll>
             <div className="grid md:grid-cols-2 gap-6">
               <AnimateOnScroll>
-                <div className="rounded-2xl bg-white/[0.02] border border-white/[0.06] p-8 h-full">
+                <div className="rounded-2xl bg-gradient-to-b from-[#0F0F0F] to-[#070707] border border-white/[0.06] p-8 h-full hover:shadow-[0_4px_20px_rgba(255,215,0,0.08)] hover:-translate-y-0.5 transition-all duration-300">
                   <div className="inline-flex items-center gap-2 rounded-full bg-red-500/10 border border-red-500/15 px-3 py-1 text-xs font-semibold text-red-400 uppercase tracking-wider mb-6">
                     Without LeadGate AI
                   </div>
@@ -149,7 +156,7 @@ export default async function HomePage() {
                 </div>
               </AnimateOnScroll>
               <AnimateOnScroll delay={100}>
-                <div className="rounded-2xl bg-[#FFD700]/[0.04] border border-[#FFD700]/[0.12] p-8 h-full">
+                <div className="rounded-2xl bg-gradient-to-b from-[#0F0F0F] to-[#070707] border border-[#FFD700]/[0.12] p-8 h-full hover:shadow-[0_4px_20px_rgba(255,215,0,0.08)] hover:-translate-y-0.5 transition-all duration-300">
                   <div className="inline-flex items-center gap-2 rounded-full bg-emerald-500/10 border border-emerald-500/15 px-3 py-1 text-xs font-semibold text-emerald-400 uppercase tracking-wider mb-6">
                     With LeadGate AI
                   </div>
@@ -172,6 +179,8 @@ export default async function HomePage() {
             </div>
           </div>
         </section>
+
+        <div className="h-px w-full bg-gradient-to-r from-transparent via-white/[0.04] to-transparent" />
 
         {/* How It Works */}
         <section id="how-it-works" className="py-24">
@@ -213,7 +222,7 @@ export default async function HomePage() {
                 },
               ].map((item, i) => (
                 <AnimateOnScroll key={item.step} delay={i * 120}>
-                  <div className="relative p-8 rounded-2xl bg-white/[0.03] border border-white/[0.06] hover:border-white/[0.1] transition-all">
+                  <div className="relative p-8 rounded-2xl bg-gradient-to-b from-[#0F0F0F] to-[#070707] border border-white/[0.06] hover:border-white/[0.1] hover:shadow-[0_4px_20px_rgba(255,215,0,0.08)] hover:-translate-y-0.5 transition-all duration-300">
                     <div className="text-6xl font-bold text-white/[0.03] absolute top-4 right-6">
                       {item.step}
                     </div>
@@ -230,6 +239,8 @@ export default async function HomePage() {
             </div>
           </div>
         </section>
+
+        <div className="h-px w-full bg-gradient-to-r from-transparent via-white/[0.04] to-transparent" />
 
         {/* Benefits */}
         <section className="py-24">
@@ -285,7 +296,7 @@ export default async function HomePage() {
                 },
               ].map((feature, i) => (
                 <AnimateOnScroll key={feature.title} delay={(i % 3) * 100}>
-                  <div className="p-6 rounded-xl bg-white/[0.03] border border-white/[0.06] hover:border-white/[0.1] transition-all">
+                  <div className="p-6 rounded-xl bg-gradient-to-b from-[#0F0F0F] to-[#070707] border border-white/[0.06] hover:border-white/[0.1] hover:shadow-[0_4px_20px_rgba(255,215,0,0.08)] hover:-translate-y-0.5 transition-all duration-300">
                     <div className="h-10 w-10 rounded-lg bg-[#FFD700]/10 flex items-center justify-center mb-3">
                       <feature.icon className="h-5 w-5 text-[#D4A017]" />
                     </div>
@@ -299,6 +310,8 @@ export default async function HomePage() {
             </div>
           </div>
         </section>
+
+        <div className="h-px w-full bg-gradient-to-r from-transparent via-white/[0.04] to-transparent" />
 
         {/* Built for Serious Coaches — moved above FAQ */}
         <section className="py-16">
@@ -324,7 +337,7 @@ export default async function HomePage() {
                 ].map((item) => (
                   <div
                     key={item.text}
-                    className="flex items-start gap-4 p-6 rounded-xl bg-white/[0.03] border border-white/[0.06] hover:border-white/[0.1] transition-colors"
+                    className="flex items-start gap-4 p-6 rounded-xl bg-gradient-to-b from-[#0F0F0F] to-[#070707] border border-white/[0.06] hover:border-white/[0.1] hover:shadow-[0_4px_20px_rgba(255,215,0,0.08)] hover:-translate-y-0.5 transition-all duration-300"
                   >
                     <div className="h-10 w-10 rounded-lg bg-[#FFD700]/10 flex items-center justify-center flex-shrink-0">
                       <item.icon className="h-5 w-5 text-[#D4A017]" />
@@ -339,6 +352,8 @@ export default async function HomePage() {
           </div>
         </section>
 
+        <div className="h-px w-full bg-gradient-to-r from-transparent via-white/[0.04] to-transparent" />
+
         {/* FAQ */}
         <section id="faq" className="py-24">
           <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -351,7 +366,7 @@ export default async function HomePage() {
                   Everything you need to know before getting started.
                 </p>
               </div>
-              <div className="divide-y divide-white/[0.06] rounded-2xl bg-white/[0.03] border border-white/[0.06] px-6">
+              <div className="divide-y divide-white/[0.06] rounded-2xl bg-gradient-to-b from-[#0F0F0F] to-[#070707] border border-white/[0.06] px-6">
                 <FAQItem
                   question="How does LeadGate AI help me sign more high-ticket clients?"
                   answer="LeadGate AI pre-qualifies every prospect that fills out your form using AI scoring. By filtering out people who aren't ready to invest in premium online coaching, you only spend time on discovery calls with serious buyers — which means higher close rates and more high-ticket sign-ups each month."
@@ -381,6 +396,8 @@ export default async function HomePage() {
           </div>
         </section>
 
+        <div className="h-px w-full bg-gradient-to-r from-transparent via-white/[0.04] to-transparent" />
+
         {/* Pricing */}
         <section id="pricing" className="py-24">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -396,7 +413,7 @@ export default async function HomePage() {
               </div>
 
               <div className="max-w-md mx-auto">
-                <div className="rounded-2xl border border-[#FFD700]/30 p-8 bg-white/[0.03] shadow-2xl shadow-[rgba(255,215,0,0.08)] relative overflow-hidden">
+                <div className="rounded-2xl border border-[#FFD700]/30 p-8 bg-gradient-to-b from-[#0F0F0F] to-[#070707] shadow-2xl shadow-[rgba(255,215,0,0.08)] relative overflow-hidden">
                   <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#FFD700]/50 to-transparent" />
                   <div className="text-center">
                     <h3 className="text-2xl font-bold text-white">Pro Plan</h3>
@@ -438,8 +455,10 @@ export default async function HomePage() {
           </div>
         </section>
 
+        <div className="h-px w-full bg-gradient-to-r from-transparent via-white/[0.04] to-transparent" />
+
         {/* CTA — full-width black section */}
-        <section className="w-full bg-[#050505] py-24">
+        <section className="w-full bg-[#030303] py-24">
           <AnimateOnScroll>
             <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
               <h2 className="text-3xl sm:text-4xl font-bold text-white">
