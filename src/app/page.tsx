@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Navbar } from "@/components/navbar";
 import { AnimateOnScroll } from "@/components/animate-on-scroll";
+import { DottedSurface } from "@/components/ui/dotted-surface";
 import { auth } from "@/lib/auth";
 import {
   Zap,
@@ -64,6 +65,8 @@ export default async function HomePage() {
 
         {/* Hero */}
         <section className="pt-32 pb-28 relative">
+          {/* Animated gold dotted surface — hero background */}
+          <DottedSurface className="absolute inset-0 w-full h-full overflow-hidden" />
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_40%,rgba(255,215,0,0.06)_0%,transparent_100%)] pointer-events-none" />
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
             <AnimateOnScroll>
