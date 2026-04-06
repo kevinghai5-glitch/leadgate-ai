@@ -64,7 +64,7 @@ export default function ForgotPasswordPage() {
           </p>
           <Link
             href="/login"
-            className="inline-flex items-center gap-1 text-sm text-[#D4A017] hover:underline mt-4"
+            className="inline-flex items-center gap-1 text-sm text-[#ECCA66] hover:underline mt-4"
           >
             <ArrowLeft className="h-3.5 w-3.5" />
             Back to login
@@ -99,7 +99,7 @@ export default function ForgotPasswordPage() {
         <CardFooter className="flex flex-col gap-4">
           <Button
             type="submit"
-            className="w-full bg-gradient-to-r from-[#FFD700] to-[#B8860B] hover:from-[#FFE033] hover:to-[#C9960C] text-black font-semibold shadow-[0_0_20px_rgba(255,215,0,0.15)] hover:shadow-[0_0_28px_rgba(255,215,0,0.25)]"
+            className="w-full bg-gradient-to-r from-[#D2AC47] to-[#B08B73] hover:from-[#ECCA66] hover:to-[#D2AC47] text-black font-semibold shadow-[0_0_20px_rgba(210,172,71,0.15)] hover:shadow-[0_0_28px_rgba(210,172,71,0.25)]"
             disabled={isLoading}
           >
             {isLoading ? (
@@ -113,7 +113,7 @@ export default function ForgotPasswordPage() {
           </Button>
           <Link
             href="/login"
-            className="inline-flex items-center gap-1 text-sm text-[#D4A017] hover:underline"
+            className="inline-flex items-center gap-1 text-sm text-[#ECCA66] hover:underline"
           >
             <ArrowLeft className="h-3.5 w-3.5" />
             Back to login

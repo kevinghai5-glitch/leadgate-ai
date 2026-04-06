@@ -20,8 +20,8 @@ export function PaywallWrapper({
       {shouldLock && (
         <div className="absolute inset-0 z-50 flex items-center justify-center backdrop-blur-sm bg-black/30 rounded-lg">
           <div className="bg-gradient-to-b from-[#111111] to-[#080808] border border-white/10 rounded-xl p-8 shadow-2xl text-center max-w-sm mx-4">
-            <div className="mx-auto h-12 w-12 rounded-full bg-[#FFD700]/15 flex items-center justify-center mb-4">
-              <Lock className="h-6 w-6 text-[#D4A017]" />
+            <div className="mx-auto h-12 w-12 rounded-full bg-[#D2AC47]/15 flex items-center justify-center mb-4">
+              <Lock className="h-6 w-6 text-[#ECCA66]" />
             </div>
             <h2 className="text-xl font-semibold text-white">
               Upgrade to unlock
@@ -31,7 +31,7 @@ export function PaywallWrapper({
             </p>
             <Link
               href="/billing"
-              className="inline-flex items-center justify-center rounded-lg bg-gradient-to-r from-[#FFD700] to-[#B8860B] hover:from-[#FFE033] hover:to-[#C9960C] text-black font-semibold px-6 py-2.5 shadow-[0_0_20px_rgba(255,215,0,0.15)] hover:shadow-[0_0_28px_rgba(255,215,0,0.25)] transition-all"
+              className="inline-flex items-center justify-center rounded-lg bg-gradient-to-r from-[#D2AC47] to-[#B08B73] hover:from-[#ECCA66] hover:to-[#D2AC47] text-black font-semibold px-6 py-2.5 shadow-[0_0_20px_rgba(210,172,71,0.15)] hover:shadow-[0_0_28px_rgba(210,172,71,0.25)] transition-all"
             >
               Upgrade Now
             </Link>

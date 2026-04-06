@@ -139,7 +139,7 @@ export default function LeadFormPage({
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#030303]">
         <div className="text-center">
-          <Loader2 className="h-12 w-12 animate-spin text-[#FFD700] mx-auto" />
+          <Loader2 className="h-12 w-12 animate-spin text-[#ECCA66] mx-auto" />
           <h2 className="mt-4 text-xl font-semibold text-white">
             Reviewing your application...
           </h2>
@@ -169,11 +169,11 @@ export default function LeadFormPage({
           </CardHeader>
           <CardContent className="space-y-6">
             {result?.summary && (
-              <div className="text-left bg-[#FFD700]/10 rounded-lg p-4">
-                <p className="text-sm text-[#FFD700] font-medium mb-1">
+              <div className="text-left bg-[#D2AC47]/10 rounded-lg p-4">
+                <p className="text-sm text-[#ECCA66] font-medium mb-1">
                   Your Coaching Profile
                 </p>
-                <p className="text-sm text-[#D4A017]">
+                <p className="text-sm text-[#ECCA66]">
                   {result.summary.split("\n\n")[0]}
                 </p>
               </div>
@@ -186,7 +186,7 @@ export default function LeadFormPage({
                 <Button
                   size="lg"
                   asChild
-                  className="bg-gradient-to-r from-[#FFD700] to-[#B8860B] hover:from-[#FFE033] hover:to-[#C9960C] text-black font-semibold shadow-[0_0_20px_rgba(255,215,0,0.15)] hover:shadow-[0_0_28px_rgba(255,215,0,0.25)]"
+                  className="bg-gradient-to-r from-[#D2AC47] to-[#B08B73] hover:from-[#ECCA66] hover:to-[#D2AC47] text-black font-semibold shadow-[0_0_20px_rgba(210,172,71,0.15)] hover:shadow-[0_0_28px_rgba(210,172,71,0.25)]"
                 >
                   <a
                     href={result.calendarLink}
@@ -252,7 +252,7 @@ export default function LeadFormPage({
     <div className="min-h-screen bg-[#030303] py-12 px-4 dashboard-dark">
       <div className="max-w-2xl mx-auto">
         <div className="text-center mb-8">
-          <div className="inline-flex items-center gap-2 rounded-full bg-[#FFD700]/10 border border-[#FFD700]/20 px-4 py-1.5 text-sm font-medium text-[#D4A017] mb-4">
+          <div className="inline-flex items-center gap-2 rounded-full bg-[#D2AC47]/10 border border-[#D2AC47]/20 px-4 py-1.5 text-sm font-medium text-[#ECCA66] mb-4">
             <Dumbbell className="h-4 w-4" />
             Free Coaching Assessment
           </div>
@@ -543,7 +543,7 @@ export default function LeadFormPage({
               <Button
                 type="submit"
                 size="lg"
-                className="w-full bg-gradient-to-r from-[#FFD700] to-[#B8860B] hover:from-[#FFE033] hover:to-[#C9960C] text-black font-semibold shadow-[0_0_20px_rgba(255,215,0,0.15)] hover:shadow-[0_0_28px_rgba(255,215,0,0.25)]"
+                className="w-full bg-gradient-to-r from-[#D2AC47] to-[#B08B73] hover:from-[#ECCA66] hover:to-[#D2AC47] text-black font-semibold shadow-[0_0_20px_rgba(210,172,71,0.15)] hover:shadow-[0_0_28px_rgba(210,172,71,0.25)]"
                 disabled={!isFormValid}
               >
                 Submit My Application

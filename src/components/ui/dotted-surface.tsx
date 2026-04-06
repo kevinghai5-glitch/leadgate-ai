@@ -40,13 +40,13 @@ export function DottedSurface({ className, ...props }: DottedSurfaceProps) {
     const positions: number[] = [];
     const colors: number[] = [];
 
-    // Gold color: #FFD700 → r=1.0, g=0.84, b=0.0
+    // White dots
     for (let ix = 0; ix < AMOUNTX; ix++) {
       for (let iy = 0; iy < AMOUNTY; iy++) {
         const x = ix * SEPARATION - (AMOUNTX * SEPARATION) / 2;
         const z = iy * SEPARATION - (AMOUNTY * SEPARATION) / 2;
         positions.push(x, 0, z);
-        colors.push(1.0, 0.84, 0.0); // gold
+        colors.push(1.0, 1.0, 1.0); // white
       }
     }
 

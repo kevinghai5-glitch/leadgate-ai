@@ -328,7 +328,7 @@ export default function SettingsPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
-        <Loader2 className="h-8 w-8 animate-spin text-[#D4A017]" />
+        <Loader2 className="h-8 w-8 animate-spin text-[#ECCA66]" />
       </div>
     );
   }
@@ -342,7 +342,7 @@ export default function SettingsPage() {
         return (
           <CollapsibleCard
             key={section.id}
-            icon={<LinkIcon className="h-5 w-5 text-[#D4A017]" />}
+            icon={<LinkIcon className="h-5 w-5 text-[#ECCA66]" />}
             title="Your Form Link"
             description="Share this link with prospects to collect and qualify leads"
             defaultOpen
@@ -370,7 +370,7 @@ export default function SettingsPage() {
         return (
           <CollapsibleCard
             key={section.id}
-            icon={<Code className="h-5 w-5 text-[#D4A017]" />}
+            icon={<Code className="h-5 w-5 text-[#ECCA66]" />}
             title="Embed Form"
             description="Add this code to your website to embed the lead qualification form"
             onMoveUp={canMoveUp ? () => moveSection(index, "up") : undefined}
@@ -412,7 +412,7 @@ export default function SettingsPage() {
         return (
           <CollapsibleCard
             key={section.id}
-            icon={<ListChecks className="h-5 w-5 text-[#D4A017]" />}
+            icon={<ListChecks className="h-5 w-5 text-[#ECCA66]" />}
             title="Custom Form Questions"
             description="Add extra questions to your lead form. These appear after the default fitness questions."
             defaultOpen
@@ -444,7 +444,7 @@ export default function SettingsPage() {
                           onChange={(e) =>
                             updateQuestion(i, "label", e.target.value)
                           }
-                          className="flex h-10 w-full rounded-lg border border-white/10 bg-white/[0.05] px-3 py-2 text-sm text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-[#FFD700]/50"
+                          className="flex h-10 w-full rounded-lg border border-white/10 bg-white/[0.05] px-3 py-2 text-sm text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-[#D2AC47]/50"
                         />
                       </div>
                       <div className="space-y-1">
@@ -452,7 +452,7 @@ export default function SettingsPage() {
                         <select
                           value={q.type}
                           onChange={(e) => updateQuestion(i, "type", e.target.value)}
-                          className="flex h-10 w-full rounded-lg border border-white/10 bg-white/[0.05] px-3 py-2 text-sm text-gray-300 focus:outline-none focus:ring-2 focus:ring-[#FFD700]/50"
+                          className="flex h-10 w-full rounded-lg border border-white/10 bg-white/[0.05] px-3 py-2 text-sm text-gray-300 focus:outline-none focus:ring-2 focus:ring-[#D2AC47]/50"
                         >
                           <option value="text" className="bg-[#0A0A0A]">Short Text</option>
                           <option value="textarea" className="bg-[#0A0A0A]">Long Text</option>
@@ -471,7 +471,7 @@ export default function SettingsPage() {
                           onChange={(e) =>
                             updateQuestion(i, "options", e.target.value)
                           }
-                          className="flex h-10 w-full rounded-lg border border-white/10 bg-white/[0.05] px-3 py-2 text-sm text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-[#FFD700]/50"
+                          className="flex h-10 w-full rounded-lg border border-white/10 bg-white/[0.05] px-3 py-2 text-sm text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-[#D2AC47]/50"
                         />
                       </div>
                     )}
@@ -508,7 +508,7 @@ export default function SettingsPage() {
                   <button
                     onClick={handleSaveQuestions}
                     disabled={savingQuestions}
-                    className="inline-flex items-center gap-1 px-3 py-2 rounded-lg bg-gradient-to-r from-[#FFD700] to-[#B8860B] hover:from-[#FFE033] hover:to-[#C9960C] text-black text-sm font-semibold shadow-[0_0_20px_rgba(255,215,0,0.15)] hover:shadow-[0_0_28px_rgba(255,215,0,0.25)] transition-all disabled:opacity-50"
+                    className="inline-flex items-center gap-1 px-3 py-2 rounded-lg bg-gradient-to-r from-[#D2AC47] to-[#B08B73] hover:from-[#ECCA66] hover:to-[#D2AC47] text-black text-sm font-semibold shadow-[0_0_20px_rgba(210,172,71,0.15)] hover:shadow-[0_0_28px_rgba(210,172,71,0.25)] transition-all disabled:opacity-50"
                   >
                     {savingQuestions ? (
                       <Loader2 className="h-4 w-4 animate-spin" />
@@ -527,7 +527,7 @@ export default function SettingsPage() {
         return (
           <CollapsibleCard
             key={section.id}
-            icon={<Calendar className="h-5 w-5 text-[#D4A017]" />}
+            icon={<Calendar className="h-5 w-5 text-[#ECCA66]" />}
             title="Calendly Integration"
             description="Qualified leads will be shown a booking link after form submission"
             onMoveUp={canMoveUp ? () => moveSection(index, "up") : undefined}
@@ -539,7 +539,7 @@ export default function SettingsPage() {
                 placeholder="https://calendly.com/your-name/30min"
                 value={calendarLink}
                 onChange={(e) => setCalendarLink(e.target.value)}
-                className="flex h-10 w-full rounded-lg border border-white/10 bg-white/[0.05] px-3 py-2 text-sm text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-[#FFD700]/50"
+                className="flex h-10 w-full rounded-lg border border-white/10 bg-white/[0.05] px-3 py-2 text-sm text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-[#D2AC47]/50"
               />
               <p className="text-sm text-gray-500">
                 Enter your Calendly scheduling link. Qualified leads will see
@@ -553,7 +553,7 @@ export default function SettingsPage() {
         return (
           <CollapsibleCard
             key={section.id}
-            icon={<Sliders className="h-5 w-5 text-[#D4A017]" />}
+            icon={<Sliders className="h-5 w-5 text-[#ECCA66]" />}
             title="Minimum Qualifying Score"
             description="Set the threshold for lead qualification"
             defaultOpen
@@ -568,7 +568,7 @@ export default function SettingsPage() {
                 max={10}
                 value={minScore}
                 onChange={(e) => setMinScore(Number(e.target.value))}
-                className="flex h-10 w-full rounded-lg border border-white/10 bg-white/[0.05] px-3 py-2 text-sm text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-[#FFD700]/50"
+                className="flex h-10 w-full rounded-lg border border-white/10 bg-white/[0.05] px-3 py-2 text-sm text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-[#D2AC47]/50"
               />
               <p className="text-sm text-gray-500">
                 Leads scoring at or above this number will be marked as qualified
@@ -596,7 +596,7 @@ export default function SettingsPage() {
         <button
           onClick={handleSave}
           disabled={saving}
-          className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-gradient-to-r from-[#FFD700] to-[#B8860B] hover:from-[#FFE033] hover:to-[#C9960C] text-black text-sm font-semibold shadow-[0_0_20px_rgba(255,215,0,0.15)] hover:shadow-[0_0_28px_rgba(255,215,0,0.25)] transition-all disabled:opacity-50"
+          className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-gradient-to-r from-[#D2AC47] to-[#B08B73] hover:from-[#ECCA66] hover:to-[#D2AC47] text-black text-sm font-semibold shadow-[0_0_20px_rgba(210,172,71,0.15)] hover:shadow-[0_0_28px_rgba(210,172,71,0.25)] transition-all disabled:opacity-50"
         >
           {saving ? (
             <>

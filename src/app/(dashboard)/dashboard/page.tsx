@@ -188,10 +188,10 @@ export default function DashboardPage() {
       label: "Avg Lead Score",
       value: stats?.averageScore || "N/A",
       change: "+1.2%",
-      changeColor: "text-[#D4A017]",
-      borderColor: "border-t-[#D4A017]",
+      changeColor: "text-[#ECCA66]",
+      borderColor: "border-t-[#ECCA66]",
       sparkClass: "sparkline-gold",
-      sparkColor: "#FFD700",
+      sparkColor: "#ECCA66",
       icon: BarChart3,
       tooltip: "Mean AI-generated score across all your leads (0-10)",
     },
@@ -228,7 +228,7 @@ export default function DashboardPage() {
           {statCards.map((card, idx) => (
             <div
               key={card.label}
-              className={`glass-card rounded-xl border-t border-[#FFD700]/20 border-x border-b border-white/[0.04] bg-gradient-to-br from-[#0F0F0F] to-[#050505] overflow-hidden`}
+              className={`glass-card rounded-xl border-t border-[#D2AC47]/20 border-x border-b border-white/[0.04] bg-gradient-to-br from-[#0F0F0F] to-[#050505] overflow-hidden`}
             >
               <div className={`${card.sparkClass} px-5 pt-3`}>
                 <Sparkline color={card.sparkColor} variant={idx} />
@@ -269,7 +269,7 @@ export default function DashboardPage() {
                   Share your form link to start receiving leads.
                 </p>
                 <button
-                  className="mt-4 inline-flex items-center gap-2 bg-gradient-to-r from-[#FFD700] to-[#B8860B] hover:from-[#FFE033] hover:to-[#C9960C] text-black px-4 py-2 rounded-lg text-sm font-semibold shadow-[0_0_20px_rgba(255,215,0,0.15)] hover:shadow-[0_0_28px_rgba(255,215,0,0.25)] transition-all"
+                  className="mt-4 inline-flex items-center gap-2 bg-gradient-to-r from-[#D2AC47] to-[#B08B73] hover:from-[#ECCA66] hover:to-[#D2AC47] text-black px-4 py-2 rounded-lg text-sm font-semibold shadow-[0_0_20px_rgba(210,172,71,0.15)] hover:shadow-[0_0_28px_rgba(210,172,71,0.25)] transition-all"
                   onClick={copyFormLink}
                 >
                   <Copy className="h-4 w-4" />
@@ -289,7 +289,7 @@ export default function DashboardPage() {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-white/[0.04]">
-                    {leads.slice(0, 10).map((lead) => (
+                    {leads.slice(0, 3).map((lead) => (
                       <tr key={lead.id} className="hover:bg-white/[0.02] transition-colors">
                         <td className="py-3.5">
                           <div className="flex items-center gap-3">
@@ -302,7 +302,7 @@ export default function DashboardPage() {
                             <div>
                               <Link
                                 href={`/dashboard/leads/${lead.id}`}
-                                className="font-medium text-white hover:text-[#D4A017] transition-colors text-sm"
+                                className="font-medium text-white hover:text-[#ECCA66] transition-colors text-sm"
                               >
                                 {lead.name}
                               </Link>
@@ -410,11 +410,11 @@ export default function DashboardPage() {
             {/* Calls Avoided */}
             <div className="revenue-card-gold rounded-xl p-5 relative overflow-hidden">
               <div className="absolute top-3 right-3 opacity-30">
-                <MiniChart color="#FFD700" />
+                <MiniChart color="#ECCA66" />
               </div>
               <div className="flex items-center gap-3 mb-3">
-                <div className="h-10 w-10 rounded-full bg-[#FFD700]/15 flex items-center justify-center">
-                  <PhoneOff className="h-5 w-5 text-[#D4A017]" />
+                <div className="h-10 w-10 rounded-full bg-[#D2AC47]/15 flex items-center justify-center">
+                  <PhoneOff className="h-5 w-5 text-[#ECCA66]" />
                 </div>
                 <span className="text-sm font-medium text-gray-300">Calls Avoided</span>
               </div>
@@ -427,7 +427,7 @@ export default function DashboardPage() {
                 >
                   View Lead
                 </Link>
-                <button className="inline-flex items-center px-3 py-1.5 text-xs font-medium text-white bg-[#FFD700]/15 hover:bg-[#FFD700]/25 rounded-lg transition-colors">
+                <button className="inline-flex items-center px-3 py-1.5 text-xs font-medium text-white bg-[#D2AC47]/15 hover:bg-[#D2AC47]/25 rounded-lg transition-colors">
                   Disqualify
                 </button>
               </div>
