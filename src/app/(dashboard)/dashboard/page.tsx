@@ -199,7 +199,7 @@ export default function DashboardPage() {
 
   return (
     <TooltipProvider delayDuration={200}>
-      <div className="space-y-8">
+      <div className="space-y-8 bg-gradient-to-br from-[#0A0A0A] via-[#050505] to-[#030303] -m-4 sm:-m-6 lg:-m-8 p-4 sm:p-6 lg:p-8 min-h-full">
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
@@ -228,7 +228,7 @@ export default function DashboardPage() {
           {statCards.map((card, idx) => (
             <div
               key={card.label}
-              className={`glass-card rounded-xl border-t-2 ${card.borderColor} overflow-hidden`}
+              className={`glass-card rounded-xl border-t border-[#FFD700]/20 border-x border-b border-white/[0.04] bg-gradient-to-br from-[#0F0F0F] to-[#050505] overflow-hidden`}
             >
               <div className={`${card.sparkClass} px-5 pt-3`}>
                 <Sparkline color={card.sparkColor} variant={idx} />
@@ -269,7 +269,7 @@ export default function DashboardPage() {
                   Share your form link to start receiving leads.
                 </p>
                 <button
-                  className="mt-4 inline-flex items-center gap-2 bg-gradient-to-r from-[#FFD700] to-[#B8860B] hover:from-[#FFE033] hover:to-[#C9960C] text-black px-4 py-2 rounded-lg text-sm font-semibold transition-colors"
+                  className="mt-4 inline-flex items-center gap-2 bg-gradient-to-r from-[#FFD700] to-[#B8860B] hover:from-[#FFE033] hover:to-[#C9960C] text-black px-4 py-2 rounded-lg text-sm font-semibold shadow-[0_0_20px_rgba(255,215,0,0.15)] hover:shadow-[0_0_28px_rgba(255,215,0,0.25)] transition-all"
                   onClick={copyFormLink}
                 >
                   <Copy className="h-4 w-4" />

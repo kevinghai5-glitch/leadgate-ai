@@ -164,7 +164,7 @@ export default function BillingPage() {
                   ))}
                 </ul>
                 <button
-                  className="w-full py-3 rounded-lg bg-gradient-to-r from-[#FFD700] to-[#B8860B] hover:from-[#FFE033] hover:to-[#C9960C] text-black text-sm font-semibold transition-colors disabled:opacity-50"
+                  className="w-full py-3 rounded-lg bg-gradient-to-r from-[#FFD700] to-[#B8860B] hover:from-[#FFE033] hover:to-[#C9960C] text-black text-sm font-semibold shadow-[0_0_20px_rgba(255,215,0,0.15)] hover:shadow-[0_0_28px_rgba(255,215,0,0.25)] transition-all disabled:opacity-50"
                   onClick={handleCheckout}
                   disabled={checkoutLoading}
                 >

@@ -157,7 +157,7 @@ function ResetPasswordForm() {
         <CardFooter className="flex flex-col gap-4">
           <Button
             type="submit"
-            className="w-full bg-gradient-to-r from-[#FFD700] to-[#B8860B] hover:from-[#FFE033] hover:to-[#C9960C] text-black font-semibold"
+            className="w-full bg-gradient-to-r from-[#FFD700] to-[#B8860B] hover:from-[#FFE033] hover:to-[#C9960C] text-black font-semibold shadow-[0_0_20px_rgba(255,215,0,0.15)] hover:shadow-[0_0_28px_rgba(255,215,0,0.25)]"
             disabled={isLoading}
           >
             {isLoading ? (
@@ -184,7 +184,7 @@ function ResetPasswordForm() {
 
 export default function ResetPasswordPage() {
   return (
-    <div className="min-h-screen flex items-center justify-center dashboard-dark bg-[#050505] px-4">
+    <div className="min-h-screen flex items-center justify-center dashboard-dark bg-[#030303] px-4">
       <Suspense
         fallback={
           <Card className="w-full max-w-md">

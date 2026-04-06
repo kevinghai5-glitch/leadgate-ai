@@ -7,7 +7,7 @@ export default function AuthLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="dashboard-dark min-h-screen flex flex-col items-center justify-center bg-[#050505] px-4">
+    <div className="dashboard-dark min-h-screen flex flex-col items-center justify-center bg-[#030303] px-4">
       <Link href="/" className="flex items-center gap-2.5 mb-8">
         <div className="relative h-10 w-10">
           <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-[#FFD700] to-[#B8860B] shadow-lg shadow-[rgba(255,215,0,0.2)]" />

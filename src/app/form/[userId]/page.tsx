@@ -137,7 +137,7 @@ export default function LeadFormPage({
 
   if (formState === "loading") {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#050505] via-[#0A0A0A] to-[#050505]">
+      <div className="min-h-screen flex items-center justify-center bg-[#030303]">
         <div className="text-center">
           <Loader2 className="h-12 w-12 animate-spin text-[#FFD700] mx-auto" />
           <h2 className="mt-4 text-xl font-semibold text-white">
@@ -153,7 +153,7 @@ export default function LeadFormPage({
 
   if (formState === "qualified") {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#050505] via-[#0A0A0A] to-[#050505] px-4">
+      <div className="min-h-screen flex items-center justify-center bg-[#030303] px-4">
         <Card className="w-full max-w-lg text-center">
           <CardHeader>
             <div className="mx-auto h-16 w-16 rounded-full bg-green-100 flex items-center justify-center mb-4">
@@ -186,7 +186,7 @@ export default function LeadFormPage({
                 <Button
                   size="lg"
                   asChild
-                  className="bg-gradient-to-r from-[#FFD700] to-[#B8860B] hover:from-[#FFE033] hover:to-[#C9960C] text-black font-semibold"
+                  className="bg-gradient-to-r from-[#FFD700] to-[#B8860B] hover:from-[#FFE033] hover:to-[#C9960C] text-black font-semibold shadow-[0_0_20px_rgba(255,215,0,0.15)] hover:shadow-[0_0_28px_rgba(255,215,0,0.25)]"
                 >
                   <a
                     href={result.calendarLink}
@@ -214,7 +214,7 @@ export default function LeadFormPage({
 
   if (formState === "disqualified") {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#050505] via-[#0A0A0A] to-[#050505] px-4">
+      <div className="min-h-screen flex items-center justify-center bg-[#030303] px-4">
         <Card className="w-full max-w-lg text-center">
           <CardHeader>
             <div className="mx-auto h-16 w-16 rounded-full bg-gray-100 flex items-center justify-center mb-4">
@@ -249,7 +249,7 @@ export default function LeadFormPage({
     investmentLevel;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#050505] via-[#0A0A0A] to-[#050505] py-12 px-4 dashboard-dark">
+    <div className="min-h-screen bg-[#030303] py-12 px-4 dashboard-dark">
       <div className="max-w-2xl mx-auto">
         <div className="text-center mb-8">
           <div className="inline-flex items-center gap-2 rounded-full bg-[#FFD700]/10 border border-[#FFD700]/20 px-4 py-1.5 text-sm font-medium text-[#D4A017] mb-4">
@@ -543,7 +543,7 @@ export default function LeadFormPage({
               <Button
                 type="submit"
                 size="lg"
-                className="w-full bg-gradient-to-r from-[#FFD700] to-[#B8860B] hover:from-[#FFE033] hover:to-[#C9960C] text-black font-semibold"
+                className="w-full bg-gradient-to-r from-[#FFD700] to-[#B8860B] hover:from-[#FFE033] hover:to-[#C9960C] text-black font-semibold shadow-[0_0_20px_rgba(255,215,0,0.15)] hover:shadow-[0_0_28px_rgba(255,215,0,0.25)]"
                 disabled={!isFormValid}
               >
                 Submit My Application

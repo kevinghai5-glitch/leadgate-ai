@@ -169,10 +169,35 @@
 
 /* Glass morphism card styles */
 .glass-card {
-  background: rgba(10, 10, 10, 0.5);
+  background: linear-gradient(180deg, #0F0F0F 0%, #070707 100%);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.glass-card:hover {
+  box-shadow: 0 4px 24px rgba(255, 215, 0, 0.08);
+  transform: translateY(-1px);
+  transition: all 0.3s ease;
+  border-color: rgba(255, 215, 0, 0.12);
+}
+
+/* Gold glow utilities */
+.gold-glow {
+  box-shadow: 0 0 20px rgba(255, 215, 0, 0.15);
+}
+
+.gold-glow-sm {
+  box-shadow: 0 0 12px rgba(255, 215, 0, 0.1);
+}
+
+/* Stat card depth */
+.stat-card-depth {
+  background: linear-gradient(135deg, #0F0F0F 0%, #050505 100%);
+  border-top: 1px solid rgba(255, 215, 0, 0.2);
+  border-left: 1px solid rgba(255, 255, 255, 0.04);
+  border-right: 1px solid rgba(255, 255, 255, 0.04);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
 }
 
 /* Sparkline gradient backgrounds for stat cards */

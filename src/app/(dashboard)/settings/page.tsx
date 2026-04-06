@@ -508,7 +508,7 @@ export default function SettingsPage() {
                   <button
                     onClick={handleSaveQuestions}
                     disabled={savingQuestions}
-                    className="inline-flex items-center gap-1 px-3 py-2 rounded-lg bg-gradient-to-r from-[#FFD700] to-[#B8860B] hover:from-[#FFE033] hover:to-[#C9960C] text-black text-sm font-semibold transition-colors disabled:opacity-50"
+                    className="inline-flex items-center gap-1 px-3 py-2 rounded-lg bg-gradient-to-r from-[#FFD700] to-[#B8860B] hover:from-[#FFE033] hover:to-[#C9960C] text-black text-sm font-semibold shadow-[0_0_20px_rgba(255,215,0,0.15)] hover:shadow-[0_0_28px_rgba(255,215,0,0.25)] transition-all disabled:opacity-50"
                   >
                     {savingQuestions ? (
                       <Loader2 className="h-4 w-4 animate-spin" />
@@ -596,7 +596,7 @@ export default function SettingsPage() {
         <button
           onClick={handleSave}
           disabled={saving}
-          className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-gradient-to-r from-[#FFD700] to-[#B8860B] hover:from-[#FFE033] hover:to-[#C9960C] text-black text-sm font-semibold transition-colors disabled:opacity-50"
+          className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-gradient-to-r from-[#FFD700] to-[#B8860B] hover:from-[#FFE033] hover:to-[#C9960C] text-black text-sm font-semibold shadow-[0_0_20px_rgba(255,215,0,0.15)] hover:shadow-[0_0_28px_rgba(255,215,0,0.25)] transition-all disabled:opacity-50"
         >
           {saving ? (
             <>
