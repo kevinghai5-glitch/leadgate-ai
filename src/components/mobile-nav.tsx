@@ -31,9 +31,7 @@ export function MobileNav() {
     <div className="md:hidden">
       <div className="flex h-14 items-center justify-between border-b border-white/[0.06] bg-[#050505] px-4">
         <div className="flex items-center gap-2">
-          <div className="h-7 w-7 rounded-lg bg-gradient-to-br from-[#FFD700] to-[#B8860B] flex items-center justify-center shadow-lg shadow-[rgba(255,215,0,0.2)]">
-            <Zap className="h-4 w-4 text-black" />
-          </div>
+          <Zap className="h-5 w-5 text-[#FFD700] drop-shadow-[0_0_8px_rgba(255,215,0,0.6)]" />
           <span className="text-base font-bold text-white">LeadGate AI</span>
         </div>
         <button

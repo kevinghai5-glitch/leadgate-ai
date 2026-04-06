@@ -56,12 +56,7 @@ export function DashboardSidebar() {
             collapsed ? "justify-center px-2" : "gap-2.5 px-6"
           )}
         >
-          <div className="relative h-8 w-8 flex-shrink-0">
-            <div className="absolute inset-0 rounded-lg bg-gradient-to-br from-[#FFD700] to-[#B8860B] shadow-lg shadow-[rgba(255,215,0,0.2)]" />
-            <div className="relative h-full w-full rounded-lg flex items-center justify-center">
-              <Zap className="h-[18px] w-[18px] text-black drop-shadow-sm" />
-            </div>
-          </div>
+          <Zap className="h-6 w-6 flex-shrink-0 text-[#FFD700] drop-shadow-[0_0_8px_rgba(255,215,0,0.6)]" />
           {!collapsed && (
             <span className="text-lg font-bold tracking-tight bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
               LeadGate AI
