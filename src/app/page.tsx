@@ -63,7 +63,7 @@ export default async function HomePage() {
         <Navbar />
 
         {/* Hero */}
-        <section className="pt-20 pb-28 relative">
+        <section className="pt-32 pb-28 relative">
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_40%,rgba(255,215,0,0.06)_0%,transparent_100%)] pointer-events-none" />
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
             <AnimateOnScroll>
