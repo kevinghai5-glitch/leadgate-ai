@@ -45,7 +45,7 @@ export function DashboardSidebar() {
     <TooltipProvider delayDuration={0}>
       <div
         className={cn(
-          "flex h-full flex-col bg-[#050505] text-white transition-all duration-200 border-r border-white/[0.06]",
+          "flex h-full flex-col bg-gradient-to-b from-[#0A0A0A] to-[#060606] text-white transition-all duration-200 border-r border-white/[0.04]",
           collapsed ? "w-[68px]" : "w-64"
         )}
       >
@@ -98,7 +98,7 @@ export function DashboardSidebar() {
                   "group relative flex items-center rounded-lg py-2.5 text-[13px] font-medium transition-all duration-150",
                   collapsed ? "justify-center px-2" : "gap-3 px-3",
                   isActive
-                    ? "bg-[#FFD700]/[0.08] text-white"
+                    ? "border-l-2 border-[#FFD700] bg-[#FFD700]/[0.06] text-white"
                     : "text-gray-400 hover:bg-white/[0.06] hover:text-gray-200"
                 )}
               >

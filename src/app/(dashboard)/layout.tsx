@@ -25,7 +25,7 @@ export default async function DashboardLayout({
       </div>
       <div className="flex flex-1 flex-col min-w-0">
         <MobileNav />
-        <main className="flex-1 overflow-y-auto bg-[#050505]">
+        <main className="flex-1 overflow-y-auto bg-gradient-to-br from-[#080808] via-[#050505] to-[#030303]">
           <div className="p-4 sm:p-6 lg:p-8">
             <PaywallWrapper isPro={isPro}>{children}</PaywallWrapper>
           </div>

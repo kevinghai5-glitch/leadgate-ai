@@ -98,7 +98,7 @@ export function Navbar() {
                 <Button variant="ghost" asChild className="text-gray-300 hover:text-white hover:bg-white/10">
                   <Link href="/login">Log in</Link>
                 </Button>
-                <Button asChild className="bg-gradient-to-r from-[#FFD700] to-[#B8860B] hover:from-[#FFE033] hover:to-[#C9960C] text-black font-semibold">
+                <Button asChild className="bg-gradient-to-r from-[#FFD700] to-[#B8860B] hover:from-[#FFE033] hover:to-[#C9960C] text-black font-semibold shadow-[0_0_20px_rgba(255,215,0,0.15)] hover:shadow-[0_0_28px_rgba(255,215,0,0.25)]">
                   <Link href="/signup">Get Started</Link>
                 </Button>
               </div>
