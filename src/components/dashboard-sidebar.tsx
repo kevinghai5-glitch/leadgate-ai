@@ -56,14 +56,9 @@ export function DashboardSidebar() {
             collapsed ? "justify-center px-2" : "gap-2.5 px-6"
           )}
         >
-          <div className="relative h-8 w-8 flex-shrink-0">
-            <div className="absolute inset-0 rounded-lg bg-gradient-to-br from-[#FFD700] to-[#B8860B] shadow-lg shadow-[rgba(255,215,0,0.2)]" />
-            <div className="relative h-full w-full rounded-lg flex items-center justify-center">
-              <Zap className="h-[18px] w-[18px] text-black drop-shadow-sm" />
-            </div>
-          </div>
+          <Zap className="h-6 w-6 flex-shrink-0 text-white" />
           {!collapsed && (
-            <span className="text-lg font-bold tracking-tight bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
+            <span className="text-lg font-bold tracking-tight text-white">
               LeadGate AI
             </span>
           )}
@@ -98,17 +93,17 @@ export function DashboardSidebar() {
                   "group relative flex items-center rounded-lg py-2.5 text-[13px] font-medium transition-all duration-150",
                   collapsed ? "justify-center px-2" : "gap-3 px-3",
                   isActive
-                    ? "border-l-2 border-[#FFD700] bg-[#FFD700]/[0.06] text-white"
+                    ? "border-l-2 border-[#D2AC47] bg-[#D2AC47]/[0.06] text-white"
                     : "text-gray-400 hover:bg-white/[0.06] hover:text-gray-200"
                 )}
               >
                 {isActive && (
-                  <span className="absolute left-0 top-1/2 -translate-y-1/2 h-5 w-[3px] rounded-r-full bg-[#FFD700]" />
+                  <span className="absolute left-0 top-1/2 -translate-y-1/2 h-5 w-[3px] rounded-r-full bg-[#D2AC47]" />
                 )}
                 <item.icon
                   className={cn(
                     "h-[18px] w-[18px] flex-shrink-0 transition-colors",
-                    isActive && "text-[#D4A017]"
+                    isActive && "text-[#ECCA66]"
                   )}
                 />
                 {!collapsed && item.name}
@@ -159,16 +154,16 @@ export function DashboardSidebar() {
                 href={formLink}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="block rounded-lg bg-gradient-to-br from-[#FFD700]/[0.08] to-[#B8860B]/[0.06] border border-[#FFD700]/10 p-3 hover:border-[#FFD700]/25 hover:from-[#FFD700]/[0.12] hover:to-[#B8860B]/[0.10] transition-all group"
+                className="block rounded-lg bg-gradient-to-br from-[#D2AC47]/[0.08] to-[#B08B73]/[0.06] border border-[#D2AC47]/10 p-3 hover:border-[#D2AC47]/25 hover:from-[#D2AC47]/[0.12] hover:to-[#B08B73]/[0.10] transition-all group"
               >
                 <div className="flex items-center justify-between text-sm text-gray-300">
                   <div className="flex items-center gap-2">
-                    <Users className="h-4 w-4 flex-shrink-0 text-[#D4A017]" />
+                    <Users className="h-4 w-4 flex-shrink-0 text-[#ECCA66]" />
                     <span className="truncate font-medium">
                       Your Form Link
                     </span>
                   </div>
-                  <ExternalLink className="h-3.5 w-3.5 text-gray-500 group-hover:text-[#D4A017] transition-colors" />
+                  <ExternalLink className="h-3.5 w-3.5 text-gray-500 group-hover:text-[#ECCA66] transition-colors" />
                 </div>
                 <p className="mt-1 text-xs text-gray-500 leading-relaxed">
                   Preview your lead capture form on a public link
@@ -178,9 +173,9 @@ export function DashboardSidebar() {
                 </div>
               </a>
             ) : (
-              <div className="rounded-lg bg-gradient-to-br from-[#FFD700]/[0.08] to-[#B8860B]/[0.06] border border-[#FFD700]/10 p-3">
+              <div className="rounded-lg bg-gradient-to-br from-[#D2AC47]/[0.08] to-[#B08B73]/[0.06] border border-[#D2AC47]/10 p-3">
                 <div className="flex items-center gap-2 text-sm text-gray-300">
-                  <LinkIcon className="h-4 w-4 flex-shrink-0 text-[#D4A017]" />
+                  <LinkIcon className="h-4 w-4 flex-shrink-0 text-[#ECCA66]" />
                   <span className="truncate font-medium">Your Form Link</span>
                 </div>
                 <p className="mt-1 text-xs text-gray-500 leading-relaxed">

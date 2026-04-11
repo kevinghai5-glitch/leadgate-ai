@@ -75,7 +75,7 @@ export default function LoginPage() {
               <Label htmlFor="password">Password</Label>
               <Link
                 href="/forgot-password"
-                className="text-xs text-[#D4A017] hover:underline"
+                className="text-xs text-[#ECCA66] hover:underline"
               >
                 Forgot password?
               </Link>
@@ -93,7 +93,7 @@ export default function LoginPage() {
         <CardFooter className="flex flex-col gap-4">
           <Button
             type="submit"
-            className="w-full bg-gradient-to-r from-[#FFD700] to-[#B8860B] hover:from-[#FFE033] hover:to-[#C9960C] text-black font-semibold shadow-[0_0_20px_rgba(255,215,0,0.15)] hover:shadow-[0_0_28px_rgba(255,215,0,0.25)]"
+            className="w-full bg-gradient-to-r from-[#D2AC47] to-[#B08B73] hover:from-[#ECCA66] hover:to-[#D2AC47] text-black font-semibold shadow-[0_0_20px_rgba(210,172,71,0.15)] hover:shadow-[0_0_28px_rgba(210,172,71,0.25)]"
             disabled={isLoading}
           >
             {isLoading ? (
@@ -107,7 +107,7 @@ export default function LoginPage() {
           </Button>
           <p className="text-sm text-center text-muted-foreground">
             Don&apos;t have an account?{" "}
-            <Link href="/signup" className="text-[#D4A017] hover:underline">
+            <Link href="/signup" className="text-[#ECCA66] hover:underline">
               Sign up
             </Link>
           </p>
