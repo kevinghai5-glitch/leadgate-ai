@@ -36,15 +36,25 @@ export async function POST(req: Request) {
     switch (event.type) {
       case "checkout.session.completed": {
         const session = event.data.object as Stripe.Checkout.Session;
-        const userId = session.metadata?.userId;
-        if (userId && session.subscription) {
-          await prisma.user.update({
-            where: { id: userId },
-            data: {
-              stripeSubscriptionId: session.subscription as string,
-              stripeSubscriptionStatus: "active",
-            },
+        const customerEmail = session.customer_details?.email;
+        const customerId = typeof session.customer === "string"
+          ? session.customer
+          : session.customer?.id ?? null;
+
+        if (customerEmail && session.subscription) {
+          const user = await prisma.user.findUnique({
+            where: { email: customerEmail },
           });
+          if (user) {
+            await prisma.user.update({
+              where: { id: user.id },
+              data: {
+                stripeCustomerId: customerId,
+                stripeSubscriptionId: session.subscription as string,
+                stripeSubscriptionStatus: "active",
+              },
+            });
+          }
         }
         break;
       }
@@ -98,7 +108,7 @@ export async function POST(req: Request) {
           await prisma.user.update({
             where: { id: userDeleted.id },
             data: {
-              stripeSubscriptionStatus: "canceled",
+              stripeSubscriptionStatus: "inactive",
               stripeSubscriptionId: null,
             },
           });
