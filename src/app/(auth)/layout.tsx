@@ -8,13 +8,8 @@ export default function AuthLayout({
 }) {
   return (
     <div className="dashboard-dark min-h-screen flex flex-col items-center justify-center bg-[#030303] px-4">
-      <Link href="/" className="flex items-center gap-2.5 mb-8">
-        <div className="relative h-10 w-10">
-          <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-[#FFD700] to-[#B8860B] shadow-lg shadow-[rgba(255,215,0,0.2)]" />
-          <div className="relative h-full w-full rounded-xl flex items-center justify-center">
-            <Zap className="h-6 w-6 text-black drop-shadow-sm" />
-          </div>
-        </div>
+      <Link href="/" className="flex items-center gap-2.5 mb-8 group">
+        <Zap className="h-7 w-7 text-white transition-all" />
         <span className="text-2xl font-bold text-white">
           LeadGate AI
         </span>

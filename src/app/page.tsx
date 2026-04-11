@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Navbar } from "@/components/navbar";
 import { AnimateOnScroll } from "@/components/animate-on-scroll";
+import { DottedSurface } from "@/components/ui/dotted-surface";
 import { auth } from "@/lib/auth";
 import {
   Zap,
@@ -30,7 +31,7 @@ function FAQItem({
 }) {
   return (
     <details className="group border-b border-white/[0.06] last:border-0">
-      <summary className="flex cursor-pointer items-center justify-between py-5 text-left text-lg font-medium text-white/90 hover:text-[#FFD700] transition-colors">
+      <summary className="flex cursor-pointer items-center justify-between py-5 text-left text-lg font-medium text-white/90 hover:text-[#ECCA66] transition-colors">
         {question}
         <ChevronDown className="h-5 w-5 flex-shrink-0 text-gray-600 transition-transform duration-200 group-open:rotate-180" />
       </summary>
@@ -51,11 +52,11 @@ export default async function HomePage() {
       {/* Fixed depth layer */}
       <div className="pointer-events-none fixed inset-0 z-0">
         {/* Top-center gold glow — very faint */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[140%] h-[700px] bg-[radial-gradient(ellipse_at_center,rgba(255,215,0,0.05)_0%,transparent_65%)]" />
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[140%] h-[700px] bg-[radial-gradient(ellipse_at_center,rgba(210,172,71,0.05)_0%,transparent_65%)]" />
         {/* Mid-right subtle glow */}
-        <div className="absolute top-[45%] right-0 w-[500px] h-[500px] bg-[radial-gradient(circle,rgba(184,134,11,0.04)_0%,transparent_70%)]" />
+        <div className="absolute top-[45%] right-0 w-[500px] h-[500px] bg-[radial-gradient(circle,rgba(176,139,115,0.04)_0%,transparent_70%)]" />
         {/* Bottom-left subtle glow */}
-        <div className="absolute top-[80%] left-0 w-[400px] h-[400px] bg-[radial-gradient(circle,rgba(255,215,0,0.03)_0%,transparent_70%)]" />
+        <div className="absolute top-[80%] left-0 w-[400px] h-[400px] bg-[radial-gradient(circle,rgba(210,172,71,0.03)_0%,transparent_70%)]" />
         {/* Overall top fade */}
         <div className="absolute inset-0 bg-gradient-to-b from-[#0A0A0A] via-[#030303] to-[#030303]" />
       </div>
@@ -65,17 +66,19 @@ export default async function HomePage() {
 
         {/* Hero */}
         <section className="pt-32 pb-28 relative">
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_40%,rgba(255,215,0,0.06)_0%,transparent_100%)] pointer-events-none" />
+          {/* Animated gold dotted surface — hero background */}
+          <DottedSurface className="absolute inset-0 w-full h-full overflow-hidden" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_40%,rgba(210,172,71,0.06)_0%,transparent_100%)] pointer-events-none" />
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
             <AnimateOnScroll>
               <div className="text-center max-w-4xl mx-auto">
-                <div className="inline-flex items-center gap-2 rounded-full bg-[#FFD700]/10 border border-[#FFD700]/20 px-4 py-1.5 text-sm font-medium text-[#D4A017] mb-8">
+                <div className="inline-flex items-center gap-2 rounded-full bg-[#D2AC47]/10 border border-[#D2AC47]/20 px-4 py-1.5 text-sm font-medium text-[#ECCA66] mb-8">
                   <Dumbbell className="h-4 w-4" />
                   Built for High-Ticket Online Fitness Coaches
                 </div>
                 <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-white leading-[1.1]">
                   Sign{" "}
-                  <span className="bg-gradient-to-r from-[#FFD700] to-[#B8860B] bg-clip-text text-transparent">
+                  <span className="bg-gradient-to-r from-[#ECCA66] to-[#D2AC47] bg-clip-text text-transparent">
                     MORE premium clients
                   </span>{" "}
                   every month
@@ -89,7 +92,7 @@ export default async function HomePage() {
                   <Button
                     size="lg"
                     asChild
-                    className="bg-gradient-to-r from-[#FFD700] to-[#B8860B] hover:from-[#FFE033] hover:to-[#C9960C] text-black font-semibold text-lg px-8 py-6 shadow-lg shadow-[rgba(255,215,0,0.15)] hover:shadow-[rgba(255,215,0,0.25)] hover:scale-[1.02] transition-all duration-200"
+                    className="bg-gradient-to-r from-[#D2AC47] to-[#B08B73] hover:from-[#ECCA66] hover:to-[#D2AC47] text-black font-semibold text-lg px-8 py-6 shadow-lg shadow-[rgba(210,172,71,0.15)] hover:shadow-[rgba(210,172,71,0.25)] hover:scale-[1.02] transition-all duration-200"
                   >
                     <Link href="/signup">
                       Start Getting Better Leads
@@ -136,7 +139,7 @@ export default async function HomePage() {
             </AnimateOnScroll>
             <div className="grid md:grid-cols-2 gap-6">
               <AnimateOnScroll>
-                <div className="rounded-2xl bg-gradient-to-b from-[#0F0F0F] to-[#070707] border border-white/[0.06] p-8 h-full hover:shadow-[0_4px_20px_rgba(255,215,0,0.08)] hover:-translate-y-0.5 transition-all duration-300">
+                <div className="rounded-xl bg-gradient-to-b from-[#0F0F0F] to-[#070707] border border-white/[0.06] p-6 h-full hover:shadow-[0_4px_20px_rgba(210,172,71,0.08)] hover:-translate-y-0.5 transition-all duration-300">
                   <div className="inline-flex items-center gap-2 rounded-full bg-red-500/10 border border-red-500/15 px-3 py-1 text-xs font-semibold text-red-400 uppercase tracking-wider mb-6">
                     Without LeadGate AI
                   </div>
@@ -157,7 +160,7 @@ export default async function HomePage() {
                 </div>
               </AnimateOnScroll>
               <AnimateOnScroll delay={100}>
-                <div className="rounded-2xl bg-gradient-to-b from-[#0F0F0F] to-[#070707] border border-[#FFD700]/[0.12] p-8 h-full hover:shadow-[0_4px_20px_rgba(255,215,0,0.08)] hover:-translate-y-0.5 transition-all duration-300">
+                <div className="rounded-xl bg-gradient-to-b from-[#0F0F0F] to-[#070707] border border-[#D2AC47]/[0.12] p-6 h-full hover:shadow-[0_4px_20px_rgba(210,172,71,0.08)] hover:-translate-y-0.5 transition-all duration-300">
                   <div className="inline-flex items-center gap-2 rounded-full bg-emerald-500/10 border border-emerald-500/15 px-3 py-1 text-xs font-semibold text-emerald-400 uppercase tracking-wider mb-6">
                     With LeadGate AI
                   </div>
@@ -223,12 +226,12 @@ export default async function HomePage() {
                 },
               ].map((item, i) => (
                 <AnimateOnScroll key={item.step} delay={i * 120}>
-                  <div className="relative p-8 rounded-2xl bg-gradient-to-b from-[#0F0F0F] to-[#070707] border border-white/[0.06] hover:border-white/[0.1] hover:shadow-[0_4px_20px_rgba(255,215,0,0.08)] hover:-translate-y-0.5 transition-all duration-300">
+                  <div className="relative p-6 h-full rounded-2xl bg-gradient-to-b from-[#0F0F0F] to-[#070707] border border-white/[0.06] hover:border-white/[0.1] hover:shadow-[0_4px_20px_rgba(210,172,71,0.08)] hover:-translate-y-0.5 transition-all duration-300">
                     <div className="text-6xl font-bold text-white/[0.03] absolute top-4 right-6">
                       {item.step}
                     </div>
-                    <div className="h-12 w-12 rounded-xl bg-[#FFD700]/10 flex items-center justify-center mb-4">
-                      <item.icon className="h-6 w-6 text-[#D4A017]" />
+                    <div className="h-12 w-12 rounded-xl bg-[#D2AC47]/10 flex items-center justify-center mb-4">
+                      <item.icon className="h-6 w-6 text-[#ECCA66]" />
                     </div>
                     <h3 className="text-xl font-semibold text-white mb-2">
                       {item.title}
@@ -257,7 +260,7 @@ export default async function HomePage() {
                 </p>
               </div>
             </AnimateOnScroll>
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {[
                 {
                   icon: TrendingUp,
@@ -297,9 +300,9 @@ export default async function HomePage() {
                 },
               ].map((feature, i) => (
                 <AnimateOnScroll key={feature.title} delay={(i % 3) * 100}>
-                  <div className="p-6 rounded-xl bg-gradient-to-b from-[#0F0F0F] to-[#070707] border border-white/[0.06] hover:border-white/[0.1] hover:shadow-[0_4px_20px_rgba(255,215,0,0.08)] hover:-translate-y-0.5 transition-all duration-300">
-                    <div className="h-10 w-10 rounded-lg bg-[#FFD700]/10 flex items-center justify-center mb-3">
-                      <feature.icon className="h-5 w-5 text-[#D4A017]" />
+                  <div className="p-6 h-full rounded-xl bg-gradient-to-b from-[#0F0F0F] to-[#070707] border border-white/[0.06] hover:border-white/[0.1] hover:shadow-[0_4px_20px_rgba(210,172,71,0.08)] hover:-translate-y-0.5 transition-all duration-300">
+                    <div className="h-10 w-10 rounded-lg bg-[#D2AC47]/10 flex items-center justify-center mb-3">
+                      <feature.icon className="h-5 w-5 text-[#ECCA66]" />
                     </div>
                     <h3 className="font-semibold text-white mb-1">
                       {feature.title}
@@ -357,7 +360,7 @@ export default async function HomePage() {
               <h2 className="text-2xl sm:text-3xl font-bold text-center text-white mb-10">
                 Built for Serious Coaches
               </h2>
-              <div className="grid md:grid-cols-3 gap-5">
+              <div className="grid md:grid-cols-3 gap-6">
                 {[
                   {
                     icon: Target,
@@ -374,10 +377,10 @@ export default async function HomePage() {
                 ].map((item) => (
                   <div
                     key={item.text}
-                    className="flex items-start gap-4 p-6 rounded-xl bg-gradient-to-b from-[#0F0F0F] to-[#070707] border border-white/[0.06] hover:border-white/[0.1] hover:shadow-[0_4px_20px_rgba(255,215,0,0.08)] hover:-translate-y-0.5 transition-all duration-300"
+                    className="flex items-start gap-4 p-6 h-full rounded-xl bg-gradient-to-b from-[#0F0F0F] to-[#070707] border border-white/[0.06] hover:border-white/[0.1] hover:shadow-[0_4px_20px_rgba(210,172,71,0.08)] hover:-translate-y-0.5 transition-all duration-300"
                   >
-                    <div className="h-10 w-10 rounded-lg bg-[#FFD700]/10 flex items-center justify-center flex-shrink-0">
-                      <item.icon className="h-5 w-5 text-[#D4A017]" />
+                    <div className="h-10 w-10 rounded-lg bg-[#D2AC47]/10 flex items-center justify-center flex-shrink-0">
+                      <item.icon className="h-5 w-5 text-[#ECCA66]" />
                     </div>
                     <p className="text-gray-300 font-medium leading-relaxed">
                       {item.text}
@@ -450,8 +453,8 @@ export default async function HomePage() {
               </div>
 
               <div className="max-w-md mx-auto">
-                <div className="rounded-2xl border border-[#FFD700]/30 p-8 bg-gradient-to-b from-[#0F0F0F] to-[#070707] shadow-2xl shadow-[rgba(255,215,0,0.08)] relative overflow-hidden">
-                  <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#FFD700]/50 to-transparent" />
+                <div className="rounded-2xl border border-[#D2AC47]/30 p-8 bg-gradient-to-b from-[#0F0F0F] to-[#070707] shadow-2xl shadow-[rgba(210,172,71,0.08)] relative overflow-hidden">
+                  <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#D2AC47]/50 to-transparent" />
                   <div className="text-center">
                     <h3 className="text-2xl font-bold text-white">Pro Plan</h3>
                     <div className="mt-4 flex items-baseline justify-center gap-1">
@@ -474,7 +477,7 @@ export default async function HomePage() {
                       "Priority support",
                     ].map((feature) => (
                       <li key={feature} className="flex items-center gap-3">
-                        <CheckCircle2 className="h-5 w-5 text-[#B8860B] flex-shrink-0" />
+                        <CheckCircle2 className="h-5 w-5 text-[#D2AC47] flex-shrink-0" />
                         <span className="text-gray-300">{feature}</span>
                       </li>
                     ))}
@@ -482,7 +485,7 @@ export default async function HomePage() {
                   <Button
                     size="lg"
                     asChild
-                    className="w-full mt-8 bg-gradient-to-r from-[#FFD700] to-[#B8860B] hover:from-[#FFE033] hover:to-[#C9960C] text-black font-semibold shadow-lg shadow-[rgba(255,215,0,0.15)] hover:shadow-[rgba(255,215,0,0.25)] hover:scale-[1.01] transition-all duration-200"
+                    className="w-full mt-8 bg-gradient-to-r from-[#D2AC47] to-[#B08B73] hover:from-[#ECCA66] hover:to-[#D2AC47] text-black font-semibold shadow-lg shadow-[rgba(210,172,71,0.15)] hover:shadow-[rgba(210,172,71,0.25)] hover:scale-[1.01] transition-all duration-200"
                   >
                     <Link href="/signup">Get Started</Link>
                   </Button>
@@ -508,7 +511,7 @@ export default async function HomePage() {
                 <Button
                   size="lg"
                   asChild
-                  className="bg-gradient-to-r from-[#FFD700] to-[#B8860B] hover:from-[#FFE033] hover:to-[#C9960C] text-black font-semibold text-lg px-8 py-6 shadow-lg shadow-[rgba(255,215,0,0.15)] hover:shadow-[rgba(255,215,0,0.25)] hover:scale-[1.02] transition-all duration-200"
+                  className="bg-gradient-to-r from-[#D2AC47] to-[#B08B73] hover:from-[#ECCA66] hover:to-[#D2AC47] text-black font-semibold text-lg px-8 py-6 shadow-lg shadow-[rgba(210,172,71,0.15)] hover:shadow-[rgba(210,172,71,0.25)] hover:scale-[1.02] transition-all duration-200"
                 >
                   <Link href="/signup">
                     Start Getting Better Leads
@@ -525,12 +528,7 @@ export default async function HomePage() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
             <div className="flex flex-col md:flex-row items-center justify-between gap-4">
               <div className="flex items-center gap-2">
-                <div className="relative h-8 w-8">
-                  <div className="absolute inset-0 rounded-lg bg-gradient-to-br from-[#FFD700] to-[#B8860B] shadow-lg shadow-[rgba(255,215,0,0.2)]" />
-                  <div className="relative h-full w-full rounded-lg flex items-center justify-center">
-                    <Zap className="h-[18px] w-[18px] text-white" />
-                  </div>
-                </div>
+                <Zap className="h-5 w-5 text-white" />
                 <span className="text-lg font-bold text-white">
                   LeadGate AI
                 </span>

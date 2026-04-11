@@ -74,7 +74,7 @@ export default function BillingPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
-        <Loader2 className="h-8 w-8 animate-spin text-[#D4A017]" />
+        <Loader2 className="h-8 w-8 animate-spin text-[#ECCA66]" />
       </div>
     );
   }
@@ -92,7 +92,7 @@ export default function BillingPage() {
           <div className="flex items-center justify-between mb-1">
             <div>
               <div className="flex items-center gap-2 text-lg font-semibold text-white">
-                <CreditCard className="h-5 w-5 text-[#D4A017]" />
+                <CreditCard className="h-5 w-5 text-[#ECCA66]" />
                 Current Plan
               </div>
               <p className="text-sm text-gray-500 mt-1">
@@ -135,7 +135,7 @@ export default function BillingPage() {
             </div>
           ) : (
             <div className="space-y-6">
-              <div className="rounded-2xl border-2 border-[#FFD700]/30 p-6 bg-[#FFD700]/[0.04]">
+              <div className="rounded-2xl border-2 border-[#D2AC47]/30 p-6 bg-[#D2AC47]/[0.04]">
                 <div className="flex items-center justify-between mb-4">
                   <div>
                     <h3 className="text-xl font-bold text-white">
@@ -158,13 +158,13 @@ export default function BillingPage() {
                     "Custom form questions",
                   ].map((feature) => (
                     <li key={feature} className="flex items-center gap-2">
-                      <CheckCircle2 className="h-4 w-4 text-[#D4A017] flex-shrink-0" />
+                      <CheckCircle2 className="h-4 w-4 text-[#ECCA66] flex-shrink-0" />
                       <span className="text-sm text-gray-400">{feature}</span>
                     </li>
                   ))}
                 </ul>
                 <button
-                  className="w-full py-3 rounded-lg bg-gradient-to-r from-[#FFD700] to-[#B8860B] hover:from-[#FFE033] hover:to-[#C9960C] text-black text-sm font-semibold shadow-[0_0_20px_rgba(255,215,0,0.15)] hover:shadow-[0_0_28px_rgba(255,215,0,0.25)] transition-all disabled:opacity-50"
+                  className="w-full py-3 rounded-lg bg-gradient-to-r from-[#D2AC47] to-[#B08B73] hover:from-[#ECCA66] hover:to-[#D2AC47] text-black text-sm font-semibold shadow-[0_0_20px_rgba(210,172,71,0.15)] hover:shadow-[0_0_28px_rgba(210,172,71,0.25)] transition-all disabled:opacity-50"
                   onClick={handleCheckout}
                   disabled={checkoutLoading}
                 >

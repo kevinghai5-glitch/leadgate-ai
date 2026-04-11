@@ -25,7 +25,7 @@ export function Navbar() {
   return (
     <div className="fixed top-0 inset-x-0 z-50 flex justify-center px-4 pt-5">
       {/* Gold underglow streak */}
-      <div className="pointer-events-none absolute top-6 left-1/2 -translate-x-1/2 w-[600px] h-[80px] blur-[40px] bg-[radial-gradient(ellipse_at_center,rgba(255,215,0,0.18)_0%,transparent_70%)]" />
+      <div className="pointer-events-none absolute top-6 left-1/2 -translate-x-1/2 w-[600px] h-[80px] blur-[40px] bg-[radial-gradient(ellipse_at_center,rgba(210,172,71,0.18)_0%,transparent_70%)]" />
 
       {/* Floating pill */}
       <nav className="relative w-full max-w-5xl rounded-2xl border border-white/[0.08] bg-black/70 backdrop-blur-xl shadow-[0_8px_32px_rgba(0,0,0,0.5)] px-5 py-3">
@@ -35,9 +35,9 @@ export function Navbar() {
         <div className="flex items-center justify-between">
           {/* Logo */}
           <Link href={session ? "/dashboard" : "/"} className="flex items-center gap-2.5 group">
-            <Zap className="h-5 w-5 text-[#FFD700] drop-shadow-[0_0_6px_rgba(255,215,0,0.5)] group-hover:drop-shadow-[0_0_10px_rgba(255,215,0,0.7)] transition-all duration-200" />
+            <Zap className="h-5 w-5 text-white transition-all duration-200" />
             <span className="text-[15px] font-semibold tracking-wide text-white">
-              LeadGate <span className="text-[#FFD700]">AI</span>
+              LeadGate AI
             </span>
           </Link>
 
@@ -52,7 +52,7 @@ export function Navbar() {
                 <Link
                   key={item.label}
                   href={item.href}
-                  className="px-3 py-1.5 text-sm text-gray-400 hover:text-[#FFD700] rounded-lg hover:bg-[#FFD700]/[0.05] transition-all duration-200"
+                  className="px-3 py-1.5 text-sm text-gray-400 hover:text-[#ECCA66] rounded-lg hover:bg-[#D2AC47]/[0.05] transition-all duration-200"
                 >
                   {item.label}
                 </Link>
@@ -67,7 +67,7 @@ export function Navbar() {
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" className="relative h-9 w-9 rounded-full hover:bg-white/10">
                     <Avatar className="h-9 w-9">
-                      <AvatarFallback className="bg-[#FFD700]/15 text-[#FFD700] text-sm font-semibold">
+                      <AvatarFallback className="bg-[#D2AC47]/15 text-[#ECCA66] text-sm font-semibold">
                         {session.user?.email?.charAt(0).toUpperCase()}
                       </AvatarFallback>
                     </Avatar>
@@ -110,7 +110,7 @@ export function Navbar() {
                 <Link href="/login" className="hidden sm:block text-sm text-gray-500 hover:text-gray-300 px-3 py-1.5 transition-colors duration-200">
                   Log in
                 </Link>
-                <Button asChild size="sm" className="bg-gradient-to-r from-[#FFD700] to-[#B8860B] hover:from-[#FFE033] hover:to-[#C9960C] text-black text-sm font-semibold rounded-xl px-4 py-2 shadow-[0_0_16px_rgba(255,215,0,0.2)] hover:shadow-[0_0_22px_rgba(255,215,0,0.35)] hover:scale-[1.02] transition-all duration-200">
+                <Button asChild size="sm" className="bg-gradient-to-r from-[#D2AC47] to-[#B08B73] hover:from-[#ECCA66] hover:to-[#D2AC47] text-black text-sm font-semibold rounded-xl px-4 py-2 shadow-[0_0_16px_rgba(210,172,71,0.2)] hover:shadow-[0_0_22px_rgba(210,172,71,0.35)] hover:scale-[1.02] transition-all duration-200">
                   <Link href="/signup">Get Started</Link>
                 </Button>
               </>
