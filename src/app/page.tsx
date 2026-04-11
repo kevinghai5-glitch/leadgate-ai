@@ -319,7 +319,7 @@ export default async function HomePage() {
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             <AnimateOnScroll>
               <div className="text-center mb-12">
-                <div className="inline-flex items-center gap-2 rounded-full bg-[#FFD700]/10 border border-[#FFD700]/20 px-4 py-1.5 text-sm font-medium text-[#D4A017] mb-6">
+                <div className="inline-flex items-center gap-2 rounded-full bg-[#D2AC47]/10 border border-[#D2AC47]/20 px-4 py-1.5 text-sm font-medium text-[#ECCA66] mb-6">
                   <ListChecks className="h-4 w-4" />
                   Custom Form Builder
                 </div>
@@ -327,25 +327,19 @@ export default async function HomePage() {
                   Tailor every question to your offer
                 </h2>
               </div>
-              <div className="grid md:grid-cols-3 gap-5">
+              <div className="grid md:grid-cols-3 gap-6">
                 {[
-                  {
-                    text: "Use our proven form or build your own in seconds",
-                  },
-                  {
-                    text: "Ask the exact questions that qualify YOUR ideal clients",
-                  },
-                  {
-                    text: "Perfect for coaches selling high-ticket offers",
-                  },
-                ].map((item) => (
+                  "Use our proven form or build your own in seconds",
+                  "Ask the exact questions that qualify YOUR ideal clients",
+                  "Perfect for coaches selling high-ticket offers",
+                ].map((text) => (
                   <div
-                    key={item.text}
-                    className="flex items-start gap-3 p-6 rounded-xl bg-gradient-to-b from-[#0F0F0F] to-[#070707] border border-white/[0.06] hover:border-white/[0.1] hover:shadow-[0_4px_20px_rgba(255,215,0,0.08)] hover:-translate-y-0.5 transition-all duration-300"
+                    key={text}
+                    className="flex items-start gap-3 p-6 rounded-xl bg-gradient-to-b from-[#0F0F0F] to-[#070707] border border-white/[0.06] hover:border-white/[0.1] hover:shadow-[0_4px_20px_rgba(210,172,71,0.08)] hover:-translate-y-0.5 transition-all duration-300"
                   >
-                    <CheckCircle2 className="h-5 w-5 text-[#B8860B] mt-0.5 flex-shrink-0" />
+                    <CheckCircle2 className="h-5 w-5 text-[#D2AC47] mt-0.5 flex-shrink-0" />
                     <p className="text-gray-300 font-medium leading-relaxed">
-                      {item.text}
+                      {text}
                     </p>
                   </div>
                 ))}
