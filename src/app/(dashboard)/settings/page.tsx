@@ -272,6 +272,14 @@ export default function SettingsPage() {
     setCustomQuestions(customQuestions.filter((_, i) => i !== index));
   }
 
+  function moveQuestion(index: number, direction: "up" | "down") {
+    const newIndex = direction === "up" ? index - 1 : index + 1;
+    if (newIndex < 0 || newIndex >= customQuestions.length) return;
+    const updated = [...customQuestions];
+    [updated[index], updated[newIndex]] = [updated[newIndex], updated[index]];
+    setCustomQuestions(updated);
+  }
+
   function updateQuestion(
     index: number,
     field: keyof CustomQuestion,
@@ -413,8 +421,8 @@ export default function SettingsPage() {
           <CollapsibleCard
             key={section.id}
             icon={<ListChecks className="h-5 w-5 text-[#D4A017]" />}
-            title="Custom Form Questions"
-            description="Add extra questions to your lead form. These appear after the default fitness questions."
+            title="Custom Form Builder"
+            description="Build your own lead form. If you add questions here, they replace the default fitness questions. Name, email, and phone are always included."
             defaultOpen
             onMoveUp={canMoveUp ? () => moveSection(index, "up") : undefined}
             onMoveDown={canMoveDown ? () => moveSection(index, "down") : undefined}
@@ -422,8 +430,9 @@ export default function SettingsPage() {
             <div className="space-y-4">
               {customQuestions.length === 0 && (
                 <p className="text-sm text-gray-500 text-center py-4">
-                  No custom questions yet. Click &quot;Add Question&quot; to get
-                  started.
+                  No custom questions yet. Your form uses the default fitness
+                  coaching questions. Click &quot;Add Question&quot; to build
+                  your own.
                 </p>
               )}
 
@@ -432,6 +441,24 @@ export default function SettingsPage() {
                   key={i}
                   className="flex items-start gap-3 p-4 rounded-lg border border-white/10 bg-white/[0.03]"
                 >
+                  <div className="flex flex-col gap-1 mt-1">
+                    <button
+                      onClick={() => moveQuestion(i, "up")}
+                      disabled={i === 0}
+                      className="p-1 rounded hover:bg-white/10 text-gray-500 hover:text-white disabled:opacity-20 disabled:cursor-not-allowed transition-colors"
+                      aria-label="Move question up"
+                    >
+                      <ArrowUp className="h-3.5 w-3.5" />
+                    </button>
+                    <button
+                      onClick={() => moveQuestion(i, "down")}
+                      disabled={i === customQuestions.length - 1}
+                      className="p-1 rounded hover:bg-white/10 text-gray-500 hover:text-white disabled:opacity-20 disabled:cursor-not-allowed transition-colors"
+                      aria-label="Move question down"
+                    >
+                      <ArrowDown className="h-3.5 w-3.5" />
+                    </button>
+                  </div>
                   <div className="flex-1 space-y-3">
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                       <div className="space-y-1">
