@@ -19,6 +19,7 @@ import {
   DollarSign,
   Clock,
   PhoneOff,
+  ArrowRight,
 } from "lucide-react";
 import { toast } from "sonner";
 import Link from "next/link";
@@ -247,6 +248,20 @@ export default function DashboardPage() {
             </div>
           ))}
         </div>
+
+        {/* Customize Form Card */}
+        <Link
+          href="/settings"
+          className="block p-4 rounded-xl glass-card border border-white/[0.06] hover:border-[#D2AC47]/20 transition-all group"
+        >
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="text-sm font-semibold text-white group-hover:text-[#ECCA66] transition-colors">Customize your form</h3>
+              <p className="text-xs text-gray-500 mt-0.5">Add custom questions to qualify leads your way</p>
+            </div>
+            <ArrowRight className="h-4 w-4 text-gray-600 group-hover:text-[#D2AC47] transition-colors" />
+          </div>
+        </Link>
 
         {/* Recent Leads Table */}
         <div className="glass-card rounded-xl overflow-hidden">
