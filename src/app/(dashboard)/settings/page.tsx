@@ -421,9 +421,6 @@ export default function SettingsPage() {
           <CollapsibleCard
             key={section.id}
             icon={<ListChecks className="h-5 w-5 text-[#ECCA66]" />}
-            title="Custom Form Questions"
-            description="Add extra questions to your lead form. These appear after the default fitness questions."
-            icon={<ListChecks className="h-5 w-5 text-[#D4A017]" />}
             title="Custom Form Builder"
             description="Build your own lead form. If you add questions here, they replace the default fitness questions. Name, email, and phone are always included."
             defaultOpen
