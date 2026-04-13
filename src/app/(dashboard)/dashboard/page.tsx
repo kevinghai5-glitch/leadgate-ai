@@ -251,7 +251,7 @@ export default function DashboardPage() {
 
         {/* Customize Form Card */}
         <Link
-          href="/settings"
+          href="/dashboard/form-builder"
           className="block p-4 rounded-xl glass-card border border-white/[0.06] hover:border-[#D2AC47]/20 transition-all group"
         >
           <div className="flex items-center justify-between">
