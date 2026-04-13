@@ -22,11 +22,13 @@ import {
   PanelLeft,
   ExternalLink,
   CheckSquare,
+  ListChecks,
 } from "lucide-react";
 
 const navigation = [
   { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
   { name: "Leads", href: "/dashboard/leads", icon: Users },
+  { name: "Form Builder", href: "/dashboard/form-builder", icon: ListChecks },
   { name: "Settings", href: "/settings", icon: Settings },
   { name: "Billing", href: "/billing", icon: CreditCard },
 ];
