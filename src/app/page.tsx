@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Navbar } from "@/components/navbar";
 import { AnimateOnScroll } from "@/components/animate-on-scroll";
 import { DottedSurface } from "@/components/ui/dotted-surface";
+import { DemoVideo } from "@/components/ui/demo-video";
 import { auth } from "@/lib/auth";
 import {
   Zap,
@@ -115,6 +116,33 @@ export default async function HomePage() {
                   <span className="flex items-center gap-1.5">
                     <CheckCircle2 className="h-4 w-4 text-emerald-500/80" />
                     Cancel anytime
+                  </span>
+                </div>
+              </div>
+            </AnimateOnScroll>
+
+            {/* Demo Video */}
+            <AnimateOnScroll delay={200}>
+              <div className="mt-16 max-w-4xl mx-auto">
+                <p className="text-sm text-gray-500 text-center mb-4">
+                  Watch how it works in 60 seconds
+                </p>
+                <DemoVideo
+                  src="/demo.mp4"
+                  poster="/demo-poster.jpg"
+                />
+                <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-8 text-sm text-gray-400">
+                  <span className="flex items-center gap-2">
+                    <CheckCircle2 className="h-4 w-4 text-[#D2AC47]" />
+                    Filter out low-quality leads automatically
+                  </span>
+                  <span className="flex items-center gap-2">
+                    <CheckCircle2 className="h-4 w-4 text-[#D2AC47]" />
+                    Only qualified prospects book calls
+                  </span>
+                  <span className="flex items-center gap-2">
+                    <CheckCircle2 className="h-4 w-4 text-[#D2AC47]" />
+                    Close more with fewer calls
                   </span>
                 </div>
               </div>
