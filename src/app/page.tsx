@@ -69,7 +69,9 @@ export default async function HomePage() {
         <section className="pt-32 pb-28 relative">
           {/* Animated gold dotted surface — hero background */}
           <DottedSurface className="absolute inset-0 w-full h-full overflow-hidden" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_40%,rgba(210,172,71,0.06)_0%,transparent_100%)] pointer-events-none" />
+          {/* Soft gold spotlight behind headline */}
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_40%_at_50%_35%,rgba(245,208,122,0.10)_0%,transparent_70%)] pointer-events-none" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_90%_60%_at_50%_30%,rgba(201,169,91,0.06)_0%,transparent_100%)] pointer-events-none" />
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
             <AnimateOnScroll>
               <div className="text-center max-w-4xl mx-auto">
@@ -77,13 +79,20 @@ export default async function HomePage() {
                   <Dumbbell className="h-4 w-4" />
                   Built for High-Ticket Online Fitness Coaches
                 </div>
-                <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-white leading-[1.1]">
+                <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-white leading-[1.05] relative">
                   Sign{" "}
-                  <span className="bg-gradient-to-r from-[#ECCA66] to-[#D2AC47] bg-clip-text text-transparent">
-                    MORE premium clients
+                  <span className="bg-gradient-to-b from-[#F5D07A] via-[#E5BE5F] to-[#C9A95B] bg-clip-text text-transparent drop-shadow-[0_0_30px_rgba(245,208,122,0.25)]">
+                    MORE
                   </span>{" "}
-                  every month
+                  <span className="text-white">premium</span>{" "}
+                  <span className="bg-gradient-to-b from-[#F5D07A] via-[#E5BE5F] to-[#C9A95B] bg-clip-text text-transparent drop-shadow-[0_0_30px_rgba(245,208,122,0.25)]">
+                    clients
+                  </span>{" "}
+                  <span className="text-white">every month</span>
                 </h1>
+                {/* Subtle gold light streak under headline */}
+                <div className="mx-auto mt-2 h-[2px] w-[60%] max-w-md bg-gradient-to-r from-transparent via-[#F5D07A]/60 to-transparent blur-[1px]" />
+                <div className="mx-auto -mt-[2px] h-[1px] w-[40%] max-w-xs bg-gradient-to-r from-transparent via-[#F5D07A] to-transparent" />
                 <p className="mt-6 text-xl text-gray-400 max-w-2xl mx-auto leading-relaxed">
                   LeadGate AI pre-qualifies every prospect before they book a
                   call — so you only spend time with people who are ready to
@@ -93,14 +102,14 @@ export default async function HomePage() {
                   <Button
                     size="lg"
                     asChild
-                    className="bg-gradient-to-r from-[#D2AC47] to-[#B08B73] hover:from-[#ECCA66] hover:to-[#D2AC47] text-black font-semibold text-lg px-8 py-6 shadow-lg shadow-[rgba(210,172,71,0.15)] hover:shadow-[rgba(210,172,71,0.25)] hover:scale-[1.02] transition-all duration-200"
+                    className="group relative bg-gradient-to-b from-[#F5D07A] via-[#D2AC47] to-[#B08B73] hover:from-[#F5D07A] hover:via-[#ECCA66] hover:to-[#D2AC47] text-black font-semibold text-lg px-8 py-6 shadow-[0_8px_24px_-4px_rgba(210,172,71,0.35)] hover:shadow-[0_12px_32px_-4px_rgba(245,208,122,0.5)] hover:scale-[1.02] hover:-translate-y-0.5 transition-all duration-300 ease-out"
                   >
                     <Link href="/signup">
                       Start Getting Better Leads
-                      <ArrowRight className="ml-2 h-5 w-5" />
+                      <ArrowRight className="ml-2 h-5 w-5 transition-transform duration-300 group-hover:translate-x-0.5" />
                     </Link>
                   </Button>
-                  <Button size="lg" variant="outline" asChild className="text-lg px-8 py-6 border-white/10 bg-white/[0.03] text-gray-300 hover:bg-white/[0.07] hover:text-white hover:border-white/20 transition-all duration-200">
+                  <Button size="lg" variant="outline" asChild className="text-lg px-8 py-6 border-[#D2AC47]/30 bg-black/40 text-white hover:bg-[#D2AC47]/10 hover:border-[#D2AC47]/60 hover:shadow-[0_0_20px_rgba(210,172,71,0.15)] transition-all duration-300">
                     <Link href="#how-it-works">See How It Works</Link>
                   </Button>
                 </div>
