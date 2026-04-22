@@ -40,13 +40,24 @@ export function DottedSurface({ className, ...props }: DottedSurfaceProps) {
     const positions: number[] = [];
     const colors: number[] = [];
 
-    // White dots
+    // Premium gold palette — randomly assigned per dot for variation
+    const goldPalette: Array<[number, number, number]> = [
+      [164 / 255, 122 / 255, 30 / 255],   // #a47a1e
+      [211 / 255, 168 / 255, 76 / 255],   // #d3a84c
+      [255 / 255, 236 / 255, 148 / 255],  // #ffec94
+      [230 / 255, 190 / 255, 105 / 255],  // #e6be69
+      [255 / 255, 216 / 255, 124 / 255],  // #ffd87c
+      [181 / 255, 143 / 255, 62 / 255],   // #b58f3e
+      [149 / 255, 109 / 255, 19 / 255],   // #956d13
+    ];
+
     for (let ix = 0; ix < AMOUNTX; ix++) {
       for (let iy = 0; iy < AMOUNTY; iy++) {
         const x = ix * SEPARATION - (AMOUNTX * SEPARATION) / 2;
         const z = iy * SEPARATION - (AMOUNTY * SEPARATION) / 2;
         positions.push(x, 0, z);
-        colors.push(1.0, 1.0, 1.0); // white
+        const c = goldPalette[Math.floor(Math.random() * goldPalette.length)];
+        colors.push(c[0], c[1], c[2]);
       }
     }
 
@@ -54,11 +65,13 @@ export function DottedSurface({ className, ...props }: DottedSurfaceProps) {
     geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
 
     const material = new THREE.PointsMaterial({
-      size: 6,
+      size: 7,
       vertexColors: true,
       transparent: true,
-      opacity: 0.35,
+      opacity: 0.55,
       sizeAttenuation: true,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false,
     });
 
     const points = new THREE.Points(geometry, material);
