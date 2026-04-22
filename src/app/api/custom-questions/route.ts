@@ -29,6 +29,12 @@ export async function GET(req: Request) {
 
     return NextResponse.json(questions);
   } catch (error) {
+    // If the table doesn't exist yet (migration pending), return empty list
+    // so the UI doesn't break.
+    const msg = error instanceof Error ? error.message : "";
+    if (msg.includes("does not exist") || msg.includes("P2021")) {
+      return NextResponse.json([]);
+    }
     console.error("Get custom questions error:", error);
     return NextResponse.json(
       { error: "Failed to fetch custom questions" },
