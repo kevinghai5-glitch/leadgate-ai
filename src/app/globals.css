@@ -244,3 +244,12 @@
     gap: 0.75rem;
   }
 }
+
+@keyframes gold-glow {
+  0%, 100% {
+    box-shadow: 0 0 30px rgba(210, 172, 71, 0.15);
+  }
+  50% {
+    box-shadow: 0 0 45px rgba(245, 208, 122, 0.3);
+  }
+}
