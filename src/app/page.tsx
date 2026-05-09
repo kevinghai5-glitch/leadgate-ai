@@ -117,7 +117,7 @@ export default async function HomePage() {
                       Start Filtering Leads Now
                     </HeroCTA>
                     <VideoModal
-                      videoSrc="/demo.mp4"
+                      embedUrl="https://www.youtube.com/embed/QAOoRF4M3r0?rel=0&autoplay=1"
                       triggerLabel="See How It Works (60 sec)"
                       triggerClassName="group inline-flex items-center justify-center bg-black/40 hover:bg-[#D2AC47]/10 border border-[#D2AC47]/30 hover:border-[#D2AC47]/60 hover:shadow-[0_0_20px_rgba(210,172,71,0.15)] text-white text-base font-medium px-6 py-4 rounded-xl transition-all duration-300"
                     />
