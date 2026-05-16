@@ -2,6 +2,8 @@
 
 Intelligent lead qualification SaaS for agencies, coaches, and consultants. Automatically score and qualify leads with AI before they book sales calls.
 
+> **Quick Start:** Clone the repo, copy `.env.example` to `.env`, run `npm install && npm run dev`, and open `http://localhost:3000`.
+
 ## Features
 
 - **AI Lead Scoring** — GPT-powered evaluation of budget, timeline, urgency, and problem quality
