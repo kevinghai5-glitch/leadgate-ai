@@ -2141,10 +2141,29 @@ const LANDING_CSS = `
           gap: 24px !important;
         }
         .lg-steps-grid,
-        .lg-features-grid,
         .lg-pains-grid,
         .lg-cases-grid {
           grid-template-columns: 1fr;
+        }
+        .lg-features-grid {
+          display: flex !important;
+          grid-template-columns: none !important;
+          overflow-x: auto !important;
+          overflow-y: hidden !important;
+          scroll-snap-type: x mandatory;
+          -webkit-overflow-scrolling: touch;
+          scrollbar-width: none;
+          gap: 1px !important;
+          /* Trailing gap on the right so the last card can snap fully into view */
+          padding-right: 0;
+        }
+        .lg-features-grid::-webkit-scrollbar {
+          display: none;
+        }
+        .lg-feature-cell {
+          flex: 0 0 86%;
+          min-width: 0;
+          scroll-snap-align: start;
         }
         .lg-step-connector {
           display: none;
@@ -2266,9 +2285,8 @@ const LANDING_CSS = `
           max-width: none !important;
           z-index: 60 !important;
         }
-        .lg-features-grid {
-          /* 1px gap creates horizontal dividers between stacked cards */
-          gap: 1px !important;
+        .lg-feature-cell {
+          flex: 0 0 88%;
         }
       }
 
