@@ -153,6 +153,8 @@ function Icon({ name, size = 20, stroke = 1.5, className = "", style = {} }: Ico
       return <svg {...common}><path d="M3 3v18h18M7 15l4-4 3 3 6-6" /></svg>;
     case "plus":
       return <svg {...common}><path d="M12 5v14M5 12h14" /></svg>;
+    case "menu":
+      return <svg {...common}><path d="M3 12h18M3 6h18M3 18h18" /></svg>;
     case "logo": {
       const gid = `lg-${size}-${stroke}`;
       return (
@@ -253,12 +255,23 @@ function BrandLogo({ name }: { name: string }) {
 
 function Nav({ onCTA }: { onCTA: () => void }) {
   const [scrolled, setScrolled] = React.useState(false);
+  const [mobileOpen, setMobileOpen] = React.useState(false);
 
   React.useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener("scroll", onScroll);
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
+  React.useEffect(() => {
+    if (mobileOpen) {
+      const prev = document.body.style.overflow;
+      document.body.style.overflow = "hidden";
+      return () => {
+        document.body.style.overflow = prev;
+      };
+    }
+  }, [mobileOpen]);
 
   const links = [
     { label: "How It Works", href: "#how" },
@@ -272,10 +285,12 @@ function Nav({ onCTA }: { onCTA: () => void }) {
     e.preventDefault();
     const el = document.querySelector(href);
     if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+    setMobileOpen(false);
   };
 
   return (
     <header
+      className="lg-nav-header"
       style={{
         position: "fixed",
         top: 0,
@@ -283,13 +298,14 @@ function Nav({ onCTA }: { onCTA: () => void }) {
         right: 0,
         zIndex: 50,
         transition: "all .3s ease",
-        background: scrolled ? "rgba(7,7,7,0.85)" : "transparent",
-        backdropFilter: scrolled ? "blur(18px) saturate(140%)" : "none",
-        WebkitBackdropFilter: scrolled ? "blur(18px) saturate(140%)" : "none",
-        borderBottom: scrolled ? "1px solid rgba(255,216,124,0.08)" : "1px solid transparent",
+        background: scrolled || mobileOpen ? "rgba(7,7,7,0.85)" : "transparent",
+        backdropFilter: scrolled || mobileOpen ? "blur(18px) saturate(140%)" : "none",
+        WebkitBackdropFilter: scrolled || mobileOpen ? "blur(18px) saturate(140%)" : "none",
+        borderBottom: scrolled || mobileOpen ? "1px solid rgba(255,216,124,0.08)" : "1px solid transparent",
       }}
     >
       <nav
+        className="lg-nav"
         style={{
           maxWidth: 1280,
           margin: "0 auto",
@@ -311,7 +327,7 @@ function Nav({ onCTA }: { onCTA: () => void }) {
           </span>
         </a>
 
-        <div style={{ display: "flex", alignItems: "center", gap: 28 }}>
+        <div className="lg-nav-links" style={{ display: "flex", alignItems: "center", gap: 28 }}>
           {links.map((l) => (
             <a
               key={l.href}
@@ -326,10 +342,10 @@ function Nav({ onCTA }: { onCTA: () => void }) {
           ))}
         </div>
 
-        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+        <div className="lg-nav-ctas" style={{ display: "flex", alignItems: "center", gap: 12 }}>
           <Link
             href="/login"
-            className="lg-btn-ghost"
+            className="lg-btn-ghost lg-nav-login"
             style={{
               padding: "9px 18px",
               borderRadius: 10,
@@ -344,7 +360,7 @@ function Nav({ onCTA }: { onCTA: () => void }) {
             Log in
           </Link>
           <button
-            className="lg-btn-gold"
+            className="lg-btn-gold lg-nav-cta"
             style={{
               padding: "10px 20px",
               borderRadius: 10,
@@ -358,8 +374,97 @@ function Nav({ onCTA }: { onCTA: () => void }) {
           >
             Get Started <Icon name="arrow-right" size={14} stroke={2.2} />
           </button>
+          <button
+            type="button"
+            aria-label={mobileOpen ? "Close menu" : "Open menu"}
+            aria-expanded={mobileOpen}
+            className="lg-nav-menu-btn"
+            onClick={() => setMobileOpen((v) => !v)}
+            style={{
+              display: "none",
+              background: "rgba(255,255,255,0.03)",
+              border: "1px solid rgba(255,216,124,0.18)",
+              color: "#f5f1e6",
+              borderRadius: 10,
+              padding: 9,
+              cursor: "pointer",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <Icon name={mobileOpen ? "x" : "menu"} size={18} stroke={2} />
+          </button>
         </div>
       </nav>
+
+      {mobileOpen && (
+        <div
+          className="lg-mobile-drawer"
+          style={{
+            borderTop: "1px solid rgba(255,216,124,0.08)",
+            background: "rgba(7,7,7,0.96)",
+            backdropFilter: "blur(18px) saturate(140%)",
+            WebkitBackdropFilter: "blur(18px) saturate(140%)",
+            padding: "16px 20px 24px",
+          }}
+        >
+          <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+            {links.map((l) => (
+              <a
+                key={l.href}
+                href={l.href}
+                onClick={(e) => smoothScroll(e, l.href)}
+                style={{
+                  color: "#d4cdbc",
+                  textDecoration: "none",
+                  fontSize: 16,
+                  fontWeight: 500,
+                  padding: "12px 4px",
+                  borderBottom: "1px solid rgba(255,216,124,0.06)",
+                }}
+              >
+                {l.label}
+              </a>
+            ))}
+          </div>
+          <div style={{ display: "flex", flexDirection: "column", gap: 10, marginTop: 18 }}>
+            <Link
+              href="/login"
+              onClick={() => setMobileOpen(false)}
+              className="lg-btn-ghost"
+              style={{
+                padding: "12px 18px",
+                borderRadius: 10,
+                fontSize: 15,
+                fontWeight: 500,
+                textDecoration: "none",
+                textAlign: "center",
+              }}
+            >
+              Log in
+            </Link>
+            <button
+              className="lg-btn-gold"
+              style={{
+                padding: "13px 20px",
+                borderRadius: 10,
+                fontSize: 15,
+                cursor: "pointer",
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: 8,
+              }}
+              onClick={() => {
+                setMobileOpen(false);
+                onCTA();
+              }}
+            >
+              Get Started <Icon name="arrow-right" size={15} stroke={2.4} />
+            </button>
+          </div>
+        </div>
+      )}
     </header>
   );
 }
@@ -402,8 +507,11 @@ function BadCalendarCard({
             <div
               key={lead.id}
               className={`lg-lead-row ${active ? "active" : ""}`}
+              role="button"
+              tabIndex={0}
               onMouseEnter={() => setActiveId(`bad-${lead.id}`)}
               onMouseLeave={() => setActiveId(null)}
+              onClick={() => setActiveId(active ? null : `bad-${lead.id}`)}
               style={{ display: "flex", alignItems: "center", gap: 12, padding: "10px 10px", borderRadius: 10, position: "relative" }}
             >
               <div
@@ -502,8 +610,11 @@ function GoodCalendarCard({
             <div
               key={lead.id}
               className={`lg-lead-row ${active ? "active" : ""}`}
+              role="button"
+              tabIndex={0}
               onMouseEnter={() => setActiveId(`good-${lead.id}`)}
               onMouseLeave={() => setActiveId(null)}
+              onClick={() => setActiveId(active ? null : `good-${lead.id}`)}
               style={{ display: "flex", alignItems: "center", gap: 12, padding: "10px 10px", borderRadius: 10 }}
             >
               <div
@@ -559,6 +670,7 @@ function ReasoningPopover({ activeId }: { activeId: string | null }) {
 
   return (
     <div
+      className="lg-reasoning-popover"
       style={{
         position: "absolute",
         bottom: -120,
@@ -595,7 +707,7 @@ function Hero({ onCTA, onVideo }: { onCTA: () => void; onVideo: () => void }) {
   const [activeId, setActiveId] = React.useState<string | null>(null);
 
   return (
-    <section id="top" style={{ position: "relative", paddingTop: 140, paddingBottom: 80, overflow: "hidden" }} className="lg-bg-gold-glow">
+    <section id="top" className="lg-bg-gold-glow lg-hero-section" style={{ position: "relative", paddingTop: 140, paddingBottom: 80, overflow: "hidden" }}>
       <div className="lg-dot-grid" style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: 240, pointerEvents: "none" }} />
 
       <div className="lg-hero-grid">
@@ -690,12 +802,13 @@ function Hero({ onCTA, onVideo }: { onCTA: () => void; onVideo: () => void }) {
         </div>
 
         {/* RIGHT */}
-        <div style={{ position: "relative" }}>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24, alignItems: "start", position: "relative" }}>
+        <div className="lg-hero-right" style={{ position: "relative" }}>
+          <div className="lg-hero-cards-row" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24, alignItems: "start", position: "relative" }}>
             <BadCalendarCard activeId={activeId} setActiveId={setActiveId} />
             <GoodCalendarCard activeId={activeId} setActiveId={setActiveId} />
 
             <div
+              className="lg-hero-pulse"
               style={{
                 position: "absolute",
                 left: "50%",
@@ -721,9 +834,9 @@ function Hero({ onCTA, onVideo }: { onCTA: () => void; onVideo: () => void }) {
 
           <ReasoningPopover activeId={activeId} />
 
-          <div style={{ position: "absolute", top: -34, left: 0, fontSize: 11, color: "#6a6458", display: "flex", alignItems: "center", gap: 6 }}>
+          <div className="lg-hero-hint" style={{ position: "absolute", top: -34, left: 0, fontSize: 11, color: "#6a6458", display: "flex", alignItems: "center", gap: 6 }}>
             <div style={{ width: 6, height: 6, borderRadius: "50%", background: "#ffd87c", animation: "lgPulseRing 1.5s ease-out infinite" }} />
-            Hover any lead to see AI reasoning
+            <span className="lg-hero-hint-text">Hover any lead to see AI reasoning</span>
           </div>
         </div>
       </div>
@@ -987,7 +1100,7 @@ function Logos() {
 
 function HowItWorks() {
   return (
-    <section id="how" style={{ padding: "100px 32px", maxWidth: 1280, margin: "0 auto" }}>
+    <section id="how" className="lg-section lg-section-lg" style={{ padding: "100px 32px", maxWidth: 1280, margin: "0 auto" }}>
       <div style={{ textAlign: "center", marginBottom: 64 }}>
         <div style={{ fontSize: 11, letterSpacing: "0.2em", color: "#ffd87c", fontWeight: 600, textTransform: "uppercase", marginBottom: 14 }}>
           HOW IT WORKS
@@ -1050,7 +1163,7 @@ function HowItWorks() {
 
 function Features() {
   return (
-    <section id="features" style={{ padding: "80px 32px", maxWidth: 1280, margin: "0 auto" }}>
+    <section id="features" className="lg-section" style={{ padding: "80px 32px", maxWidth: 1280, margin: "0 auto" }}>
       <div style={{ marginBottom: 56, display: "flex", alignItems: "end", justifyContent: "space-between", gap: 40, flexWrap: "wrap" }}>
         <div>
           <div style={{ fontSize: 11, letterSpacing: "0.2em", color: "#ffd87c", fontWeight: 600, textTransform: "uppercase", marginBottom: 14 }}>
@@ -1113,7 +1226,7 @@ function Features() {
 
 function Testimonials() {
   return (
-    <section style={{ padding: "80px 32px", maxWidth: 1280, margin: "0 auto" }}>
+    <section className="lg-section" style={{ padding: "80px 32px", maxWidth: 1280, margin: "0 auto" }}>
       <div style={{ textAlign: "center", marginBottom: 56 }}>
         <div style={{ fontSize: 11, letterSpacing: "0.2em", color: "#ffd87c", fontWeight: 600, textTransform: "uppercase", marginBottom: 14 }}>
           SOUND FAMILIAR?
@@ -1175,7 +1288,7 @@ function Testimonials() {
 
 function Cases() {
   return (
-    <section id="cases" style={{ padding: "80px 32px", maxWidth: 1280, margin: "0 auto" }}>
+    <section id="cases" className="lg-section" style={{ padding: "80px 32px", maxWidth: 1280, margin: "0 auto" }}>
       <div style={{ marginBottom: 48 }}>
         <div style={{ fontSize: 11, letterSpacing: "0.2em", color: "#ffd87c", fontWeight: 600, textTransform: "uppercase", marginBottom: 14 }}>
           CASE STUDIES
@@ -1189,6 +1302,7 @@ function Cases() {
         {CASE_STUDIES.map((c, i) => (
           <div
             key={i}
+            className="lg-case-card"
             style={{
               background: "#0d0d0d",
               border: "1px solid rgba(255,216,124,0.12)",
@@ -1204,7 +1318,7 @@ function Cases() {
               <Icon name="arrow-up-right" size={18} className="lg-gold-text" />
             </div>
 
-            <div style={{ display: "grid", gridTemplateColumns: "1fr auto 1fr", gap: 14, alignItems: "center", marginBottom: 22 }}>
+            <div className="lg-case-inner" style={{ display: "grid", gridTemplateColumns: "1fr auto 1fr", gap: 14, alignItems: "center", marginBottom: 22 }}>
               <div style={{ padding: 16, borderRadius: 12, background: "rgba(255,92,92,0.05)", border: "1px solid rgba(255,92,92,0.15)" }}>
                 <div style={{ fontSize: 10, color: "#ff8a8a", textTransform: "uppercase", letterSpacing: "0.1em", fontWeight: 600, marginBottom: 10 }}>
                   Before
@@ -1216,7 +1330,7 @@ function Cases() {
                   </div>
                 ))}
               </div>
-              <Icon name="arrow-right" size={20} className="lg-gold-text" />
+              <Icon name="arrow-right" size={20} className="lg-gold-text lg-case-arrow" />
               <div className="lg-gold-border" style={{ padding: 16, borderRadius: 12 }}>
                 <div className="lg-gold-text" style={{ fontSize: 10, textTransform: "uppercase", letterSpacing: "0.1em", fontWeight: 700, marginBottom: 10 }}>
                   After
@@ -1254,7 +1368,7 @@ function Pricing({ onCTA }: { onCTA: () => void }) {
   ];
 
   return (
-    <section id="pricing" style={{ padding: "80px 32px", maxWidth: 1280, margin: "0 auto" }}>
+    <section id="pricing" className="lg-section" style={{ padding: "80px 32px", maxWidth: 1280, margin: "0 auto" }}>
       <div style={{ textAlign: "center", marginBottom: 56 }}>
         <div style={{ fontSize: 11, letterSpacing: "0.2em", color: "#ffd87c", fontWeight: 600, textTransform: "uppercase", marginBottom: 14 }}>
           PRICING
@@ -1269,7 +1383,7 @@ function Pricing({ onCTA }: { onCTA: () => void }) {
 
       <div style={{ maxWidth: 520, margin: "0 auto" }}>
         <div
-          className="lg-gold-border"
+          className="lg-gold-border lg-pricing-card"
           style={{
             background: "linear-gradient(180deg, #120d02 0%, #0a0805 100%)",
             borderRadius: 20,
@@ -1302,7 +1416,7 @@ function Pricing({ onCTA }: { onCTA: () => void }) {
           <div style={{ fontSize: 13, color: "#8a7d6e", marginBottom: 26 }}>For high-ticket online fitness coaches.</div>
 
           <div style={{ display: "flex", alignItems: "baseline", gap: 4, marginBottom: 28 }}>
-            <span className="lg-gold-text" style={{ fontSize: 64, fontWeight: 700, letterSpacing: "-0.035em", lineHeight: 1 }}>
+            <span className="lg-gold-text lg-pricing-price" style={{ fontSize: 64, fontWeight: 700, letterSpacing: "-0.035em", lineHeight: 1 }}>
               $499
             </span>
             <span style={{ fontSize: 16, color: "#8a7d6e" }}>/month</span>
@@ -1366,7 +1480,7 @@ function Pricing({ onCTA }: { onCTA: () => void }) {
 function FAQ() {
   const [open, setOpen] = React.useState<number>(0);
   return (
-    <section id="faq" style={{ padding: "80px 32px", maxWidth: 900, margin: "0 auto" }}>
+    <section id="faq" className="lg-section" style={{ padding: "80px 32px", maxWidth: 900, margin: "0 auto" }}>
       <div style={{ textAlign: "center", marginBottom: 48 }}>
         <div style={{ fontSize: 11, letterSpacing: "0.2em", color: "#ffd87c", fontWeight: 600, textTransform: "uppercase", marginBottom: 14 }}>
           FAQ
@@ -1429,9 +1543,9 @@ function FAQ() {
 
 function FinalCTA({ onCTA }: { onCTA: () => void }) {
   return (
-    <section style={{ padding: "80px 32px", maxWidth: 1280, margin: "0 auto" }}>
+    <section className="lg-section" style={{ padding: "80px 32px", maxWidth: 1280, margin: "0 auto" }}>
       <div
-        className="lg-gold-border"
+        className="lg-gold-border lg-cta-card"
         style={{
           borderRadius: 24,
           padding: "64px 40px",
@@ -1566,7 +1680,7 @@ function SignupModal({ open, onClose }: { open: boolean; onClose: () => void }) 
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="lg-gold-border"
+        className="lg-gold-border lg-signup-modal"
         style={{ background: "#0a0805", borderRadius: 20, padding: 40, width: "min(480px, 100%)", position: "relative" }}
       >
         <button
@@ -1653,7 +1767,7 @@ function VideoModal({ open, onClose }: { open: boolean; onClose: () => void }) {
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="lg-gold-border"
+        className="lg-gold-border lg-video-modal"
         style={{ background: "#0a0805", borderRadius: 18, padding: 16, width: "min(880px, 100%)", position: "relative" }}
       >
         <button
@@ -2002,12 +2116,29 @@ const LANDING_CSS = `
         gap: 32px;
       }
 
+      /* ── Tablet (≤ 960px) ─────────────────────────────────────────────── */
       @media (max-width: 960px) {
+        .lg-hero-section {
+          padding-top: 112px !important;
+          padding-bottom: 56px !important;
+        }
         .lg-hero-grid {
           grid-template-columns: 1fr;
+          gap: 48px;
+          padding: 0 24px;
+        }
+        .lg-hero-right {
+          margin-top: 8px;
+        }
+        .lg-hero-hint {
+          position: static !important;
+          top: auto !important;
+          margin-bottom: 12px;
         }
         .lg-social-grid {
           grid-template-columns: 1fr 1fr;
+          padding: 20px 22px !important;
+          gap: 24px !important;
         }
         .lg-steps-grid,
         .lg-features-grid,
@@ -2021,13 +2152,135 @@ const LANDING_CSS = `
         .lg-footer-grid {
           grid-template-columns: 1fr 1fr;
         }
+        .lg-section {
+          padding-left: 24px !important;
+          padding-right: 24px !important;
+          padding-top: 64px !important;
+          padding-bottom: 64px !important;
+        }
+        .lg-section-lg {
+          padding-top: 72px !important;
+          padding-bottom: 72px !important;
+        }
+        .lg-case-inner {
+          grid-template-columns: 1fr !important;
+          gap: 12px !important;
+        }
+        .lg-case-arrow {
+          transform: rotate(90deg);
+          justify-self: center;
+        }
+        .lg-case-card {
+          padding: 24px !important;
+        }
+        .lg-cta-card {
+          padding: 48px 28px !important;
+        }
+        .lg-pricing-card {
+          padding: 32px 26px !important;
+        }
+        .lg-pricing-price {
+          font-size: 56px !important;
+        }
       }
+
+      /* ── Phone (≤ 640px) ──────────────────────────────────────────────── */
       @media (max-width: 640px) {
+        .lg-nav {
+          padding: 14px 18px !important;
+          gap: 12px !important;
+        }
+        .lg-nav-links {
+          display: none !important;
+        }
+        .lg-nav-login {
+          display: none !important;
+        }
+        .lg-nav-cta {
+          display: none !important;
+        }
+        .lg-nav-menu-btn {
+          display: inline-flex !important;
+        }
+        .lg-hero-section {
+          padding-top: 104px !important;
+          padding-bottom: 48px !important;
+        }
+        .lg-hero-grid {
+          padding: 0 20px !important;
+          gap: 40px !important;
+        }
+        .lg-hero-cards-row {
+          grid-template-columns: 1fr !important;
+          gap: 36px !important;
+        }
+        .lg-hero-pulse {
+          left: 50% !important;
+          top: 50% !important;
+          transform: translate(-50%, -50%) rotate(90deg) !important;
+        }
+        .lg-hero-hint-text::after {
+          content: " (tap)";
+          color: #8a7d6e;
+        }
         .lg-social-grid {
-          grid-template-columns: 1fr;
+          grid-template-columns: 1fr !important;
+          gap: 18px !important;
+          padding: 18px 20px !important;
         }
         .lg-footer-grid {
           grid-template-columns: 1fr;
+          gap: 28px !important;
+        }
+        .lg-section {
+          padding-left: 20px !important;
+          padding-right: 20px !important;
+          padding-top: 56px !important;
+          padding-bottom: 56px !important;
+        }
+        .lg-section-lg {
+          padding-top: 64px !important;
+          padding-bottom: 64px !important;
+        }
+        .lg-cta-card {
+          padding: 40px 22px !important;
+          border-radius: 20px !important;
+        }
+        .lg-pricing-card {
+          padding: 28px 22px !important;
+        }
+        .lg-pricing-price {
+          font-size: 48px !important;
+        }
+        .lg-signup-modal {
+          padding: 28px 22px !important;
+        }
+        .lg-reasoning-popover {
+          position: fixed !important;
+          left: 16px !important;
+          right: 16px !important;
+          bottom: 16px !important;
+          top: auto !important;
+          transform: none !important;
+          width: auto !important;
+          max-width: none !important;
+          z-index: 60 !important;
+        }
+        .lg-features-grid {
+          /* 1px gap creates horizontal dividers between stacked cards */
+          gap: 1px !important;
+        }
+      }
+
+      /* ── Narrow phone (≤ 380px) ──────────────────────────────────────── */
+      @media (max-width: 380px) {
+        .lg-pricing-price {
+          font-size: 44px !important;
+        }
+        .lg-section,
+        .lg-hero-grid {
+          padding-left: 16px !important;
+          padding-right: 16px !important;
         }
       }
 `;
