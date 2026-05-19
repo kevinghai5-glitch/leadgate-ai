@@ -3,6 +3,28 @@
 import * as React from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { motion, type Variants } from "framer-motion";
+
+// ─── Motion presets ────────────────────────────────────────────────────────
+
+const EASE: [number, number, number, number] = [0.16, 1, 0.3, 1];
+
+const fadeUp: Variants = {
+  hidden: { opacity: 0, y: 14 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.55, ease: EASE } },
+};
+
+const stagger: Variants = {
+  hidden: {},
+  show: { transition: { staggerChildren: 0.06, delayChildren: 0.04 } },
+};
+
+const heroStagger: Variants = {
+  hidden: {},
+  show: { transition: { staggerChildren: 0.08, delayChildren: 0.1 } },
+};
+
+const VIEWPORT = { once: true, margin: "-80px" } as const;
 
 // ─── Data ──────────────────────────────────────────────────────────────────
 
@@ -712,8 +734,9 @@ function Hero({ onCTA, onVideo }: { onCTA: () => void; onVideo: () => void }) {
 
       <div className="lg-hero-grid">
         {/* LEFT */}
-        <div>
-          <div
+        <motion.div variants={heroStagger} initial="hidden" animate="show">
+          <motion.div
+            variants={fadeUp}
             style={{
               display: "inline-flex",
               alignItems: "center",
@@ -730,21 +753,21 @@ function Hero({ onCTA, onVideo }: { onCTA: () => void; onVideo: () => void }) {
           >
             <Icon name="sparkle" size={13} />
             Built for High-Ticket Online Fitness Coaches
-          </div>
+          </motion.div>
 
-          <h1 style={{ fontSize: "clamp(44px, 5.2vw, 72px)", lineHeight: 1.02, margin: 0, fontWeight: 600, letterSpacing: "-0.035em", color: "#f5f1e6" }}>
+          <motion.h1 variants={fadeUp} style={{ fontSize: "clamp(44px, 5.2vw, 72px)", lineHeight: 1.02, margin: 0, fontWeight: 600, letterSpacing: "-0.035em", color: "#f5f1e6" }}>
             Stop coaching
             <br />
             <span className="lg-gold-text" style={{ fontWeight: 500 }}>broke leads</span>
             <br />
             for free.
-          </h1>
+          </motion.h1>
 
-          <p style={{ fontSize: 17, lineHeight: 1.55, color: "#a49e8e", marginTop: 24, marginBottom: 28, maxWidth: 520 }}>
+          <motion.p variants={fadeUp} style={{ fontSize: 17, lineHeight: 1.55, color: "#a49e8e", marginTop: 24, marginBottom: 28, maxWidth: 520 }}>
             LeadGate AI pre-qualifies every prospect using advanced AI so you only get high-quality discovery calls with people who are serious, qualified, and ready to invest in premium online coaching.
-          </p>
+          </motion.p>
 
-          <ul style={{ listStyle: "none", padding: 0, margin: "0 0 36px 0", display: "flex", flexDirection: "column", gap: 10 }}>
+          <motion.ul variants={fadeUp} style={{ listStyle: "none", padding: 0, margin: "0 0 36px 0", display: "flex", flexDirection: "column", gap: 10 }}>
             {["Eliminate time-wasters", "Increase show-up rates", "Close more high-ticket clients"].map((t) => (
               <li key={t} style={{ display: "flex", alignItems: "center", gap: 10, fontSize: 15, color: "#d4cdbc" }}>
                 <span
@@ -765,9 +788,9 @@ function Hero({ onCTA, onVideo }: { onCTA: () => void; onVideo: () => void }) {
                 {t}
               </li>
             ))}
-          </ul>
+          </motion.ul>
 
-          <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
+          <motion.div variants={fadeUp} style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
             <button
               className="lg-btn-gold"
               onClick={onCTA}
@@ -798,11 +821,18 @@ function Hero({ onCTA, onVideo }: { onCTA: () => void; onVideo: () => void }) {
               </span>
               See How It Works
             </button>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
 
         {/* RIGHT */}
-        <div className="lg-hero-right" style={{ position: "relative" }}>
+        <motion.div
+          className="lg-hero-right"
+          style={{ position: "relative" }}
+          variants={fadeUp}
+          initial="hidden"
+          animate="show"
+          transition={{ duration: 0.6, delay: 0.25, ease: EASE }}
+        >
           <div className="lg-hero-cards-row" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24, alignItems: "start", position: "relative" }}>
             <BadCalendarCard activeId={activeId} setActiveId={setActiveId} />
             <GoodCalendarCard activeId={activeId} setActiveId={setActiveId} />
@@ -838,7 +868,7 @@ function Hero({ onCTA, onVideo }: { onCTA: () => void; onVideo: () => void }) {
             <div style={{ width: 6, height: 6, borderRadius: "50%", background: "#ffd87c", animation: "lgPulseRing 1.5s ease-out infinite" }} />
             <span className="lg-hero-hint-text">Hover any lead to see AI reasoning</span>
           </div>
-        </div>
+        </motion.div>
       </div>
     </section>
   );
@@ -1101,7 +1131,13 @@ function Logos() {
 function HowItWorks() {
   return (
     <section id="how" className="lg-section lg-section-lg" style={{ padding: "100px 32px", maxWidth: 1280, margin: "0 auto" }}>
-      <div style={{ textAlign: "center", marginBottom: 64 }}>
+      <motion.div
+        style={{ textAlign: "center", marginBottom: 64 }}
+        variants={fadeUp}
+        initial="hidden"
+        whileInView="show"
+        viewport={VIEWPORT}
+      >
         <div style={{ fontSize: 11, letterSpacing: "0.2em", color: "#ffd87c", fontWeight: 600, textTransform: "uppercase", marginBottom: 14 }}>
           HOW IT WORKS
         </div>
@@ -1111,9 +1147,9 @@ function HowItWorks() {
         <p style={{ fontSize: 16, color: "#a49e8e", maxWidth: 600, margin: "14px auto 0" }}>
           From signup to gating your first lead. Faster than making a coffee.
         </p>
-      </div>
+      </motion.div>
 
-      <div className="lg-steps-grid">
+      <motion.div className="lg-steps-grid" variants={stagger} initial="hidden" whileInView="show" viewport={VIEWPORT}>
         <div
           className="lg-step-connector"
           style={{
@@ -1127,8 +1163,10 @@ function HowItWorks() {
           }}
         />
         {STEPS.map((s, i) => (
-          <div
+          <motion.div
             key={i}
+            variants={fadeUp}
+            className="lg-step-card lg-card-hover"
             style={{
               background: "#0d0d0d",
               border: "1px solid rgba(255,216,124,0.1)",
@@ -1154,9 +1192,9 @@ function HowItWorks() {
             </div>
             <h3 style={{ margin: "0 0 10px", fontSize: 20, color: "#f5f1e6" }}>{s.title}</h3>
             <p style={{ margin: 0, fontSize: 14, lineHeight: 1.6, color: "#a49e8e" }}>{s.desc}</p>
-          </div>
+          </motion.div>
         ))}
-      </div>
+      </motion.div>
     </section>
   );
 }
@@ -1164,7 +1202,13 @@ function HowItWorks() {
 function Features() {
   return (
     <section id="features" className="lg-section" style={{ padding: "80px 32px", maxWidth: 1280, margin: "0 auto" }}>
-      <div style={{ marginBottom: 56, display: "flex", alignItems: "end", justifyContent: "space-between", gap: 40, flexWrap: "wrap" }}>
+      <motion.div
+        style={{ marginBottom: 56, display: "flex", alignItems: "end", justifyContent: "space-between", gap: 40, flexWrap: "wrap" }}
+        variants={fadeUp}
+        initial="hidden"
+        whileInView="show"
+        viewport={VIEWPORT}
+      >
         <div>
           <div style={{ fontSize: 11, letterSpacing: "0.2em", color: "#ffd87c", fontWeight: 600, textTransform: "uppercase", marginBottom: 14 }}>
             FEATURES
@@ -1176,9 +1220,9 @@ function Features() {
         <p style={{ fontSize: 15, color: "#a49e8e", maxWidth: 360, margin: 0 }}>
           Built from the ground up for coaches who are done wasting Tuesdays on discovery calls that go nowhere.
         </p>
-      </div>
+      </motion.div>
 
-      <div
+      <motion.div
         className="lg-features-grid"
         style={{
           background: "rgba(255,216,124,0.08)",
@@ -1186,10 +1230,15 @@ function Features() {
           overflow: "hidden",
           border: "1px solid rgba(255,216,124,0.08)",
         }}
+        variants={stagger}
+        initial="hidden"
+        whileInView="show"
+        viewport={VIEWPORT}
       >
         {FEATURES.map((f, i) => (
-          <div
+          <motion.div
             key={i}
+            variants={fadeUp}
             className="lg-feature-cell"
             style={{
               background: "#0a0a0a",
@@ -1197,7 +1246,7 @@ function Features() {
               display: "flex",
               flexDirection: "column",
               gap: 14,
-              transition: "background .2s ease",
+              transition: "background .2s ease, transform .35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow .35s cubic-bezier(0.16, 1, 0.3, 1)",
             }}
           >
             <div
@@ -1217,9 +1266,9 @@ function Features() {
             </div>
             <h3 style={{ margin: 0, fontSize: 17, color: "#f5f1e6" }}>{f.title}</h3>
             <p style={{ margin: 0, fontSize: 14, lineHeight: 1.6, color: "#a49e8e" }}>{f.desc}</p>
-          </div>
+          </motion.div>
         ))}
-      </div>
+      </motion.div>
     </section>
   );
 }
@@ -1227,7 +1276,13 @@ function Features() {
 function Testimonials() {
   return (
     <section className="lg-section" style={{ padding: "80px 32px", maxWidth: 1280, margin: "0 auto" }}>
-      <div style={{ textAlign: "center", marginBottom: 56 }}>
+      <motion.div
+        style={{ textAlign: "center", marginBottom: 56 }}
+        variants={fadeUp}
+        initial="hidden"
+        whileInView="show"
+        viewport={VIEWPORT}
+      >
         <div style={{ fontSize: 11, letterSpacing: "0.2em", color: "#ffd87c", fontWeight: 600, textTransform: "uppercase", marginBottom: 14 }}>
           SOUND FAMILIAR?
         </div>
@@ -1237,12 +1292,14 @@ function Testimonials() {
         <p style={{ fontSize: 16, color: "#a49e8e", maxWidth: 620, margin: "14px auto 0" }}>
           We built LeadGate because we kept hearing the same three things from online coaches. If you&apos;ve thought any of these in the last 30 days, keep reading.
         </p>
-      </div>
+      </motion.div>
 
-      <div className="lg-pains-grid">
+      <motion.div className="lg-pains-grid" variants={stagger} initial="hidden" whileInView="show" viewport={VIEWPORT}>
         {PAINS.map((p, i) => (
-          <div
+          <motion.div
             key={i}
+            variants={fadeUp}
+            className="lg-pain-card lg-card-hover"
             style={{
               background: "#0d0d0d",
               border: "1px solid rgba(255,216,124,0.1)",
@@ -1275,9 +1332,9 @@ function Testimonials() {
                 — {p.label}
               </div>
             </div>
-          </div>
+          </motion.div>
         ))}
-      </div>
+      </motion.div>
 
       <div style={{ textAlign: "center", marginTop: 40, fontSize: 13, color: "#6a6458", fontStyle: "italic" }}>
         Real coach testimonials coming soon. We&apos;re onboarding our first wave now.
@@ -1289,20 +1346,27 @@ function Testimonials() {
 function Cases() {
   return (
     <section id="cases" className="lg-section" style={{ padding: "80px 32px", maxWidth: 1280, margin: "0 auto" }}>
-      <div style={{ marginBottom: 48 }}>
+      <motion.div
+        style={{ marginBottom: 48 }}
+        variants={fadeUp}
+        initial="hidden"
+        whileInView="show"
+        viewport={VIEWPORT}
+      >
         <div style={{ fontSize: 11, letterSpacing: "0.2em", color: "#ffd87c", fontWeight: 600, textTransform: "uppercase", marginBottom: 14 }}>
           CASE STUDIES
         </div>
         <h2 style={{ fontSize: "clamp(36px, 4vw, 52px)", margin: 0, letterSpacing: "-0.03em", fontWeight: 600, color: "#f5f1e6" }}>
           Before &amp; <span className="lg-gold-text" style={{ fontWeight: 400 }}>after</span>.
         </h2>
-      </div>
+      </motion.div>
 
-      <div className="lg-cases-grid">
+      <motion.div className="lg-cases-grid" variants={stagger} initial="hidden" whileInView="show" viewport={VIEWPORT}>
         {CASE_STUDIES.map((c, i) => (
-          <div
+          <motion.div
             key={i}
-            className="lg-case-card"
+            variants={fadeUp}
+            className="lg-case-card lg-card-hover"
             style={{
               background: "#0d0d0d",
               border: "1px solid rgba(255,216,124,0.12)",
@@ -1348,9 +1412,9 @@ function Cases() {
             <div style={{ marginTop: 10, fontSize: 12, color: "#8a7d6e" }}>
               — {c.name}, {c.role}
             </div>
-          </div>
+          </motion.div>
         ))}
-      </div>
+      </motion.div>
     </section>
   );
 }
@@ -1369,7 +1433,13 @@ function Pricing({ onCTA }: { onCTA: () => void }) {
 
   return (
     <section id="pricing" className="lg-section" style={{ padding: "80px 32px", maxWidth: 1280, margin: "0 auto" }}>
-      <div style={{ textAlign: "center", marginBottom: 56 }}>
+      <motion.div
+        style={{ textAlign: "center", marginBottom: 56 }}
+        variants={fadeUp}
+        initial="hidden"
+        whileInView="show"
+        viewport={VIEWPORT}
+      >
         <div style={{ fontSize: 11, letterSpacing: "0.2em", color: "#ffd87c", fontWeight: 600, textTransform: "uppercase", marginBottom: 14 }}>
           PRICING
         </div>
@@ -1379,11 +1449,15 @@ function Pricing({ onCTA }: { onCTA: () => void }) {
         <p style={{ fontSize: 16, color: "#a49e8e", maxWidth: 580, margin: "14px auto 0" }}>
           Pays for itself with one high-ticket client. No hidden fees.
         </p>
-      </div>
+      </motion.div>
 
       <div style={{ maxWidth: 520, margin: "0 auto" }}>
-        <div
+        <motion.div
           className="lg-gold-border lg-pricing-card"
+          variants={fadeUp}
+          initial="hidden"
+          whileInView="show"
+          viewport={VIEWPORT}
           style={{
             background: "linear-gradient(180deg, #120d02 0%, #0a0805 100%)",
             borderRadius: 20,
@@ -1471,7 +1545,7 @@ function Pricing({ onCTA }: { onCTA: () => void }) {
           <div style={{ textAlign: "center", marginTop: 16, fontSize: 12, color: "#6a6458" }}>
             Pays for itself with one high-ticket client. Cancel anytime.
           </div>
-        </div>
+        </motion.div>
       </div>
     </section>
   );
@@ -1481,19 +1555,32 @@ function FAQ() {
   const [open, setOpen] = React.useState<number>(0);
   return (
     <section id="faq" className="lg-section" style={{ padding: "80px 32px", maxWidth: 900, margin: "0 auto" }}>
-      <div style={{ textAlign: "center", marginBottom: 48 }}>
+      <motion.div
+        style={{ textAlign: "center", marginBottom: 48 }}
+        variants={fadeUp}
+        initial="hidden"
+        whileInView="show"
+        viewport={VIEWPORT}
+      >
         <div style={{ fontSize: 11, letterSpacing: "0.2em", color: "#ffd87c", fontWeight: 600, textTransform: "uppercase", marginBottom: 14 }}>
           FAQ
         </div>
         <h2 style={{ fontSize: "clamp(36px, 4vw, 52px)", margin: 0, letterSpacing: "-0.03em", fontWeight: 600, color: "#f5f1e6" }}>
           Questions, <span className="lg-gold-text" style={{ fontWeight: 400 }}>answered</span>.
         </h2>
-      </div>
+      </motion.div>
 
-      <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+      <motion.div
+        style={{ display: "flex", flexDirection: "column", gap: 8 }}
+        variants={stagger}
+        initial="hidden"
+        whileInView="show"
+        viewport={VIEWPORT}
+      >
         {FAQS.map((f, i) => (
-          <div
+          <motion.div
             key={i}
+            variants={fadeUp}
             style={{
               background: "#0d0d0d",
               border: `1px solid ${open === i ? "rgba(255,216,124,0.3)" : "rgba(255,216,124,0.08)"}`,
@@ -1534,9 +1621,9 @@ function FAQ() {
             <div style={{ maxHeight: open === i ? 400 : 0, transition: "max-height .3s ease", overflow: "hidden" }}>
               <div style={{ padding: "0 22px 20px", fontSize: 14, lineHeight: 1.6, color: "#a49e8e" }}>{f.a}</div>
             </div>
-          </div>
+          </motion.div>
         ))}
-      </div>
+      </motion.div>
     </section>
   );
 }
@@ -1544,8 +1631,12 @@ function FAQ() {
 function FinalCTA({ onCTA }: { onCTA: () => void }) {
   return (
     <section className="lg-section" style={{ padding: "80px 32px", maxWidth: 1280, margin: "0 auto" }}>
-      <div
+      <motion.div
         className="lg-gold-border lg-cta-card"
+        variants={fadeUp}
+        initial="hidden"
+        whileInView="show"
+        viewport={VIEWPORT}
         style={{
           borderRadius: 24,
           padding: "64px 40px",
@@ -1599,7 +1690,7 @@ function FinalCTA({ onCTA }: { onCTA: () => void }) {
             </button>
           </div>
         </div>
-      </div>
+      </motion.div>
     </section>
   );
 }
@@ -2066,8 +2157,56 @@ const LANDING_CSS = `
           radial-gradient(500px 400px at 10% 40%, rgba(164, 122, 30, 0.08), transparent 60%);
       }
 
+      .lg-feature-cell {
+        will-change: transform, background-color;
+      }
       .lg-feature-cell:hover {
         background: #111 !important;
+      }
+
+      /* Subtle "lift + glow" hover for individual cards. Performance:
+         only transform + box-shadow + border-color change. */
+      .lg-card-hover {
+        transition:
+          transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+          box-shadow 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+          border-color 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+        will-change: transform;
+      }
+      @media (hover: hover) {
+        .lg-card-hover:hover {
+          transform: translateY(-3px);
+          border-color: rgba(255, 216, 124, 0.28) !important;
+          box-shadow: 0 18px 38px -18px rgba(255, 216, 124, 0.22);
+        }
+        .lg-pricing-card {
+          transition:
+            box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+            transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .lg-pricing-card:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 36px 90px -22px rgba(255, 216, 124, 0.28) !important;
+        }
+        .lg-btn-ghost {
+          transition:
+            background 0.25s ease,
+            border-color 0.25s ease,
+            transform 0.25s ease;
+        }
+        .lg-btn-ghost:hover {
+          transform: translateY(-1px);
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          animation-duration: 0.001ms !important;
+          animation-iteration-count: 1 !important;
+          transition-duration: 0.001ms !important;
+        }
       }
 
       .lg-hero-grid {
@@ -2142,28 +2281,9 @@ const LANDING_CSS = `
         }
         .lg-steps-grid,
         .lg-pains-grid,
-        .lg-cases-grid {
-          grid-template-columns: 1fr;
-        }
+        .lg-cases-grid,
         .lg-features-grid {
-          display: flex !important;
-          grid-template-columns: none !important;
-          overflow-x: auto !important;
-          overflow-y: hidden !important;
-          scroll-snap-type: x mandatory;
-          -webkit-overflow-scrolling: touch;
-          scrollbar-width: none;
-          gap: 1px !important;
-          /* Trailing gap on the right so the last card can snap fully into view */
-          padding-right: 0;
-        }
-        .lg-features-grid::-webkit-scrollbar {
-          display: none;
-        }
-        .lg-feature-cell {
-          flex: 0 0 86%;
-          min-width: 0;
-          scroll-snap-align: start;
+          grid-template-columns: 1fr;
         }
         .lg-step-connector {
           display: none;
@@ -2285,8 +2405,61 @@ const LANDING_CSS = `
           max-width: none !important;
           z-index: 60 !important;
         }
-        .lg-feature-cell {
-          flex: 0 0 88%;
+      }
+
+      /* ── Mobile (< 768px): card sections become horizontal swipe carousels ─ */
+      @media (max-width: 767px) {
+        .lg-features-grid,
+        .lg-steps-grid,
+        .lg-pains-grid,
+        .lg-cases-grid {
+          display: flex !important;
+          flex-direction: row !important;
+          grid-template-columns: none !important;
+          overflow-x: auto !important;
+          overflow-y: visible;
+          scroll-snap-type: x mandatory;
+          -webkit-overflow-scrolling: touch;
+          scrollbar-width: none;
+        }
+        .lg-features-grid::-webkit-scrollbar,
+        .lg-steps-grid::-webkit-scrollbar,
+        .lg-pains-grid::-webkit-scrollbar,
+        .lg-cases-grid::-webkit-scrollbar {
+          display: none;
+        }
+        .lg-features-grid > *,
+        .lg-steps-grid > *,
+        .lg-pains-grid > *,
+        .lg-cases-grid > * {
+          flex: 0 0 86%;
+          min-width: 0;
+          scroll-snap-align: start;
+        }
+        /* Features keeps its unified gold container; cards scroll inside it */
+        .lg-features-grid {
+          overflow-y: hidden !important;
+          gap: 1px !important;
+        }
+        /* Steps/pains/cases get full-bleed swipe with breathing room on both ends */
+        .lg-steps-grid,
+        .lg-pains-grid,
+        .lg-cases-grid {
+          gap: 14px !important;
+          padding-left: 20px !important;
+          padding-right: 20px !important;
+          margin-left: -20px;
+          margin-right: -20px;
+          scroll-padding-left: 20px;
+        }
+        /* Step connector line doesn't make sense in a horizontal carousel */
+        .lg-step-connector {
+          display: none !important;
+        }
+        /* Each step card needs a min-height so the cards in a row look balanced */
+        .lg-steps-grid .lg-step-card,
+        .lg-cases-grid .lg-case-card {
+          height: auto;
         }
       }
 
