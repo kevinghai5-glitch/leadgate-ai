@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/card";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
+import { GoogleButton, AuthDivider } from "@/components/ui/google-button";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -57,6 +58,10 @@ export default function LoginPage() {
           Log in to manage your lead qualification pipeline
         </CardDescription>
       </CardHeader>
+      <CardContent className="space-y-4 pb-0">
+        <GoogleButton label="Continue with Google" />
+        <AuthDivider />
+      </CardContent>
       <form onSubmit={onSubmit}>
         <CardContent className="space-y-4">
           <div className="space-y-2">
