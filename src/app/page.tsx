@@ -3,6 +3,7 @@
 import * as React from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { signIn, getProviders } from "next-auth/react";
 
 // ─── Data ──────────────────────────────────────────────────────────────────
 
@@ -1546,6 +1547,79 @@ function Footer() {
 
 // ─── Modals ────────────────────────────────────────────────────────────────
 
+function GoogleGlyph({ size = 16 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 48 48" aria-hidden="true">
+      <path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3c-1.6 4.7-6.1 8-11.3 8a12 12 0 1 1 7.9-21l5.7-5.7A20 20 0 1 0 24 44a20 20 0 0 0 19.6-23.5z" />
+      <path fill="#FF3D00" d="M6.3 14.7l6.6 4.8A12 12 0 0 1 24 12c3 0 5.8 1.1 7.9 3l5.7-5.7A20 20 0 0 0 6.3 14.7z" />
+      <path fill="#4CAF50" d="M24 44a20 20 0 0 0 13.4-5.2l-6.2-5.2A12 12 0 0 1 12.7 28.6L6.2 33.7A20 20 0 0 0 24 44z" />
+      <path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3a12 12 0 0 1-4 5.6l6.2 5.2c-.4.4 6.5-4.8 6.5-14.8 0-1.2-.1-2.3-.4-3.5z" />
+    </svg>
+  );
+}
+
+function LandingGoogleButton({ label = "Continue with Google" }: { label?: string }) {
+  const [available, setAvailable] = React.useState<boolean | null>(null);
+  const [loading, setLoading] = React.useState(false);
+
+  React.useEffect(() => {
+    let cancelled = false;
+    getProviders()
+      .then((p) => {
+        if (!cancelled) setAvailable(!!p?.google);
+      })
+      .catch(() => {
+        if (!cancelled) setAvailable(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  if (available === false) return null;
+
+  const onClick = async () => {
+    setLoading(true);
+    try {
+      await signIn("google", { callbackUrl: "/dashboard" });
+    } catch {
+      setLoading(false);
+    }
+  };
+
+  const disabled = loading || available === null;
+
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      disabled={disabled}
+      className="lg-google-btn"
+      style={{
+        width: "100%",
+        padding: "12px 16px",
+        borderRadius: 10,
+        background: "#0d0d0d",
+        color: "#f5f1e6",
+        border: "1px solid rgba(255,216,124,0.18)",
+        fontSize: 14,
+        fontWeight: 500,
+        cursor: disabled ? "default" : "pointer",
+        display: "inline-flex",
+        alignItems: "center",
+        justifyContent: "center",
+        gap: 10,
+        opacity: disabled ? 0.7 : 1,
+        transition: "all .2s ease",
+        fontFamily: "inherit",
+      }}
+    >
+      <GoogleGlyph size={16} />
+      {loading ? "Redirecting…" : label}
+    </button>
+  );
+}
+
 function SignupModal({ open, onClose }: { open: boolean; onClose: () => void }) {
   const router = useRouter();
   const [email, setEmail] = React.useState("");
@@ -1582,7 +1656,28 @@ function SignupModal({ open, onClose }: { open: boolean; onClose: () => void }) 
 
         <Icon name="logo" size={36} />
         <h2 style={{ margin: "18px 0 6px", fontSize: 26, color: "#f5f1e6" }}>Get started with LeadGate</h2>
-        <p style={{ margin: "0 0 24px", fontSize: 14, color: "#a49e8e" }}>$499/month. Cancel anytime.</p>
+        <p style={{ margin: "0 0 20px", fontSize: 14, color: "#a49e8e" }}>$499/month. Cancel anytime.</p>
+
+        <LandingGoogleButton />
+
+        <div
+          aria-hidden="true"
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 12,
+            margin: "16px 0",
+            color: "#6a6458",
+            fontSize: 11,
+            letterSpacing: "0.18em",
+            textTransform: "uppercase",
+          }}
+        >
+          <span style={{ flex: 1, height: 1, background: "linear-gradient(90deg, transparent, rgba(255,216,124,0.15))" }} />
+          <span>or</span>
+          <span style={{ flex: 1, height: 1, background: "linear-gradient(90deg, rgba(255,216,124,0.15), transparent)" }} />
+        </div>
+
         <form
           onSubmit={(e) => {
             e.preventDefault();
@@ -1892,6 +1987,12 @@ const LANDING_CSS = `
       .lg-btn-ghost:hover {
         background: rgba(255, 216, 124, 0.08);
         border-color: rgba(255, 216, 124, 0.3);
+      }
+
+      .lg-google-btn:hover:not(:disabled) {
+        background: #131313 !important;
+        border-color: rgba(255, 216, 124, 0.35) !important;
+        box-shadow: 0 6px 24px -10px rgba(255, 216, 124, 0.25);
       }
 
       .lg-divider-gold {
