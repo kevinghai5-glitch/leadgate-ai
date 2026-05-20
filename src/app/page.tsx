@@ -254,12 +254,27 @@ function BrandLogo({ name }: { name: string }) {
 
 function Nav({ onCTA }: { onCTA: () => void }) {
   const [scrolled, setScrolled] = React.useState(false);
+  const [menuOpen, setMenuOpen] = React.useState(false);
 
   React.useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener("scroll", onScroll);
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
+  React.useEffect(() => {
+    if (!menuOpen) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setMenuOpen(false);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => {
+      document.body.style.overflow = prev;
+      window.removeEventListener("keydown", onKey);
+    };
+  }, [menuOpen]);
 
   const links = [
     { label: "How It Works", href: "#how" },
@@ -271,6 +286,7 @@ function Nav({ onCTA }: { onCTA: () => void }) {
 
   const smoothScroll = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     e.preventDefault();
+    setMenuOpen(false);
     const el = document.querySelector(href);
     if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
   };
@@ -284,23 +300,14 @@ function Nav({ onCTA }: { onCTA: () => void }) {
         right: 0,
         zIndex: 50,
         transition: "all .3s ease",
-        background: scrolled ? "rgba(7,7,7,0.85)" : "transparent",
-        backdropFilter: scrolled ? "blur(18px) saturate(140%)" : "none",
-        WebkitBackdropFilter: scrolled ? "blur(18px) saturate(140%)" : "none",
-        borderBottom: scrolled ? "1px solid rgba(255,216,124,0.08)" : "1px solid transparent",
+        background: scrolled || menuOpen ? "rgba(7,7,7,0.92)" : "transparent",
+        backdropFilter: scrolled || menuOpen ? "blur(18px) saturate(140%)" : "none",
+        WebkitBackdropFilter: scrolled || menuOpen ? "blur(18px) saturate(140%)" : "none",
+        borderBottom:
+          scrolled || menuOpen ? "1px solid rgba(255,216,124,0.08)" : "1px solid transparent",
       }}
     >
-      <nav
-        style={{
-          maxWidth: 1280,
-          margin: "0 auto",
-          padding: "18px 32px",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          gap: 32,
-        }}
-      >
+      <nav className="lg-nav">
         <a
           href="#top"
           onClick={(e) => smoothScroll(e, "#top")}
@@ -312,40 +319,28 @@ function Nav({ onCTA }: { onCTA: () => void }) {
           </span>
         </a>
 
-        <div style={{ display: "flex", alignItems: "center", gap: 28 }}>
+        <div className="lg-nav-links">
           {links.map((l) => (
             <a
               key={l.href}
               href={l.href}
               onClick={(e) => smoothScroll(e, l.href)}
-              style={{ color: "#c9c2b0", textDecoration: "none", fontSize: 14, fontWeight: 500, transition: "color .2s ease" }}
-              onMouseEnter={(e) => (e.currentTarget.style.color = "#ffec94")}
-              onMouseLeave={(e) => (e.currentTarget.style.color = "#c9c2b0")}
+              className="lg-nav-link"
             >
               {l.label}
             </a>
           ))}
         </div>
 
-        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+        <div className="lg-nav-actions">
           <Link
             href="/login"
-            className="lg-btn-ghost"
-            style={{
-              padding: "9px 18px",
-              borderRadius: 10,
-              fontSize: 14,
-              fontWeight: 500,
-              background: "transparent",
-              border: "none",
-              color: "#c9c2b0",
-              textDecoration: "none",
-            }}
+            className="lg-nav-login"
           >
             Log in
           </Link>
           <button
-            className="lg-btn-gold"
+            className="lg-btn-gold lg-nav-cta"
             style={{
               padding: "10px 20px",
               borderRadius: 10,
@@ -360,7 +355,67 @@ function Nav({ onCTA }: { onCTA: () => void }) {
             Get Started <Icon name="arrow-right" size={14} stroke={2.2} />
           </button>
         </div>
+
+        <button
+          type="button"
+          className="lg-nav-burger"
+          aria-label={menuOpen ? "Close menu" : "Open menu"}
+          aria-expanded={menuOpen}
+          onClick={() => setMenuOpen((v) => !v)}
+        >
+          <span className={`lg-burger-icon ${menuOpen ? "open" : ""}`}>
+            <span />
+            <span />
+            <span />
+          </span>
+        </button>
       </nav>
+
+      <div className={`lg-mobile-menu ${menuOpen ? "open" : ""}`} aria-hidden={!menuOpen}>
+        <div className="lg-mobile-menu-inner">
+          {links.map((l) => (
+            <a
+              key={l.href}
+              href={l.href}
+              onClick={(e) => smoothScroll(e, l.href)}
+              className="lg-mobile-menu-link"
+            >
+              {l.label}
+              <Icon name="arrow-right" size={16} stroke={2} />
+            </a>
+          ))}
+          <div className="lg-mobile-menu-divider" />
+          <Link
+            href="/login"
+            onClick={() => setMenuOpen(false)}
+            className="lg-mobile-menu-link"
+          >
+            Log in
+            <Icon name="arrow-right" size={16} stroke={2} />
+          </Link>
+          <button
+            className="lg-btn-gold"
+            style={{
+              padding: "13px 20px",
+              borderRadius: 10,
+              fontSize: 15,
+              cursor: "pointer",
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 8,
+              width: "100%",
+              marginTop: 6,
+            }}
+            onClick={() => {
+              setMenuOpen(false);
+              onCTA();
+            }}
+          >
+            Get Started <Icon name="arrow-right" size={14} stroke={2.2} />
+          </button>
+        </div>
+      </div>
     </header>
   );
 }
@@ -596,7 +651,7 @@ function Hero({ onCTA, onVideo }: { onCTA: () => void; onVideo: () => void }) {
   const [activeId, setActiveId] = React.useState<string | null>(null);
 
   return (
-    <section id="top" style={{ position: "relative", paddingTop: 140, paddingBottom: 80, overflow: "hidden" }} className="lg-bg-gold-glow">
+    <section id="top" className="lg-bg-gold-glow lg-hero-section">
       <div className="lg-dot-grid" style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: 240, pointerEvents: "none" }} />
 
       <div className="lg-hero-grid">
@@ -691,38 +746,19 @@ function Hero({ onCTA, onVideo }: { onCTA: () => void; onVideo: () => void }) {
         </div>
 
         {/* RIGHT */}
-        <div className="lg-hero-right-enter" style={{ position: "relative" }}>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24, alignItems: "start", position: "relative" }}>
+        <div className="lg-hero-right-enter lg-hero-right" style={{ position: "relative" }}>
+          <div className="lg-hero-calendars">
             <BadCalendarCard activeId={activeId} setActiveId={setActiveId} />
             <GoodCalendarCard activeId={activeId} setActiveId={setActiveId} />
 
-            <div
-              style={{
-                position: "absolute",
-                left: "50%",
-                top: "42%",
-                transform: "translate(-50%,-50%)",
-                width: 44,
-                height: 44,
-                borderRadius: "50%",
-                background: "var(--lg-gold-gradient)",
-                backgroundSize: "200% 200%",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                boxShadow: "0 8px 30px rgba(255,216,124,0.4)",
-                animation: "lgPulseRing 1.8s ease-out infinite",
-                color: "#1a1200",
-                zIndex: 5,
-              }}
-            >
+            <div className="lg-hero-arrow">
               <Icon name="arrow-right" size={20} stroke={2.5} />
             </div>
           </div>
 
           <ReasoningPopover activeId={activeId} />
 
-          <div style={{ position: "absolute", top: -34, left: 0, fontSize: 11, color: "#6a6458", display: "flex", alignItems: "center", gap: 6 }}>
+          <div className="lg-hero-hint">
             <div style={{ width: 6, height: 6, borderRadius: "50%", background: "#ffd87c", animation: "lgPulseRing 1.5s ease-out infinite" }} />
             Hover any lead to see AI reasoning
           </div>
@@ -2136,9 +2172,183 @@ const LANDING_CSS = `
         gap: 32px;
       }
 
+      /* ── Nav ── */
+      .lg-nav {
+        max-width: 1280px;
+        margin: 0 auto;
+        padding: 18px 32px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 32px;
+      }
+      .lg-nav-links {
+        display: flex;
+        align-items: center;
+        gap: 28px;
+      }
+      .lg-nav-link {
+        color: #c9c2b0;
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: 500;
+        transition: color 0.2s ease;
+      }
+      .lg-nav-link:hover {
+        color: #ffec94;
+      }
+      .lg-nav-actions {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .lg-nav-login {
+        padding: 9px 18px;
+        border-radius: 10px;
+        font-size: 14px;
+        font-weight: 500;
+        background: transparent;
+        border: none;
+        color: #c9c2b0;
+        text-decoration: none;
+        transition: color 0.2s ease;
+      }
+      .lg-nav-login:hover {
+        color: #ffec94;
+      }
+      .lg-nav-burger {
+        display: none;
+        width: 42px;
+        height: 42px;
+        align-items: center;
+        justify-content: center;
+        background: rgba(255, 216, 124, 0.04);
+        border: 1px solid rgba(255, 216, 124, 0.18);
+        border-radius: 10px;
+        cursor: pointer;
+        padding: 0;
+        color: #f5f1e6;
+        transition: background 0.2s ease, border-color 0.2s ease;
+      }
+      .lg-nav-burger:hover {
+        background: rgba(255, 216, 124, 0.08);
+        border-color: rgba(255, 216, 124, 0.3);
+      }
+      .lg-burger-icon {
+        position: relative;
+        width: 18px;
+        height: 14px;
+        display: inline-block;
+      }
+      .lg-burger-icon > span {
+        position: absolute;
+        left: 0;
+        width: 100%;
+        height: 1.5px;
+        background: #f5f1e6;
+        border-radius: 2px;
+        transition: transform 0.3s cubic-bezier(0.2, 0.6, 0.2, 1), opacity 0.2s ease, top 0.3s ease;
+      }
+      .lg-burger-icon > span:nth-child(1) { top: 0; }
+      .lg-burger-icon > span:nth-child(2) { top: 6px; }
+      .lg-burger-icon > span:nth-child(3) { top: 12px; }
+      .lg-burger-icon.open > span:nth-child(1) {
+        top: 6px;
+        transform: rotate(45deg);
+      }
+      .lg-burger-icon.open > span:nth-child(2) {
+        opacity: 0;
+      }
+      .lg-burger-icon.open > span:nth-child(3) {
+        top: 6px;
+        transform: rotate(-45deg);
+      }
+
+      .lg-mobile-menu {
+        display: none;
+        overflow: hidden;
+        max-height: 0;
+        transition: max-height 0.35s cubic-bezier(0.2, 0.6, 0.2, 1);
+      }
+      .lg-mobile-menu.open {
+        max-height: 90vh;
+      }
+      .lg-mobile-menu-inner {
+        padding: 8px 24px 24px;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+      .lg-mobile-menu-link {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 14px 4px;
+        color: #d4cdbc;
+        text-decoration: none;
+        font-size: 16px;
+        font-weight: 500;
+        border-bottom: 1px solid rgba(255, 216, 124, 0.06);
+        transition: color 0.2s ease;
+      }
+      .lg-mobile-menu-link:active,
+      .lg-mobile-menu-link:hover {
+        color: #ffec94;
+      }
+      .lg-mobile-menu-link > svg {
+        color: #6a6458;
+      }
+      .lg-mobile-menu-divider {
+        height: 8px;
+      }
+
+      /* ── Hero base ── */
+      .lg-hero-section {
+        position: relative;
+        padding-top: 140px;
+        padding-bottom: 80px;
+        overflow: hidden;
+      }
+      .lg-hero-calendars {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 24px;
+        align-items: start;
+        position: relative;
+      }
+      .lg-hero-arrow {
+        position: absolute;
+        left: 50%;
+        top: 42%;
+        transform: translate(-50%, -50%);
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        background: var(--lg-gold-gradient);
+        background-size: 200% 200%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 8px 30px rgba(255, 216, 124, 0.4);
+        animation: lgPulseRing 1.8s ease-out infinite;
+        color: #1a1200;
+        z-index: 5;
+      }
+      .lg-hero-hint {
+        position: absolute;
+        top: -34px;
+        left: 0;
+        font-size: 11px;
+        color: #6a6458;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
       @media (max-width: 960px) {
         .lg-hero-grid {
           grid-template-columns: 1fr;
+          gap: 48px;
         }
         .lg-social-grid {
           grid-template-columns: 1fr 1fr;
@@ -2156,12 +2366,72 @@ const LANDING_CSS = `
           grid-template-columns: 1fr 1fr;
         }
       }
+
+      /* ── Mobile nav + hero (< 768px) ── */
+      @media (max-width: 767px) {
+        .lg-nav {
+          padding: 14px 20px;
+          gap: 12px;
+        }
+        .lg-nav-links,
+        .lg-nav-login,
+        .lg-nav-cta {
+          display: none !important;
+        }
+        .lg-nav-actions {
+          gap: 8px;
+        }
+        .lg-nav-burger {
+          display: inline-flex;
+        }
+        .lg-mobile-menu {
+          display: block;
+        }
+
+        .lg-hero-section {
+          padding-top: 110px;
+          padding-bottom: 56px;
+        }
+        .lg-hero-grid {
+          padding: 0 20px;
+          gap: 40px;
+        }
+        .lg-hero-section h1 {
+          font-size: clamp(36px, 9vw, 48px) !important;
+          line-height: 1.05 !important;
+        }
+        .lg-hero-section .lg-bg-gold-glow {
+          background: none;
+        }
+        .lg-hero-hint {
+          display: none;
+        }
+
+        .lg-hero-calendars {
+          grid-template-columns: 1fr;
+          gap: 16px;
+        }
+        .lg-hero-arrow {
+          display: none;
+        }
+      }
+
       @media (max-width: 640px) {
         .lg-social-grid {
           grid-template-columns: 1fr;
         }
         .lg-footer-grid {
           grid-template-columns: 1fr;
+        }
+      }
+
+      @media (max-width: 420px) {
+        .lg-hero-section {
+          padding-top: 96px;
+          padding-bottom: 48px;
+        }
+        .lg-hero-section h1 {
+          font-size: 40px !important;
         }
       }
 
