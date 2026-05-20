@@ -3,6 +3,7 @@
 import * as React from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { signIn, getProviders } from "next-auth/react";
 
 // ─── Data ──────────────────────────────────────────────────────────────────
 
@@ -600,7 +601,7 @@ function Hero({ onCTA, onVideo }: { onCTA: () => void; onVideo: () => void }) {
 
       <div className="lg-hero-grid">
         {/* LEFT */}
-        <div>
+        <div className="lg-hero-enter">
           <div
             style={{
               display: "inline-flex",
@@ -690,7 +691,7 @@ function Hero({ onCTA, onVideo }: { onCTA: () => void; onVideo: () => void }) {
         </div>
 
         {/* RIGHT */}
-        <div style={{ position: "relative" }}>
+        <div className="lg-hero-right-enter" style={{ position: "relative" }}>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24, alignItems: "start", position: "relative" }}>
             <BadCalendarCard activeId={activeId} setActiveId={setActiveId} />
             <GoodCalendarCard activeId={activeId} setActiveId={setActiveId} />
@@ -988,7 +989,7 @@ function Logos() {
 function HowItWorks() {
   return (
     <section id="how" style={{ padding: "100px 32px", maxWidth: 1280, margin: "0 auto" }}>
-      <div style={{ textAlign: "center", marginBottom: 64 }}>
+      <div className="lg-reveal" style={{ textAlign: "center", marginBottom: 64 }}>
         <div style={{ fontSize: 11, letterSpacing: "0.2em", color: "#ffd87c", fontWeight: 600, textTransform: "uppercase", marginBottom: 14 }}>
           HOW IT WORKS
         </div>
@@ -1000,7 +1001,7 @@ function HowItWorks() {
         </p>
       </div>
 
-      <div className="lg-steps-grid">
+      <div className="lg-steps-grid lg-reveal-stagger lg-mobile-swipe">
         <div
           className="lg-step-connector"
           style={{
@@ -1016,6 +1017,7 @@ function HowItWorks() {
         {STEPS.map((s, i) => (
           <div
             key={i}
+            className="lg-card-hover"
             style={{
               background: "#0d0d0d",
               border: "1px solid rgba(255,216,124,0.1)",
@@ -1051,7 +1053,7 @@ function HowItWorks() {
 function Features() {
   return (
     <section id="features" style={{ padding: "80px 32px", maxWidth: 1280, margin: "0 auto" }}>
-      <div style={{ marginBottom: 56, display: "flex", alignItems: "end", justifyContent: "space-between", gap: 40, flexWrap: "wrap" }}>
+      <div className="lg-reveal" style={{ marginBottom: 56, display: "flex", alignItems: "end", justifyContent: "space-between", gap: 40, flexWrap: "wrap" }}>
         <div>
           <div style={{ fontSize: 11, letterSpacing: "0.2em", color: "#ffd87c", fontWeight: 600, textTransform: "uppercase", marginBottom: 14 }}>
             FEATURES
@@ -1066,7 +1068,7 @@ function Features() {
       </div>
 
       <div
-        className="lg-features-grid"
+        className="lg-features-grid lg-reveal-stagger lg-mobile-swipe lg-mobile-swipe-features"
         style={{
           background: "rgba(255,216,124,0.08)",
           borderRadius: 16,
@@ -1114,7 +1116,7 @@ function Features() {
 function Testimonials() {
   return (
     <section style={{ padding: "80px 32px", maxWidth: 1280, margin: "0 auto" }}>
-      <div style={{ textAlign: "center", marginBottom: 56 }}>
+      <div className="lg-reveal" style={{ textAlign: "center", marginBottom: 56 }}>
         <div style={{ fontSize: 11, letterSpacing: "0.2em", color: "#ffd87c", fontWeight: 600, textTransform: "uppercase", marginBottom: 14 }}>
           SOUND FAMILIAR?
         </div>
@@ -1126,10 +1128,11 @@ function Testimonials() {
         </p>
       </div>
 
-      <div className="lg-pains-grid">
+      <div className="lg-pains-grid lg-reveal-stagger lg-mobile-swipe">
         {PAINS.map((p, i) => (
           <div
             key={i}
+            className="lg-card-hover"
             style={{
               background: "#0d0d0d",
               border: "1px solid rgba(255,216,124,0.1)",
@@ -1176,7 +1179,7 @@ function Testimonials() {
 function Cases() {
   return (
     <section id="cases" style={{ padding: "80px 32px", maxWidth: 1280, margin: "0 auto" }}>
-      <div style={{ marginBottom: 48 }}>
+      <div className="lg-reveal" style={{ marginBottom: 48 }}>
         <div style={{ fontSize: 11, letterSpacing: "0.2em", color: "#ffd87c", fontWeight: 600, textTransform: "uppercase", marginBottom: 14 }}>
           CASE STUDIES
         </div>
@@ -1185,10 +1188,11 @@ function Cases() {
         </h2>
       </div>
 
-      <div className="lg-cases-grid">
+      <div className="lg-cases-grid lg-reveal-stagger lg-mobile-swipe">
         {CASE_STUDIES.map((c, i) => (
           <div
             key={i}
+            className="lg-card-hover"
             style={{
               background: "#0d0d0d",
               border: "1px solid rgba(255,216,124,0.12)",
@@ -1255,7 +1259,7 @@ function Pricing({ onCTA }: { onCTA: () => void }) {
 
   return (
     <section id="pricing" style={{ padding: "80px 32px", maxWidth: 1280, margin: "0 auto" }}>
-      <div style={{ textAlign: "center", marginBottom: 56 }}>
+      <div className="lg-reveal" style={{ textAlign: "center", marginBottom: 56 }}>
         <div style={{ fontSize: 11, letterSpacing: "0.2em", color: "#ffd87c", fontWeight: 600, textTransform: "uppercase", marginBottom: 14 }}>
           PRICING
         </div>
@@ -1267,7 +1271,7 @@ function Pricing({ onCTA }: { onCTA: () => void }) {
         </p>
       </div>
 
-      <div style={{ maxWidth: 520, margin: "0 auto" }}>
+      <div className="lg-reveal" style={{ maxWidth: 520, margin: "0 auto" }}>
         <div
           className="lg-gold-border"
           style={{
@@ -1367,7 +1371,7 @@ function FAQ() {
   const [open, setOpen] = React.useState<number>(0);
   return (
     <section id="faq" style={{ padding: "80px 32px", maxWidth: 900, margin: "0 auto" }}>
-      <div style={{ textAlign: "center", marginBottom: 48 }}>
+      <div className="lg-reveal" style={{ textAlign: "center", marginBottom: 48 }}>
         <div style={{ fontSize: 11, letterSpacing: "0.2em", color: "#ffd87c", fontWeight: 600, textTransform: "uppercase", marginBottom: 14 }}>
           FAQ
         </div>
@@ -1376,7 +1380,7 @@ function FAQ() {
         </h2>
       </div>
 
-      <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+      <div className="lg-reveal-stagger" style={{ display: "flex", flexDirection: "column", gap: 8 }}>
         {FAQS.map((f, i) => (
           <div
             key={i}
@@ -1431,7 +1435,7 @@ function FinalCTA({ onCTA }: { onCTA: () => void }) {
   return (
     <section style={{ padding: "80px 32px", maxWidth: 1280, margin: "0 auto" }}>
       <div
-        className="lg-gold-border"
+        className="lg-gold-border lg-reveal"
         style={{
           borderRadius: 24,
           padding: "64px 40px",
@@ -1543,6 +1547,79 @@ function Footer() {
 
 // ─── Modals ────────────────────────────────────────────────────────────────
 
+function GoogleGlyph({ size = 16 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 48 48" aria-hidden="true">
+      <path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3c-1.6 4.7-6.1 8-11.3 8a12 12 0 1 1 7.9-21l5.7-5.7A20 20 0 1 0 24 44a20 20 0 0 0 19.6-23.5z" />
+      <path fill="#FF3D00" d="M6.3 14.7l6.6 4.8A12 12 0 0 1 24 12c3 0 5.8 1.1 7.9 3l5.7-5.7A20 20 0 0 0 6.3 14.7z" />
+      <path fill="#4CAF50" d="M24 44a20 20 0 0 0 13.4-5.2l-6.2-5.2A12 12 0 0 1 12.7 28.6L6.2 33.7A20 20 0 0 0 24 44z" />
+      <path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3a12 12 0 0 1-4 5.6l6.2 5.2c-.4.4 6.5-4.8 6.5-14.8 0-1.2-.1-2.3-.4-3.5z" />
+    </svg>
+  );
+}
+
+function LandingGoogleButton({ label = "Continue with Google" }: { label?: string }) {
+  const [available, setAvailable] = React.useState<boolean | null>(null);
+  const [loading, setLoading] = React.useState(false);
+
+  React.useEffect(() => {
+    let cancelled = false;
+    getProviders()
+      .then((p) => {
+        if (!cancelled) setAvailable(!!p?.google);
+      })
+      .catch(() => {
+        if (!cancelled) setAvailable(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  if (available === false) return null;
+
+  const onClick = async () => {
+    setLoading(true);
+    try {
+      await signIn("google", { callbackUrl: "/dashboard" });
+    } catch {
+      setLoading(false);
+    }
+  };
+
+  const disabled = loading || available === null;
+
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      disabled={disabled}
+      className="lg-google-btn"
+      style={{
+        width: "100%",
+        padding: "12px 16px",
+        borderRadius: 10,
+        background: "#0d0d0d",
+        color: "#f5f1e6",
+        border: "1px solid rgba(255,216,124,0.18)",
+        fontSize: 14,
+        fontWeight: 500,
+        cursor: disabled ? "default" : "pointer",
+        display: "inline-flex",
+        alignItems: "center",
+        justifyContent: "center",
+        gap: 10,
+        opacity: disabled ? 0.7 : 1,
+        transition: "all .2s ease",
+        fontFamily: "inherit",
+      }}
+    >
+      <GoogleGlyph size={16} />
+      {loading ? "Redirecting…" : label}
+    </button>
+  );
+}
+
 function SignupModal({ open, onClose }: { open: boolean; onClose: () => void }) {
   const router = useRouter();
   const [email, setEmail] = React.useState("");
@@ -1579,7 +1656,28 @@ function SignupModal({ open, onClose }: { open: boolean; onClose: () => void }) 
 
         <Icon name="logo" size={36} />
         <h2 style={{ margin: "18px 0 6px", fontSize: 26, color: "#f5f1e6" }}>Get started with LeadGate</h2>
-        <p style={{ margin: "0 0 24px", fontSize: 14, color: "#a49e8e" }}>$499/month. Cancel anytime.</p>
+        <p style={{ margin: "0 0 20px", fontSize: 14, color: "#a49e8e" }}>$499/month. Cancel anytime.</p>
+
+        <LandingGoogleButton />
+
+        <div
+          aria-hidden="true"
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 12,
+            margin: "16px 0",
+            color: "#6a6458",
+            fontSize: 11,
+            letterSpacing: "0.18em",
+            textTransform: "uppercase",
+          }}
+        >
+          <span style={{ flex: 1, height: 1, background: "linear-gradient(90deg, transparent, rgba(255,216,124,0.15))" }} />
+          <span>or</span>
+          <span style={{ flex: 1, height: 1, background: "linear-gradient(90deg, rgba(255,216,124,0.15), transparent)" }} />
+        </div>
+
         <form
           onSubmit={(e) => {
             e.preventDefault();
@@ -1715,9 +1813,39 @@ function VideoModal({ open, onClose }: { open: boolean; onClose: () => void }) {
 
 // ─── Page ──────────────────────────────────────────────────────────────────
 
+function useScrollReveal() {
+  React.useEffect(() => {
+    const reduced =
+      typeof window !== "undefined" &&
+      window.matchMedia &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduced) {
+      document.querySelectorAll(".lg-reveal, .lg-reveal-stagger").forEach((el) => {
+        el.classList.add("lg-in-view");
+      });
+      return;
+    }
+    const obs = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("lg-in-view");
+            obs.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.12, rootMargin: "0px 0px -60px 0px" }
+    );
+    const nodes = document.querySelectorAll(".lg-reveal, .lg-reveal-stagger");
+    nodes.forEach((el) => obs.observe(el));
+    return () => obs.disconnect();
+  }, []);
+}
+
 export default function LandingPage() {
   const [signupOpen, setSignupOpen] = React.useState(false);
   const [videoOpen, setVideoOpen] = React.useState(false);
+  useScrollReveal();
 
   return (
     <div className="lg-root lg-grain">
@@ -1859,6 +1987,12 @@ const LANDING_CSS = `
       .lg-btn-ghost:hover {
         background: rgba(255, 216, 124, 0.08);
         border-color: rgba(255, 216, 124, 0.3);
+      }
+
+      .lg-google-btn:hover:not(:disabled) {
+        background: #131313 !important;
+        border-color: rgba(255, 216, 124, 0.35) !important;
+        box-shadow: 0 6px 24px -10px rgba(255, 216, 124, 0.25);
       }
 
       .lg-divider-gold {
@@ -2028,6 +2162,151 @@ const LANDING_CSS = `
         }
         .lg-footer-grid {
           grid-template-columns: 1fr;
+        }
+      }
+
+      /* ── Scroll reveal ── */
+      .lg-reveal {
+        opacity: 0;
+        transform: translate3d(0, 18px, 0);
+        transition:
+          opacity 0.7s cubic-bezier(0.2, 0.6, 0.2, 1),
+          transform 0.7s cubic-bezier(0.2, 0.6, 0.2, 1);
+        will-change: opacity, transform;
+      }
+      .lg-reveal.lg-in-view {
+        opacity: 1;
+        transform: translate3d(0, 0, 0);
+      }
+      .lg-reveal-stagger > * {
+        opacity: 0;
+        transform: translate3d(0, 14px, 0);
+        transition:
+          opacity 0.55s cubic-bezier(0.2, 0.6, 0.2, 1),
+          transform 0.55s cubic-bezier(0.2, 0.6, 0.2, 1);
+        will-change: opacity, transform;
+      }
+      .lg-reveal-stagger.lg-in-view > * {
+        opacity: 1;
+        transform: translate3d(0, 0, 0);
+      }
+      .lg-reveal-stagger.lg-in-view > *:nth-child(1) { transition-delay: 0.02s; }
+      .lg-reveal-stagger.lg-in-view > *:nth-child(2) { transition-delay: 0.08s; }
+      .lg-reveal-stagger.lg-in-view > *:nth-child(3) { transition-delay: 0.14s; }
+      .lg-reveal-stagger.lg-in-view > *:nth-child(4) { transition-delay: 0.20s; }
+      .lg-reveal-stagger.lg-in-view > *:nth-child(5) { transition-delay: 0.26s; }
+      .lg-reveal-stagger.lg-in-view > *:nth-child(6) { transition-delay: 0.32s; }
+      .lg-reveal-stagger.lg-in-view > *:nth-child(7) { transition-delay: 0.36s; }
+      .lg-reveal-stagger.lg-in-view > *:nth-child(8) { transition-delay: 0.40s; }
+
+      /* ── Hero entrance ── */
+      @keyframes lgHeroFadeUp {
+        from { opacity: 0; transform: translate3d(0, 14px, 0); }
+        to   { opacity: 1; transform: translate3d(0, 0, 0); }
+      }
+      .lg-hero-enter > * {
+        opacity: 0;
+        animation: lgHeroFadeUp 0.7s cubic-bezier(0.2, 0.6, 0.2, 1) forwards;
+        will-change: opacity, transform;
+      }
+      .lg-hero-enter > *:nth-child(1) { animation-delay: 0.05s; }
+      .lg-hero-enter > *:nth-child(2) { animation-delay: 0.14s; }
+      .lg-hero-enter > *:nth-child(3) { animation-delay: 0.22s; }
+      .lg-hero-enter > *:nth-child(4) { animation-delay: 0.30s; }
+      .lg-hero-enter > *:nth-child(5) { animation-delay: 0.42s; }
+      .lg-hero-right-enter {
+        opacity: 0;
+        animation: lgHeroFadeUp 0.8s cubic-bezier(0.2, 0.6, 0.2, 1) 0.35s forwards;
+        will-change: opacity, transform;
+      }
+
+      /* ── Card hover lift + soft glow ── */
+      .lg-card-hover {
+        transition:
+          transform 0.3s cubic-bezier(0.2, 0.6, 0.2, 1),
+          box-shadow 0.3s cubic-bezier(0.2, 0.6, 0.2, 1),
+          border-color 0.3s ease;
+        will-change: transform;
+      }
+      @media (hover: hover) {
+        .lg-card-hover:hover {
+          transform: translateY(-3px);
+          border-color: rgba(255, 216, 124, 0.22);
+          box-shadow:
+            0 18px 40px -22px rgba(255, 216, 124, 0.28),
+            0 0 0 1px rgba(255, 216, 124, 0.08);
+        }
+        .lg-feature-cell {
+          transition: background 0.25s ease, transform 0.25s ease;
+        }
+        .lg-feature-cell:hover {
+          transform: translateY(-2px);
+        }
+      }
+
+      /* ── Mobile horizontal swipe (< 768px) ── */
+      @media (max-width: 767px) {
+        .lg-mobile-swipe {
+          display: flex !important;
+          grid-template-columns: none !important;
+          flex-wrap: nowrap;
+          overflow-x: auto;
+          overflow-y: visible;
+          scroll-snap-type: x mandatory;
+          -webkit-overflow-scrolling: touch;
+          scrollbar-width: none;
+          gap: 14px;
+          padding: 6px 24px 18px;
+          margin: 0 -32px;
+          scroll-padding-left: 24px;
+        }
+        .lg-mobile-swipe::-webkit-scrollbar {
+          display: none;
+        }
+        .lg-mobile-swipe > * {
+          flex: 0 0 82%;
+          max-width: 82%;
+          scroll-snap-align: start;
+          min-width: 0;
+        }
+        .lg-mobile-swipe > *:last-child {
+          margin-right: 8px;
+        }
+        /* Features grid uses gap-as-border on desktop; restore solid card edges on mobile */
+        .lg-mobile-swipe-features {
+          background: transparent !important;
+          border: none !important;
+          gap: 14px;
+          overflow-x: auto;
+        }
+        .lg-mobile-swipe-features > .lg-feature-cell {
+          border: 1px solid rgba(255, 216, 124, 0.12);
+          border-radius: 16px;
+        }
+        /* Restore stagger reveal initial state inside the swipe row */
+        .lg-reveal-stagger.lg-mobile-swipe > * {
+          opacity: 0;
+          transform: translate3d(0, 12px, 0);
+        }
+        .lg-reveal-stagger.lg-mobile-swipe.lg-in-view > * {
+          opacity: 1;
+          transform: translate3d(0, 0, 0);
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .lg-reveal,
+        .lg-reveal-stagger > *,
+        .lg-hero-enter > *,
+        .lg-hero-right-enter {
+          opacity: 1 !important;
+          transform: none !important;
+          animation: none !important;
+          transition: none !important;
+        }
+        .lg-gold-text,
+        .lg-marquee-track {
+          animation: none !important;
         }
       }
 `;
