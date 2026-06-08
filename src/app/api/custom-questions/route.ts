@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { requirePro } from "@/lib/require-pro";
 
 export async function GET(req: Request) {
   try {
@@ -45,10 +46,8 @@ export async function GET(req: Request) {
 
 export async function PUT(req: Request) {
   try {
-    const session = await auth();
-    if (!session?.user?.id) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
+    const guard = await requirePro();
+    if ("response" in guard) return guard.response;
 
     const body = await req.json();
     const { questions } = body;
@@ -61,7 +60,7 @@ export async function PUT(req: Request) {
     }
 
     // Capture userId outside the transaction to avoid closure issues
-    const userId = session.user.id;
+    const userId = guard.userId;
 
     // Validate questions before saving
     for (const q of questions) {

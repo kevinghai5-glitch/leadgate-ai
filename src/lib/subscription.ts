@@ -9,7 +9,9 @@ export async function getUserSubscription(userId: string) {
   });
 
   const isAdmin = ADMIN_EMAILS.includes(user?.email || "");
-  const isPro = isAdmin || user?.stripeSubscriptionStatus === "active";
+  const isPro =
+    isAdmin ||
+    ["active", "trialing"].includes(user?.stripeSubscriptionStatus || "");
 
   return { isPro, isAdmin };
 }

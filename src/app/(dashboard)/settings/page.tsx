@@ -1,168 +1,139 @@
 "use client";
 
-import { useEffect, useState, type ReactNode } from "react";
-import { useSession } from "next-auth/react";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
+import { useSession, signOut } from "next-auth/react";
 import { toast } from "sonner";
 import Link from "next/link";
 import {
-  Calendar,
-  Sliders,
   Copy,
-  Save,
   Loader2,
   LinkIcon,
   Code,
   Check,
-  ArrowUp,
-  ArrowDown,
-  ListChecks,
-  ChevronDown,
   ArrowRight,
+  User as UserIcon,
+  CreditCard,
+  Briefcase,
+  ListChecks,
+  Shield,
+  LogOut,
+  AlertTriangle,
+  Mail,
 } from "lucide-react";
 
-// ─── Collapsible Section ─────────────────────────────────────────────
-function CollapsibleCard({
-  icon,
-  title,
-  description,
-  children,
-  defaultOpen = false,
-  onMoveUp,
-  onMoveDown,
-}: {
-  icon: ReactNode;
-  title: string;
-  description: string;
-  children: ReactNode;
-  defaultOpen?: boolean;
-  onMoveUp?: () => void;
-  onMoveDown?: () => void;
-}) {
-  const [open, setOpen] = useState(defaultOpen);
-
-  return (
-    <div className="glass-card rounded-xl transition-shadow">
-      <div className="cursor-pointer select-none p-6" onClick={() => setOpen(!open)}>
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3 flex-1">
-            <div className="flex flex-col gap-0.5" onClick={(e) => e.stopPropagation()}>
-              <button
-                onClick={onMoveUp}
-                disabled={!onMoveUp}
-                className="p-0.5 rounded hover:bg-white/10 text-gray-500 hover:text-white disabled:opacity-20 disabled:cursor-not-allowed transition-colors"
-                aria-label="Move up"
-              >
-                <ArrowUp className="h-3.5 w-3.5" />
-              </button>
-              <button
-                onClick={onMoveDown}
-                disabled={!onMoveDown}
-                className="p-0.5 rounded hover:bg-white/10 text-gray-500 hover:text-white disabled:opacity-20 disabled:cursor-not-allowed transition-colors"
-                aria-label="Move down"
-              >
-                <ArrowDown className="h-3.5 w-3.5" />
-              </button>
-            </div>
-            <div>
-              <div className="flex items-center gap-2 text-lg font-semibold text-white">
-                {icon}
-                {title}
-              </div>
-              <p className="text-sm text-gray-500 mt-1">{description}</p>
-            </div>
-          </div>
-          <ChevronDown
-            className={`h-5 w-5 text-gray-500 transition-transform duration-200 ${
-              open ? "rotate-180" : ""
-            }`}
-          />
-        </div>
-      </div>
-      <div
-        className={`overflow-hidden transition-all duration-200 ${
-          open ? "max-h-[2000px] opacity-100" : "max-h-0 opacity-0"
-        }`}
-      >
-        <div className="px-6 pb-6">{children}</div>
-      </div>
-    </div>
-  );
-}
-
 // ─── Interfaces ──────────────────────────────────────────────────────
-interface Settings {
+interface SettingsData {
   id: string;
   email: string;
   name: string | null;
   calendarLink: string | null;
-  rules: {
-    budgetWeight: number;
-    timelineWeight: number;
-    urgencyWeight: number;
-    qualityWeight: number;
-    minScore: number;
-  } | null;
+  businessName: string | null;
+  niche: string | null;
+  offerName: string | null;
+  offerPrice: number | null;
+  closeRate: number | null;
+  avgCallMinutes: number | null;
+  stripeSubscriptionStatus: string | null;
 }
 
-type SectionId = "formLink" | "embed" | "customQuestions" | "calendly" | "minScore";
+type TabId =
+  | "account"
+  | "business"
+  | "form"
+  | "questions"
+  | "billing"
+  | "danger";
 
-interface Section {
-  id: SectionId;
+const TABS: { id: TabId; label: string; icon: typeof UserIcon }[] = [
+  { id: "account", label: "Account", icon: UserIcon },
+  { id: "business", label: "Business Profile", icon: Briefcase },
+  { id: "form", label: "Form & Embed", icon: LinkIcon },
+  { id: "questions", label: "Custom Questions", icon: ListChecks },
+  { id: "billing", label: "Plan & Billing", icon: CreditCard },
+  { id: "danger", label: "Danger Zone", icon: Shield },
+];
+
+// ─── Reusable Card ───────────────────────────────────────────────────
+function SettingsCard({
+  title,
+  description,
+  children,
+  footer,
+}: {
+  title: string;
+  description?: string;
+  children: ReactNode;
+  footer?: ReactNode;
+}) {
+  return (
+    <div className="rounded-xl border border-white/[0.06] bg-[#0d0d0d] overflow-hidden">
+      <div className="p-6 space-y-1">
+        <h2 className="text-base font-semibold text-white">{title}</h2>
+        {description && (
+          <p className="text-sm text-white/60">{description}</p>
+        )}
+      </div>
+      <div className="px-6 pb-6">{children}</div>
+      {footer && (
+        <div className="border-t border-white/[0.06] bg-white/[0.015] px-6 py-3 flex items-center justify-end gap-3">
+          {footer}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function Field({
+  label,
+  hint,
+  children,
+}: {
   label: string;
+  hint?: string;
+  children: ReactNode;
+}) {
+  return (
+    <div className="space-y-1.5">
+      <label className="text-xs font-medium text-white/70 uppercase tracking-wide">
+        {label}
+      </label>
+      {children}
+      {hint && <p className="text-xs text-white/50">{hint}</p>}
+    </div>
+  );
 }
+
+const inputCls =
+  "flex h-10 w-full rounded-lg border border-white/10 bg-white/[0.04] px-3 py-2 text-sm text-white placeholder:text-white/30 focus:outline-none focus:border-[#ffd87c]/40 focus:bg-white/[0.06] transition-colors";
+
+const btnPrimary =
+  "inline-flex items-center gap-2 h-9 px-4 rounded-lg bg-white text-black text-sm font-medium hover:bg-white/90 disabled:opacity-50 disabled:cursor-not-allowed transition";
+
+const btnSecondary =
+  "inline-flex items-center gap-2 h-9 px-4 rounded-lg border border-white/10 bg-white/[0.04] hover:bg-white/[0.08] text-white text-sm font-medium transition";
+
+const btnDanger =
+  "inline-flex items-center gap-2 h-9 px-4 rounded-lg border border-red-500/30 bg-red-500/[0.08] hover:bg-red-500/[0.14] text-red-300 text-sm font-medium transition";
 
 // ─── Main Page ───────────────────────────────────────────────────────
 export default function SettingsPage() {
   const { data: session } = useSession();
-  const [, setSettings] = useState<Settings | null>(null);
+  const [tab, setTab] = useState<TabId>("account");
+  const [data, setData] = useState<SettingsData | null>(null);
   const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
 
-  const [calendarLink, setCalendarLink] = useState("");
-  const [minScore, setMinScore] = useState(6);
-
-  const defaultSections: Section[] = [
-    { id: "formLink", label: "Form Link" },
-    { id: "embed", label: "Embed Form" },
-    { id: "customQuestions", label: "Custom Questions" },
-    { id: "calendly", label: "Calendly Integration" },
-    { id: "minScore", label: "Minimum Qualifying Score" },
-  ];
-
-  const [sectionOrder, setSectionOrder] = useState<Section[]>(defaultSections);
-
-  // Load section order from localStorage
-  useEffect(() => {
-    const userEmail = session?.user?.email;
-    if (!userEmail) return;
-    try {
-      const stored = localStorage.getItem(`sectionOrder_${userEmail}`);
-      if (stored) {
-        const parsed = JSON.parse(stored) as SectionId[];
-        const reordered = parsed
-          .map((id) => defaultSections.find((s) => s.id === id))
-          .filter((s): s is Section => !!s);
-        // Add any new sections that weren't in stored order
-        for (const s of defaultSections) {
-          if (!reordered.find((r) => r.id === s.id)) reordered.push(s);
-        }
-        setSectionOrder(reordered);
-      }
-    } catch {
-      // ignore parse errors
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [session?.user?.email]);
+  // Account form state
+  const [nameDraft, setNameDraft] = useState("");
+  const [calendarDraft, setCalendarDraft] = useState("");
+  const [savingAccount, setSavingAccount] = useState(false);
 
   useEffect(() => {
     fetch("/api/settings")
       .then((r) => r.json())
-      .then((data) => {
-        setSettings(data);
-        setCalendarLink(data.calendarLink || "");
-        if (data.rules) {
-          setMinScore(data.rules.minScore);
-        }
+      .then((d: SettingsData) => {
+        setData(d);
+        setNameDraft(d.name ?? "");
+        setCalendarDraft(d.calendarLink ?? "");
         setLoading(false);
       })
       .catch(() => {
@@ -171,293 +142,442 @@ export default function SettingsPage() {
       });
   }, []);
 
-  async function handleSave() {
-    // Validate Calendly URL if provided
-    if (calendarLink.trim()) {
-      try {
-        const url = new URL(calendarLink.trim());
-        if (!url.href.startsWith("https://calendly.com/")) {
-          toast.error("Calendly link must start with https://calendly.com/");
-          return;
-        }
-      } catch {
-        toast.error("Please enter a valid Calendly URL");
-        return;
-      }
-    }
+  const accountDirty =
+    (data?.name ?? "") !== nameDraft ||
+    (data?.calendarLink ?? "") !== calendarDraft;
 
-    setSaving(true);
+  async function saveAccount() {
+    setSavingAccount(true);
     try {
       const res = await fetch("/api/settings", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          calendarLink: calendarLink.trim() || null,
-          scoringRules: {
-            budgetWeight: 30,
-            timelineWeight: 25,
-            urgencyWeight: 25,
-            qualityWeight: 20,
-            minScore,
-          },
+          name: nameDraft || null,
+          calendarLink: calendarDraft || null,
         }),
       });
-
-      const data = await res.json();
-      if (!res.ok) {
-        toast.error(data.error || "Failed to save settings");
-        return;
-      }
-      toast.success("Settings saved successfully!");
+      if (!res.ok) throw new Error();
+      setData((prev) =>
+        prev
+          ? { ...prev, name: nameDraft || null, calendarLink: calendarDraft || null }
+          : prev
+      );
+      toast.success("Account updated");
     } catch {
-      toast.error("Failed to save settings. Please try again.");
+      toast.error("Failed to save");
     } finally {
-      setSaving(false);
+      setSavingAccount(false);
     }
   }
 
-  function moveSection(index: number, direction: "up" | "down") {
-    const newIndex = direction === "up" ? index - 1 : index + 1;
-    if (newIndex < 0 || newIndex >= sectionOrder.length) return;
-    setSectionOrder((prev) => {
-      const updated = [...prev];
-      [updated[index], updated[newIndex]] = [updated[newIndex], updated[index]];
-      // Persist to localStorage
-      const userEmail = session?.user?.email;
-      if (userEmail) {
-        try {
-          localStorage.setItem(
-            `sectionOrder_${userEmail}`,
-            JSON.stringify(updated.map((s) => s.id))
-          );
-        } catch {
-          // ignore storage errors
-        }
-      }
-      return updated;
-    });
-  }
-
-  const formLink =
-    typeof window !== "undefined"
-      ? `${window.location.origin}/form/${session?.user?.id}`
-      : "";
-
-  const [embedCopied, setEmbedCopied] = useState(false);
-
-  function copyFormLink() {
-    navigator.clipboard.writeText(formLink);
-    toast.success("Form link copied!");
-  }
+  const formLink = useMemo(
+    () =>
+      typeof window !== "undefined" && session?.user?.id
+        ? `${window.location.origin}/form/${session.user.id}`
+        : "",
+    [session?.user?.id]
+  );
 
   const embedCode = `<iframe src="${formLink}" width="100%" height="700" frameborder="0" style="border:none;"></iframe>`;
 
-  function copyEmbedCode() {
+  const [linkCopied, setLinkCopied] = useState(false);
+  const [embedCopied, setEmbedCopied] = useState(false);
+
+  function copyLink() {
+    navigator.clipboard.writeText(formLink);
+    setLinkCopied(true);
+    toast.success("Form link copied");
+    setTimeout(() => setLinkCopied(false), 1500);
+  }
+  function copyEmbed() {
     navigator.clipboard.writeText(embedCode);
     setEmbedCopied(true);
-    toast.success("Embed code copied!");
-    setTimeout(() => setEmbedCopied(false), 2000);
+    toast.success("Embed code copied");
+    setTimeout(() => setEmbedCopied(false), 1500);
   }
 
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
-        <Loader2 className="h-8 w-8 animate-spin text-[#ECCA66]" />
+        <Loader2 className="h-7 w-7 animate-spin text-[#ffd87c]" />
       </div>
     );
   }
 
-  function renderSection(section: Section, index: number) {
-    const canMoveUp = index > 0;
-    const canMoveDown = index < sectionOrder.length - 1;
+  if (!data) return null;
 
-    switch (section.id) {
-      case "formLink":
-        return (
-          <CollapsibleCard
-            key={section.id}
-            icon={<LinkIcon className="h-5 w-5 text-[#ECCA66]" />}
-            title="Your Form Link"
-            description="Share this link with prospects to collect and qualify leads"
-            defaultOpen
-            onMoveUp={canMoveUp ? () => moveSection(index, "up") : undefined}
-            onMoveDown={canMoveDown ? () => moveSection(index, "down") : undefined}
-          >
-            <div className="flex items-center gap-2">
-              <input
-                value={formLink}
-                readOnly
-                className="flex h-10 w-full rounded-lg border border-white/10 bg-white/[0.04] px-3 py-2 text-sm text-gray-300 font-mono focus:outline-none"
-              />
-              <button
-                onClick={copyFormLink}
-                className="inline-flex items-center gap-2 h-10 px-4 rounded-lg border border-white/10 bg-white/[0.05] hover:bg-white/[0.1] text-gray-300 text-sm font-medium transition-colors"
-              >
-                <Copy className="h-4 w-4" />
-                Copy
-              </button>
-            </div>
-          </CollapsibleCard>
-        );
+  // Avatar initials
+  const displayName = data.name || data.email.split("@")[0];
+  const initials = displayName
+    .split(/\s+/)
+    .map((p) => p[0])
+    .slice(0, 2)
+    .join("")
+    .toUpperCase();
 
-      case "embed":
-        return (
-          <CollapsibleCard
-            key={section.id}
-            icon={<Code className="h-5 w-5 text-[#ECCA66]" />}
-            title="Embed Form"
-            description="Add this code to your website to embed the lead qualification form"
-            onMoveUp={canMoveUp ? () => moveSection(index, "up") : undefined}
-            onMoveDown={canMoveDown ? () => moveSection(index, "down") : undefined}
-          >
-            <div className="space-y-3">
-              <div className="relative">
-                <pre className="bg-white/[0.04] border border-white/10 rounded-lg p-4 text-sm text-gray-400 overflow-x-auto">
-                  <code>{embedCode}</code>
-                </pre>
-              </div>
-              <div className="flex items-center gap-3">
-                <button
-                  onClick={copyEmbedCode}
-                  className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-white/10 bg-white/[0.05] hover:bg-white/[0.1] text-gray-300 text-sm font-medium transition-colors"
-                >
-                  {embedCopied ? (
-                    <>
-                      <Check className="h-4 w-4" />
-                      Copied!
-                    </>
-                  ) : (
-                    <>
-                      <Copy className="h-4 w-4" />
-                      Copy to Clipboard
-                    </>
-                  )}
-                </button>
-              </div>
-              <p className="text-sm text-gray-500">
-                Paste this code into any HTML page to embed your lead form.
-                The form will adapt to the container width.
-              </p>
-            </div>
-          </CollapsibleCard>
-        );
-
-      case "customQuestions":
-        return (
-          <CollapsibleCard
-            key={section.id}
-            icon={<ListChecks className="h-5 w-5 text-[#ECCA66]" />}
-            title="Custom Form Builder"
-            description="Build your own lead form with custom questions"
-            defaultOpen
-            onMoveUp={canMoveUp ? () => moveSection(index, "up") : undefined}
-            onMoveDown={canMoveDown ? () => moveSection(index, "down") : undefined}
-          >
-            <Link
-              href="/dashboard/form-builder"
-              className="flex items-center justify-between p-4 rounded-lg border border-white/10 bg-white/[0.03] hover:bg-white/[0.06] hover:border-[#D2AC47]/20 transition-all group"
-            >
-              <div>
-                <p className="text-sm font-medium text-white group-hover:text-[#ECCA66] transition-colors">
-                  Open Form Builder
-                </p>
-                <p className="text-xs text-gray-500 mt-0.5">
-                  Add custom questions to qualify leads your way
-                </p>
-              </div>
-              <ArrowRight className="h-4 w-4 text-gray-600 group-hover:text-[#D2AC47] transition-colors" />
-            </Link>
-          </CollapsibleCard>
-        );
-
-      case "calendly":
-        return (
-          <CollapsibleCard
-            key={section.id}
-            icon={<Calendar className="h-5 w-5 text-[#ECCA66]" />}
-            title="Calendly Integration"
-            description="Qualified leads will be shown a booking link after form submission"
-            onMoveUp={canMoveUp ? () => moveSection(index, "up") : undefined}
-            onMoveDown={canMoveDown ? () => moveSection(index, "down") : undefined}
-          >
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-300">Calendly Link</label>
-              <input
-                placeholder="https://calendly.com/your-name/30min"
-                value={calendarLink}
-                onChange={(e) => setCalendarLink(e.target.value)}
-                className="flex h-10 w-full rounded-lg border border-white/10 bg-white/[0.05] px-3 py-2 text-sm text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-[#D2AC47]/50"
-              />
-              <p className="text-sm text-gray-500">
-                Enter your Calendly scheduling link. Qualified leads will see
-                this after submitting the form and can book a call directly.
-              </p>
-            </div>
-          </CollapsibleCard>
-        );
-
-      case "minScore":
-        return (
-          <CollapsibleCard
-            key={section.id}
-            icon={<Sliders className="h-5 w-5 text-[#ECCA66]" />}
-            title="Minimum Qualifying Score"
-            description="Set the threshold for lead qualification"
-            defaultOpen
-            onMoveUp={canMoveUp ? () => moveSection(index, "up") : undefined}
-            onMoveDown={canMoveDown ? () => moveSection(index, "down") : undefined}
-          >
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-300">Minimum Qualifying Score (1-10)</label>
-              <input
-                type="number"
-                min={1}
-                max={10}
-                value={minScore}
-                onChange={(e) => setMinScore(Number(e.target.value))}
-                className="flex h-10 w-full rounded-lg border border-white/10 bg-white/[0.05] px-3 py-2 text-sm text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-[#D2AC47]/50"
-              />
-              <p className="text-sm text-gray-500">
-                Leads scoring at or above this number will be marked as qualified
-                and shown the booking calendar.
-              </p>
-            </div>
-          </CollapsibleCard>
-        );
-    }
-  }
+  const planStatus = data.stripeSubscriptionStatus ?? "free";
+  const isPro = ["active", "trialing"].includes(planStatus);
 
   return (
-    <div className="space-y-6 max-w-4xl mx-auto">
-      <div>
-        <h1 className="text-2xl font-bold text-white">Settings</h1>
-        <p className="text-gray-500">
-          Configure your lead qualification pipeline. Use arrows to reorder sections.
+    <div className="max-w-6xl mx-auto">
+      {/* Header */}
+      <div className="mb-8 pb-6 border-b border-white/[0.06]">
+        <h1 className="text-2xl font-bold text-white tracking-tight">Settings</h1>
+        <p className="text-sm text-white/60 mt-1">
+          Manage your account, profile, and how leads flow into your business.
         </p>
       </div>
 
-      {sectionOrder.map((section, index) => renderSection(section, index))}
+      <div className="flex flex-col lg:flex-row gap-8">
+        {/* Sidebar Nav */}
+        <aside className="lg:w-56 flex-shrink-0">
+          <nav className="space-y-0.5 lg:sticky lg:top-4">
+            {TABS.map((t) => {
+              const Icon = t.icon;
+              const isActive = tab === t.id;
+              const isDanger = t.id === "danger";
+              return (
+                <button
+                  key={t.id}
+                  onClick={() => setTab(t.id)}
+                  className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                    isActive
+                      ? isDanger
+                        ? "bg-red-500/[0.08] text-red-300"
+                        : "bg-white/[0.06] text-white"
+                      : isDanger
+                        ? "text-red-400/70 hover:bg-red-500/[0.05] hover:text-red-300"
+                        : "text-white/60 hover:bg-white/[0.04] hover:text-white"
+                  }`}
+                >
+                  <Icon className="h-4 w-4" />
+                  {t.label}
+                </button>
+              );
+            })}
+          </nav>
+        </aside>
 
-      {/* Save Button */}
-      <div className="flex justify-end">
-        <button
-          onClick={handleSave}
-          disabled={saving}
-          className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-gradient-to-r from-[#D2AC47] to-[#B08B73] hover:from-[#ECCA66] hover:to-[#D2AC47] text-black text-sm font-semibold shadow-[0_0_20px_rgba(210,172,71,0.15)] hover:shadow-[0_0_28px_rgba(210,172,71,0.25)] transition-all disabled:opacity-50"
-        >
-          {saving ? (
+        {/* Content */}
+        <div className="flex-1 min-w-0 space-y-6">
+          {tab === "account" && (
             <>
-              <Loader2 className="h-4 w-4 animate-spin" />
-              Saving...
-            </>
-          ) : (
-            <>
-              <Save className="h-4 w-4" />
-              Save Settings
+              <SettingsCard
+                title="Profile"
+                description="This information is used across your dashboard."
+                footer={
+                  <button
+                    onClick={saveAccount}
+                    disabled={!accountDirty || savingAccount}
+                    className={btnPrimary}
+                  >
+                    {savingAccount && (
+                      <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                    )}
+                    Save changes
+                  </button>
+                }
+              >
+                <div className="flex items-center gap-5 mb-6 pb-6 border-b border-white/[0.06]">
+                  <div
+                    className="h-16 w-16 rounded-full flex items-center justify-center text-lg font-bold text-black"
+                    style={{ background: "var(--lg-gold-gradient)" }}
+                  >
+                    {initials || "?"}
+                  </div>
+                  <div className="min-w-0">
+                    <p className="text-base font-semibold text-white truncate">
+                      {displayName}
+                    </p>
+                    <p className="text-sm text-white/60 truncate">{data.email}</p>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                  <Field label="Full name">
+                    <input
+                      value={nameDraft}
+                      onChange={(e) => setNameDraft(e.target.value)}
+                      placeholder="Your name"
+                      className={inputCls}
+                    />
+                  </Field>
+                  <Field label="Email" hint="Contact support to change your email.">
+                    <input
+                      value={data.email}
+                      readOnly
+                      className={`${inputCls} cursor-not-allowed opacity-70`}
+                    />
+                  </Field>
+                  <div className="md:col-span-2">
+                    <Field
+                      label="Calendly link"
+                      hint="Qualified leads see this link after submitting your form."
+                    >
+                      <input
+                        value={calendarDraft}
+                        onChange={(e) => setCalendarDraft(e.target.value)}
+                        placeholder="https://calendly.com/your-handle/discovery-call"
+                        className={inputCls}
+                      />
+                    </Field>
+                  </div>
+                </div>
+              </SettingsCard>
+
+              <SettingsCard
+                title="Account"
+                description="Sign out of this device or contact support."
+              >
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between py-3 px-4 rounded-lg bg-white/[0.02] border border-white/[0.05]">
+                    <div className="flex items-center gap-3">
+                      <UserIcon className="h-4 w-4 text-white/60" />
+                      <div>
+                        <p className="text-sm text-white font-medium">User ID</p>
+                        <p className="text-xs text-white/50 font-mono">
+                          {data.id}
+                        </p>
+                      </div>
+                    </div>
+                    <button
+                      onClick={() => {
+                        navigator.clipboard.writeText(data.id);
+                        toast.success("User ID copied");
+                      }}
+                      className="text-white/40 hover:text-white"
+                      aria-label="Copy user ID"
+                    >
+                      <Copy className="h-4 w-4" />
+                    </button>
+                  </div>
+                  <div className="flex items-center justify-between py-3 px-4 rounded-lg bg-white/[0.02] border border-white/[0.05]">
+                    <div className="flex items-center gap-3">
+                      <Mail className="h-4 w-4 text-white/60" />
+                      <div>
+                        <p className="text-sm text-white font-medium">
+                          Need help?
+                        </p>
+                        <p className="text-xs text-white/50">
+                          Email support@leadgate.ai
+                        </p>
+                      </div>
+                    </div>
+                    <a
+                      href="mailto:support@leadgate.ai"
+                      className={btnSecondary}
+                    >
+                      Contact
+                    </a>
+                  </div>
+                  <button
+                    onClick={() => signOut({ callbackUrl: "/" })}
+                    className={`${btnSecondary} w-full justify-center`}
+                  >
+                    <LogOut className="h-4 w-4" />
+                    Sign out
+                  </button>
+                </div>
+              </SettingsCard>
             </>
           )}
-        </button>
+
+          {tab === "business" && (
+            <SettingsCard
+              title="Business Profile"
+              description="Set your offer, close rate, and qualifying score — these power your dashboard projections."
+            >
+              <div className="space-y-4">
+                <div className="grid grid-cols-2 gap-3 mb-4">
+                  <Stat label="Offer" value={data.offerName ?? "Not set"} />
+                  <Stat
+                    label="Offer price"
+                    value={data.offerPrice ? `$${data.offerPrice.toLocaleString()}` : "Not set"}
+                  />
+                  <Stat
+                    label="Close rate"
+                    value={data.closeRate != null ? `${data.closeRate}%` : "Not set"}
+                  />
+                  <Stat
+                    label="Avg call duration"
+                    value={
+                      data.avgCallMinutes != null
+                        ? `${data.avgCallMinutes} min`
+                        : "Not set"
+                    }
+                  />
+                </div>
+                <Link
+                  href="/dashboard/business"
+                  className="flex items-center justify-between p-4 rounded-lg border border-white/10 bg-white/[0.03] hover:bg-white/[0.06] hover:border-[#ffd87c]/30 transition-all group"
+                >
+                  <div>
+                    <p className="text-sm font-medium text-white">
+                      Open Business Profile
+                    </p>
+                    <p className="text-xs text-white/50 mt-0.5">
+                      Edit offer, pricing, niche, and qualifying threshold
+                    </p>
+                  </div>
+                  <ArrowRight className="h-4 w-4 text-white/40 group-hover:text-[#ffd87c] transition-colors" />
+                </Link>
+              </div>
+            </SettingsCard>
+          )}
+
+          {tab === "form" && (
+            <>
+              <SettingsCard
+                title="Your form link"
+                description="Share this link with prospects to collect and qualify leads automatically."
+              >
+                <div className="flex items-center gap-2">
+                  <input
+                    value={formLink}
+                    readOnly
+                    className={`${inputCls} font-mono text-white/80`}
+                  />
+                  <button onClick={copyLink} className={btnSecondary}>
+                    {linkCopied ? (
+                      <Check className="h-4 w-4 text-emerald-400" />
+                    ) : (
+                      <Copy className="h-4 w-4" />
+                    )}
+                    {linkCopied ? "Copied" : "Copy"}
+                  </button>
+                </div>
+              </SettingsCard>
+
+              <SettingsCard
+                title="Embed on your website"
+                description="Drop this snippet into any page to render your qualifying form inline."
+              >
+                <div className="space-y-3">
+                  <pre className="bg-black/40 border border-white/10 rounded-lg p-4 text-xs text-white/70 overflow-x-auto font-mono leading-relaxed">
+                    <code>{embedCode}</code>
+                  </pre>
+                  <button onClick={copyEmbed} className={btnSecondary}>
+                    {embedCopied ? (
+                      <>
+                        <Check className="h-4 w-4 text-emerald-400" />
+                        Copied
+                      </>
+                    ) : (
+                      <>
+                        <Code className="h-4 w-4" />
+                        Copy embed code
+                      </>
+                    )}
+                  </button>
+                </div>
+              </SettingsCard>
+            </>
+          )}
+
+          {tab === "questions" && (
+            <SettingsCard
+              title="Custom Form Builder"
+              description="Tailor the qualifying questions every prospect answers."
+            >
+              <Link
+                href="/dashboard/form-builder"
+                className="flex items-center justify-between p-4 rounded-lg border border-white/10 bg-white/[0.03] hover:bg-white/[0.06] hover:border-[#ffd87c]/30 transition-all group"
+              >
+                <div>
+                  <p className="text-sm font-medium text-white">
+                    Open Form Builder
+                  </p>
+                  <p className="text-xs text-white/50 mt-0.5">
+                    Add, reorder, or remove custom questions
+                  </p>
+                </div>
+                <ArrowRight className="h-4 w-4 text-white/40 group-hover:text-[#ffd87c] transition-colors" />
+              </Link>
+            </SettingsCard>
+          )}
+
+          {tab === "billing" && (
+            <SettingsCard
+              title="Plan & Billing"
+              description="Manage your subscription, invoices, and payment method."
+            >
+              <div className="flex items-center justify-between p-4 rounded-lg border border-white/10 bg-white/[0.03] mb-4">
+                <div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm font-medium text-white">
+                      Current plan:
+                    </span>
+                    <span
+                      className={`text-xs font-semibold px-2 py-0.5 rounded-full ${
+                        isPro
+                          ? "bg-emerald-500/15 text-emerald-300 border border-emerald-500/20"
+                          : "bg-white/[0.06] text-white/70 border border-white/10"
+                      }`}
+                    >
+                      {isPro ? "Pro" : "Free"}
+                    </span>
+                  </div>
+                  <p className="text-xs text-white/50 mt-1 capitalize">
+                    Status: {planStatus}
+                  </p>
+                </div>
+                <Link href="/billing" className={btnPrimary}>
+                  {isPro ? "Manage" : "Upgrade"}
+                  <ArrowRight className="h-3.5 w-3.5" />
+                </Link>
+              </div>
+              <p className="text-xs text-white/50">
+                Invoices, payment methods, and cancellation are handled in the
+                billing portal.
+              </p>
+            </SettingsCard>
+          )}
+
+          {tab === "danger" && (
+            <SettingsCard
+              title="Danger Zone"
+              description="Irreversible actions. Proceed with caution."
+            >
+              <div className="rounded-lg border border-red-500/20 bg-red-500/[0.04] p-4">
+                <div className="flex items-start gap-3 mb-3">
+                  <AlertTriangle className="h-5 w-5 text-red-400 flex-shrink-0 mt-0.5" />
+                  <div>
+                    <p className="text-sm font-semibold text-white">
+                      Delete account
+                    </p>
+                    <p className="text-xs text-white/60 mt-1">
+                      Permanently delete your account, all leads, and form
+                      data. This cannot be undone.
+                    </p>
+                  </div>
+                </div>
+                <button
+                  onClick={() =>
+                    toast.error(
+                      "Account deletion is not yet automated. Email support@leadgate.ai to request deletion."
+                    )
+                  }
+                  className={btnDanger}
+                >
+                  Delete account
+                </button>
+              </div>
+            </SettingsCard>
+          )}
+        </div>
       </div>
+    </div>
+  );
+}
+
+function Stat({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="rounded-lg border border-white/[0.05] bg-white/[0.02] px-3 py-2.5">
+      <p className="text-[11px] uppercase tracking-wide text-white/50 font-medium">
+        {label}
+      </p>
+      <p className="text-sm text-white font-medium mt-0.5 truncate">{value}</p>
     </div>
   );
 }

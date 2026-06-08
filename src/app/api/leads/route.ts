@@ -1,16 +1,14 @@
 import { NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { requirePro } from "@/lib/require-pro";
 
 export async function GET() {
   try {
-    const session = await auth();
-    if (!session?.user?.id) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
+    const guard = await requirePro();
+    if ("response" in guard) return guard.response;
 
     const leads = await prisma.lead.findMany({
-      where: { userId: session.user.id },
+      where: { userId: guard.userId },
       orderBy: { createdAt: "desc" },
     });
 

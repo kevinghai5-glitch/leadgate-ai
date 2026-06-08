@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { scoreLead, generateLeadSummary } from "@/lib/openai";
 import { leadFormSchema } from "@/lib/validations";
+import { requireProForUser } from "@/lib/require-pro";
 
 export async function POST(req: Request) {
   try {
@@ -14,6 +15,10 @@ export async function POST(req: Request) {
         { status: 400 }
       );
     }
+
+    // Paywall: block submissions to accounts without an active subscription.
+    const paywallResponse = await requireProForUser(userId);
+    if (paywallResponse) return paywallResponse;
 
     // Validate lead form data
     const validatedData = leadFormSchema.parse(leadData);

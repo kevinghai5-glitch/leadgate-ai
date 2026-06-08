@@ -33,32 +33,50 @@ providers.push(
       password: { label: "Password", type: "password" },
     },
     async authorize(credentials) {
-      if (!credentials?.email || !credentials?.password) {
+      try {
+        if (!credentials?.email || !credentials?.password) {
+          console.error("[auth] missing email or password in submission");
+          return null;
+        }
+
+        const email = (credentials.email as string).trim();
+        console.error("[auth] login attempt for:", email);
+
+        // Case-insensitive lookup so "User@x.com" matches "user@x.com" etc.
+        const user = await prisma.user.findFirst({
+          where: { email: { equals: email, mode: "insensitive" } },
+          select: { id: true, email: true, name: true, password: true },
+        });
+
+        if (!user) {
+          console.error("[auth] no user found with that email");
+          return null;
+        }
+        if (!user.password) {
+          console.error("[auth] user has no password set (likely OAuth signup)");
+          return null;
+        }
+
+        const isPasswordValid = await bcrypt.compare(
+          credentials.password as string,
+          user.password
+        );
+
+        if (!isPasswordValid) {
+          console.error("[auth] password mismatch for", email);
+          return null;
+        }
+
+        console.error("[auth] login OK for", email);
+        return {
+          id: user.id,
+          email: user.email,
+          name: user.name,
+        };
+      } catch (err) {
+        console.error("[auth] authorize() threw:", err);
         return null;
       }
-
-      const user = await prisma.user.findUnique({
-        where: { email: credentials.email as string },
-      });
-
-      if (!user || !user.password) {
-        return null;
-      }
-
-      const isPasswordValid = await bcrypt.compare(
-        credentials.password as string,
-        user.password
-      );
-
-      if (!isPasswordValid) {
-        return null;
-      }
-
-      return {
-        id: user.id,
-        email: user.email,
-        name: user.name,
-      };
     },
   })
 );

@@ -25,7 +25,7 @@ interface LeadSummary {
 }
 
 export async function scoreLead(lead: LeadData): Promise<ScoreResult> {
-  const prompt = `You are a fitness coaching lead qualification assistant. Evaluate the following prospect based on their answers to determine how likely they are to become a premium coaching client.
+  const prompt = `You are a high-ticket coaching lead qualification assistant. Evaluate the following prospect based on the coach's custom intake questions to determine how likely they are to become a premium client. The coach may be in any niche (fitness, business, mindset, executive, relationships, etc.) — infer the niche from the questions and answers themselves.
 
 Prospect Information:
 - Name: ${lead.name}
@@ -78,7 +78,7 @@ Return ONLY the JSON object, no other text.`;
 export async function generateLeadSummary(
   lead: LeadData & { aiScore: number; aiReasoning: string }
 ): Promise<LeadSummary> {
-  const prompt = `You are a sales preparation assistant for a fitness coaching business. Generate a brief summary and suggested sales angle for this qualified prospect.
+  const prompt = `You are a sales preparation assistant for a high-ticket online coaching business (niche may be fitness, business, mindset, executive, relationships, or other — infer from the intake answers). Generate a brief summary and suggested sales angle for this qualified prospect.
 
 Prospect Information:
 - Name: ${lead.name}

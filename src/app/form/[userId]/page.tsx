@@ -24,8 +24,9 @@ import {
   Loader2,
   CheckCircle2,
   Calendar,
-  Dumbbell,
+  Sparkles,
   XCircle,
+  Inbox,
 } from "lucide-react";
 
 type FormState = "form" | "loading" | "qualified" | "disqualified";
@@ -57,17 +58,7 @@ export default function LeadFormPage({
   const [result, setResult] = useState<ScoreResult | null>(null);
   const [customQuestions, setCustomQuestions] = useState<CustomQuestion[]>([]);
   const [customAnswers, setCustomAnswers] = useState<Record<string, string>>({});
-
-  // Controlled state for form fields
-  const [instagram, setInstagram] = useState("");
-  const [fitnessGoal, setFitnessGoal] = useState("");
-  const [whyNow, setWhyNow] = useState("");
-  const [biggestObstacle, setBiggestObstacle] = useState("");
-  const [commitment, setCommitment] = useState("");
-  const [coachingBefore, setCoachingBefore] = useState("");
-  const [timeline, setTimeline] = useState("");
-  const [financiallyReady, setFinanciallyReady] = useState("");
-  const [investmentLevel, setInvestmentLevel] = useState("");
+  const [questionsLoading, setQuestionsLoading] = useState(true);
 
   useEffect(() => {
     fetch(`/api/custom-questions?userId=${userId}`)
@@ -78,8 +69,9 @@ export default function LeadFormPage({
         }
       })
       .catch(() => {
-        // Silently fail — custom questions are optional
-      });
+        // Silently fail — coach hasn't built form
+      })
+      .finally(() => setQuestionsLoading(false));
   }, [userId]);
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -88,42 +80,20 @@ export default function LeadFormPage({
 
     const formData = new FormData(e.currentTarget);
 
-    let problemDescription: string;
-    let budget: string;
-    let timelineValue: string;
-
-    if (hasCustomForm) {
-      // Build problemDescription from custom question answers
-      problemDescription = customQuestions
-        .map((q) => `${q.label}: ${customAnswers[q.id] || "N/A"}`)
-        .join("\n");
-      budget = "N/A";
-      timelineValue = "N/A";
-    } else {
-      problemDescription = [
-        `Primary Fitness Goal: ${fitnessGoal}`,
-        `Why Now: ${whyNow}`,
-        `Biggest Obstacle: ${biggestObstacle}`,
-        `Commitment Level: ${commitment}`,
-        `Previous Coaching Experience: ${coachingBefore}`,
-        `Timeline to Start: ${timeline}`,
-        `Financially Ready: ${financiallyReady}`,
-        `Investment Level: ${investmentLevel}`,
-      ].join("\n");
-      budget = investmentLevel;
-      timelineValue = timeline;
-    }
+    const problemDescription = customQuestions
+      .map((q) => `${q.label}: ${customAnswers[q.id] || "N/A"}`)
+      .join("\n");
 
     const data = {
       userId,
       name: formData.get("name") as string,
       email: formData.get("email") as string,
       phone: formData.get("phone") as string,
-      company: hasCustomForm ? "" : (instagram.trim() || ""),
-      budget,
-      timeline: timelineValue,
+      company: "",
+      budget: "N/A",
+      timeline: "N/A",
       problemDescription,
-      customAnswers: hasCustomForm ? customAnswers : undefined,
+      customAnswers,
     };
 
     try {
@@ -158,7 +128,7 @@ export default function LeadFormPage({
             Reviewing your application...
           </h2>
           <p className="mt-2 text-gray-400">
-            We&apos;re assessing if our online coaching program is right for you
+            We&apos;re assessing if this coaching program is right for you
           </p>
         </div>
       </div>
@@ -178,7 +148,7 @@ export default function LeadFormPage({
             </CardTitle>
             <CardDescription className="text-base">
               Based on your application, we&apos;d love to help you hit your
-              goals with our online coaching. Let&apos;s set up a quick call.
+              goals. Let&apos;s set up a quick call.
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
@@ -252,49 +222,64 @@ export default function LeadFormPage({
     );
   }
 
-  const hasCustomForm = customQuestions.length > 0;
+  if (questionsLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[#030303]">
+        <Loader2 className="h-8 w-8 animate-spin text-[#ECCA66]" />
+      </div>
+    );
+  }
 
-  const isFormValid = hasCustomForm
-    ? customQuestions
-        .filter((q) => q.required)
-        .every((q) => (customAnswers[q.id] || "").trim() !== "")
-    : fitnessGoal &&
-      whyNow.trim() &&
-      biggestObstacle &&
-      commitment &&
-      coachingBefore &&
-      timeline &&
-      financiallyReady &&
-      investmentLevel;
+  if (customQuestions.length === 0) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[#030303] px-4 dashboard-dark">
+        <Card className="w-full max-w-lg text-center">
+          <CardHeader>
+            <div className="mx-auto h-16 w-16 rounded-full bg-[#D2AC47]/10 border border-[#D2AC47]/20 flex items-center justify-center mb-4">
+              <Inbox className="h-8 w-8 text-[#ECCA66]" />
+            </div>
+            <CardTitle className="text-2xl">Form not ready yet</CardTitle>
+            <CardDescription className="text-base">
+              This coach hasn&apos;t finished setting up their qualification
+              form. Please check back soon.
+            </CardDescription>
+          </CardHeader>
+        </Card>
+      </div>
+    );
+  }
+
+  const isFormValid = customQuestions
+    .filter((q) => q.required)
+    .every((q) => (customAnswers[q.id] || "").trim() !== "");
 
   return (
     <div className="min-h-screen bg-[#030303] py-12 px-4 dashboard-dark">
       <div className="max-w-2xl mx-auto">
         <div className="text-center mb-8">
           <div className="inline-flex items-center gap-2 rounded-full bg-[#D2AC47]/10 border border-[#D2AC47]/20 px-4 py-1.5 text-sm font-medium text-[#ECCA66] mb-4">
-            <Dumbbell className="h-4 w-4" />
+            <Sparkles className="h-4 w-4" />
             Free Coaching Assessment
           </div>
           <h1 className="text-3xl font-bold text-white">
-            Let&apos;s See If Online Coaching Is Right for You
+            See If This Coaching Program Is Right for You
           </h1>
           <p className="mt-2 text-gray-400">
-            Answer a few quick questions and we&apos;ll see if our
-            online coaching program is the right fit for your goals.
+            Answer a few quick questions so we can see if we&apos;re the right
+            fit for your goals.
           </p>
         </div>
 
         <Card>
           <CardHeader>
-            <CardTitle>Your Coaching Application</CardTitle>
+            <CardTitle>Your Application</CardTitle>
             <CardDescription>
-              Tell us about yourself so we can see if our online coaching
-              program is the right fit.
+              Tell us about yourself so we can see if this program is the right
+              fit.
             </CardDescription>
           </CardHeader>
           <form onSubmit={onSubmit}>
             <CardContent className="space-y-6">
-              {/* Basic Info: Name, Email, Phone */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="name">Full Name *</Label>
@@ -328,241 +313,67 @@ export default function LeadFormPage({
                 />
               </div>
 
-              {/* Conditional: Custom questions OR default fitness questions */}
-              {hasCustomForm ? (
-                <>
-                  {customQuestions.map((q) => (
-                    <div key={q.id} className="space-y-2">
-                      <Label>
-                        {q.label} {q.required && "*"}
-                      </Label>
-                      {q.type === "text" && (
-                        <Input
-                          placeholder={`Enter ${q.label.toLowerCase()}`}
-                          required={q.required}
-                          value={customAnswers[q.id] || ""}
-                          onChange={(e) =>
-                            setCustomAnswers((prev) => ({
-                              ...prev,
-                              [q.id]: e.target.value,
-                            }))
-                          }
-                        />
-                      )}
-                      {q.type === "textarea" && (
-                        <Textarea
-                          placeholder={`Enter ${q.label.toLowerCase()}`}
-                          rows={3}
-                          required={q.required}
-                          value={customAnswers[q.id] || ""}
-                          onChange={(e) =>
-                            setCustomAnswers((prev) => ({
-                              ...prev,
-                              [q.id]: e.target.value,
-                            }))
-                          }
-                        />
-                      )}
-                      {q.type === "select" && q.options && (
-                        <Select
-                          value={customAnswers[q.id] || ""}
-                          onValueChange={(val) =>
-                            setCustomAnswers((prev) => ({
-                              ...prev,
-                              [q.id]: val,
-                            }))
-                          }
-                          required={q.required}
-                        >
-                          <SelectTrigger>
-                            <SelectValue placeholder={`Select ${q.label.toLowerCase()}`} />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {q.options
-                              .split(",")
-                              .map((opt) => opt.trim())
-                              .filter(Boolean)
-                              .map((opt) => (
-                                <SelectItem key={opt} value={opt}>
-                                  {opt}
-                                </SelectItem>
-                              ))}
-                          </SelectContent>
-                        </Select>
-                      )}
-                    </div>
-                  ))}
-                </>
-              ) : (
-                <>
-                  <div className="space-y-2">
-                    <Label htmlFor="instagram">
-                      Instagram Username{" "}
-                      <span className="text-gray-400 font-normal">(optional)</span>
-                    </Label>
+              {customQuestions.map((q) => (
+                <div key={q.id} className="space-y-2">
+                  <Label>
+                    {q.label} {q.required && "*"}
+                  </Label>
+                  {q.type === "text" && (
                     <Input
-                      id="instagram"
-                      name="instagram"
-                      type="text"
-                      placeholder="@username"
-                      value={instagram}
-                      onChange={(e) => setInstagram(e.target.value)}
+                      placeholder={`Enter ${q.label.toLowerCase()}`}
+                      required={q.required}
+                      value={customAnswers[q.id] || ""}
+                      onChange={(e) =>
+                        setCustomAnswers((prev) => ({
+                          ...prev,
+                          [q.id]: e.target.value,
+                        }))
+                      }
                     />
-                  </div>
-
-                  {/* Q1: Primary fitness goal */}
-                  <div className="space-y-2">
-                    <Label>What is your primary fitness goal right now? *</Label>
-                    <Select
-                      value={fitnessGoal}
-                      onValueChange={setFitnessGoal}
-                      required
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select your primary goal" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="Lose body fat">Lose body fat</SelectItem>
-                        <SelectItem value="Build lean muscle / transform physique">Build lean muscle / transform physique</SelectItem>
-                        <SelectItem value="Rebuild consistency and discipline">Rebuild consistency and discipline</SelectItem>
-                        <SelectItem value="Improve confidence & lifestyle">Improve confidence &amp; lifestyle</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  {/* Q2: Why now */}
-                  <div className="space-y-2">
-                    <Label>Why is achieving this goal important to you RIGHT NOW? *</Label>
+                  )}
+                  {q.type === "textarea" && (
                     <Textarea
-                      placeholder="Tell us briefly..."
+                      placeholder={`Enter ${q.label.toLowerCase()}`}
                       rows={3}
-                      required
-                      value={whyNow}
-                      onChange={(e) => setWhyNow(e.target.value)}
+                      required={q.required}
+                      value={customAnswers[q.id] || ""}
+                      onChange={(e) =>
+                        setCustomAnswers((prev) => ({
+                          ...prev,
+                          [q.id]: e.target.value,
+                        }))
+                      }
                     />
-                  </div>
-
-                  {/* Q3: Biggest obstacle */}
-                  <div className="space-y-2">
-                    <Label>What&apos;s been your biggest obstacle? *</Label>
+                  )}
+                  {q.type === "select" && q.options && (
                     <Select
-                      value={biggestObstacle}
-                      onValueChange={setBiggestObstacle}
-                      required
+                      value={customAnswers[q.id] || ""}
+                      onValueChange={(val) =>
+                        setCustomAnswers((prev) => ({
+                          ...prev,
+                          [q.id]: val,
+                        }))
+                      }
+                      required={q.required}
                     >
                       <SelectTrigger>
-                        <SelectValue placeholder="Select your biggest obstacle" />
+                        <SelectValue placeholder={`Select ${q.label.toLowerCase()}`} />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="Lack of consistency">Lack of consistency</SelectItem>
-                        <SelectItem value="No clear plan">No clear plan</SelectItem>
-                        <SelectItem value="Accountability">Accountability</SelectItem>
-                        <SelectItem value="Time management">Time management</SelectItem>
-                        <SelectItem value="Motivation / discipline">Motivation / discipline</SelectItem>
-                        <SelectItem value="Nutrition confusion">Nutrition confusion</SelectItem>
+                        {q.options
+                          .split(",")
+                          .map((opt) => opt.trim())
+                          .filter(Boolean)
+                          .map((opt) => (
+                            <SelectItem key={opt} value={opt}>
+                              {opt}
+                            </SelectItem>
+                          ))}
                       </SelectContent>
                     </Select>
-                  </div>
-
-                  {/* Q4: Commitment level */}
-                  <div className="space-y-2">
-                    <Label>How committed are you to changing your body and lifestyle? *</Label>
-                    <Select
-                      value={commitment}
-                      onValueChange={setCommitment}
-                      required
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select your commitment level" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="100% — I'm ready to do whatever it takes">100% — I&apos;m ready to do whatever it takes</SelectItem>
-                        <SelectItem value="Very committed, but need guidance">Very committed, but need guidance</SelectItem>
-                        <SelectItem value="Somewhat committed">Somewhat committed</SelectItem>
-                        <SelectItem value="Just exploring options">Just exploring options</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  {/* Q5: Invested in coaching before */}
-                  <div className="space-y-2">
-                    <Label>Have you ever invested in coaching before? *</Label>
-                    <Select
-                      value={coachingBefore}
-                      onValueChange={setCoachingBefore}
-                      required
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select an option" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="Yes, and I'm ready to invest again">Yes, and I&apos;m ready to invest again</SelectItem>
-                        <SelectItem value="Yes, but didn't get results">Yes, but didn&apos;t get results</SelectItem>
-                        <SelectItem value="No, but I'm serious about starting">No, but I&apos;m serious about starting</SelectItem>
-                        <SelectItem value="No, just exploring">No, just exploring</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  {/* Q6: Timeline */}
-                  <div className="space-y-2">
-                    <Label>If you had the right plan and accountability, how soon would you want to start? *</Label>
-                    <Select
-                      value={timeline}
-                      onValueChange={setTimeline}
-                      required
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select your timeline" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="Immediately">Immediately</SelectItem>
-                        <SelectItem value="Within 2 weeks">Within 2 weeks</SelectItem>
-                        <SelectItem value="Within 30 days">Within 30 days</SelectItem>
-                        <SelectItem value="Just researching">Just researching</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  {/* Q7: Financially ready */}
-                  <div className="space-y-2">
-                    <Label>This is a premium coaching program. Are you financially ready to invest? *</Label>
-                    <Select
-                      value={financiallyReady}
-                      onValueChange={setFinanciallyReady}
-                      required
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select an option" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="Yes, I'm ready to invest for real results">Yes, I&apos;m ready to invest for real results</SelectItem>
-                        <SelectItem value="Not sure yet">Not sure yet</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  {/* Q8: Investment level */}
-                  <div className="space-y-2">
-                    <Label>What level of investment are you comfortable making? *</Label>
-                    <Select
-                      value={investmentLevel}
-                      onValueChange={setInvestmentLevel}
-                      required
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select your investment range" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="Under $1,000">Under $1,000</SelectItem>
-                        <SelectItem value="$1,000 – $2,000">$1,000 – $2,000</SelectItem>
-                        <SelectItem value="$2,000 – $5,000">$2,000 – $5,000</SelectItem>
-                        <SelectItem value="$5,000+">$5,000+</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </>
-              )}
+                  )}
+                </div>
+              ))}
             </CardContent>
             <div className="px-6 pb-6">
               <Button

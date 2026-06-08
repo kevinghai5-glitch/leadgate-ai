@@ -1,8 +1,19 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { Search, ArrowUpDown, ArrowUp, ArrowDown, Eye, Users } from "lucide-react";
+import {
+  Search,
+  ArrowUpDown,
+  ArrowUp,
+  ArrowDown,
+  Eye,
+  Users,
+  Loader2,
+  CheckCircle2,
+  XCircle,
+  Clock,
+} from "lucide-react";
 import { format } from "date-fns";
 
 interface Lead {
@@ -18,6 +29,46 @@ interface Lead {
   createdAt: string;
 }
 
+const inputCls =
+  "flex h-10 w-full rounded-lg border border-white/10 bg-white/[0.04] px-3 py-2 text-sm text-white placeholder:text-white/30 focus:outline-none focus:border-[#ffd87c]/40 focus:bg-white/[0.06] transition-colors";
+
+const selectCls =
+  "flex h-10 rounded-lg border border-white/10 bg-white/[0.04] px-3 py-2 text-sm text-white focus:outline-none focus:border-[#ffd87c]/40 focus:bg-white/[0.06] transition-colors";
+
+function StatCard({
+  label,
+  value,
+  icon: Icon,
+  accent,
+}: {
+  label: string;
+  value: string | number;
+  icon: typeof Users;
+  accent: "neutral" | "emerald" | "rose" | "amber";
+}) {
+  const accents: Record<typeof accent, string> = {
+    neutral: "bg-white/[0.04] text-white/70",
+    emerald: "bg-emerald-500/15 text-emerald-300",
+    rose: "bg-rose-500/15 text-rose-300",
+    amber: "bg-amber-500/15 text-amber-300",
+  };
+  return (
+    <div className="rounded-xl border border-white/[0.06] bg-[#0d0d0d] p-5 flex items-center gap-4">
+      <div
+        className={`h-10 w-10 rounded-lg flex items-center justify-center ${accents[accent]}`}
+      >
+        <Icon className="h-5 w-5" />
+      </div>
+      <div>
+        <p className="text-[11px] font-medium uppercase tracking-wider text-white/50">
+          {label}
+        </p>
+        <p className="mt-0.5 text-lg font-semibold text-white">{value}</p>
+      </div>
+    </div>
+  );
+}
+
 export default function LeadsPage() {
   const [leads, setLeads] = useState<Lead[]>([]);
   const [loading, setLoading] = useState(true);
@@ -30,17 +81,26 @@ export default function LeadsPage() {
     fetch("/api/leads")
       .then((r) => r.json())
       .then((data) => {
-        setLeads(data);
+        if (Array.isArray(data)) setLeads(data);
         setLoading(false);
-      });
+      })
+      .catch(() => setLoading(false));
   }, []);
+
+  const stats = useMemo(() => {
+    const qualified = leads.filter((l) => l.status === "QUALIFIED").length;
+    const disqualified = leads.filter((l) => l.status === "DISQUALIFIED").length;
+    const pending = leads.filter((l) => l.status === "PENDING").length;
+    return { total: leads.length, qualified, disqualified, pending };
+  }, [leads]);
 
   const filteredLeads = leads
     .filter((lead) => {
+      const q = search.toLowerCase();
       const matchesSearch =
-        lead.name.toLowerCase().includes(search.toLowerCase()) ||
-        lead.email.toLowerCase().includes(search.toLowerCase()) ||
-        true;
+        !q ||
+        lead.name.toLowerCase().includes(q) ||
+        lead.email.toLowerCase().includes(q);
       const matchesStatus =
         statusFilter === "all" || lead.status === statusFilter;
       return matchesSearch && matchesStatus;
@@ -48,7 +108,6 @@ export default function LeadsPage() {
     .sort((a, b) => {
       let aVal: string | number = "";
       let bVal: string | number = "";
-
       switch (sortField) {
         case "name":
           aVal = a.name;
@@ -68,14 +127,10 @@ export default function LeadsPage() {
           break;
         }
         case "createdAt":
-          aVal = new Date(a.createdAt).getTime();
-          bVal = new Date(b.createdAt).getTime();
-          break;
         default:
           aVal = new Date(a.createdAt).getTime();
           bVal = new Date(b.createdAt).getTime();
       }
-
       if (typeof aVal === "string") {
         return sortDir === "asc"
           ? aVal.localeCompare(bVal as string)
@@ -96,80 +151,131 @@ export default function LeadsPage() {
   }
 
   function SortIcon({ field }: { field: string }) {
-    if (sortField !== field) return <ArrowUpDown className="h-3 w-3" />;
+    if (sortField !== field)
+      return <ArrowUpDown className="h-3 w-3 text-white/30" />;
     return sortDir === "asc" ? (
-      <ArrowUp className="h-3 w-3" />
+      <ArrowUp className="h-3 w-3 text-[#ffd87c]" />
     ) : (
-      <ArrowDown className="h-3 w-3" />
+      <ArrowDown className="h-3 w-3 text-[#ffd87c]" />
     );
+  }
+
+  function scoreBadgeClasses(score: number | null) {
+    const s = score || 0;
+    if (s >= 8) return "bg-emerald-500/15 text-emerald-300 ring-emerald-500/30";
+    if (s >= 6) return "bg-blue-500/15 text-blue-300 ring-blue-500/30";
+    if (s >= 4) return "bg-amber-500/15 text-amber-300 ring-amber-500/30";
+    return "bg-rose-500/15 text-rose-300 ring-rose-500/30";
+  }
+
+  function statusBadge(status: string) {
+    if (status === "QUALIFIED")
+      return "bg-emerald-500/15 text-emerald-300";
+    if (status === "DISQUALIFIED") return "bg-rose-500/15 text-rose-300";
+    return "bg-white/[0.05] text-white/60";
   }
 
   if (loading) {
     return (
-      <div>
-        <h1 className="text-2xl font-bold text-white mb-6">All Leads</h1>
-        <div className="glass-card rounded-xl p-12 text-center text-gray-400">
-          Loading leads...
-        </div>
+      <div className="flex items-center justify-center min-h-[400px]">
+        <Loader2 className="h-7 w-7 animate-spin text-[#ffd87c]" />
       </div>
     );
   }
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-white">All Leads</h1>
-        <p className="text-gray-500">
-          {leads.length} total leads in your pipeline
+    <div className="max-w-6xl mx-auto">
+      {/* Header */}
+      <div className="mb-8 pb-6 border-b border-white/[0.06]">
+        <h1 className="text-2xl font-bold text-white tracking-tight">Leads</h1>
+        <p className="text-sm text-white/60 mt-1">
+          Every lead that came through your form, ranked by AI score.
         </p>
       </div>
 
-      {/* Filters */}
-      <div className="flex flex-col sm:flex-row gap-3">
-        <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500" />
-          <input
-            placeholder="Search by name or email..."
-            className="flex h-10 w-full rounded-lg border border-white/10 bg-white/[0.05] px-3 py-2 pl-10 text-sm text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-[#D2AC47]/50 focus:border-[#D2AC47]/50"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          />
-        </div>
-        <select
-          value={statusFilter}
-          onChange={(e) => setStatusFilter(e.target.value)}
-          className="h-10 w-[180px] rounded-lg border border-white/10 bg-white/[0.05] px-3 text-sm text-gray-300 focus:outline-none focus:ring-2 focus:ring-[#D2AC47]/50"
-        >
-          <option value="all" className="bg-[#0A0A0A]">All Statuses</option>
-          <option value="QUALIFIED" className="bg-[#0A0A0A]">Qualified</option>
-          <option value="DISQUALIFIED" className="bg-[#0A0A0A]">Disqualified</option>
-          <option value="PENDING" className="bg-[#0A0A0A]">Pending</option>
-        </select>
+      {/* Stat strip */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
+        <StatCard
+          label="Total"
+          value={stats.total}
+          icon={Users}
+          accent="neutral"
+        />
+        <StatCard
+          label="Qualified"
+          value={stats.qualified}
+          icon={CheckCircle2}
+          accent="emerald"
+        />
+        <StatCard
+          label="Disqualified"
+          value={stats.disqualified}
+          icon={XCircle}
+          accent="rose"
+        />
+        <StatCard
+          label="Pending"
+          value={stats.pending}
+          icon={Clock}
+          accent="amber"
+        />
       </div>
 
-      {/* Table */}
-      <div className="glass-card rounded-xl overflow-hidden">
+      {/* Filters + Table card */}
+      <div className="rounded-xl border border-white/[0.06] bg-[#0d0d0d] overflow-hidden">
+        <div className="p-4 flex flex-col sm:flex-row gap-3 border-b border-white/[0.06]">
+          <div className="relative flex-1">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-white/40" />
+            <input
+              placeholder="Search by name or email…"
+              className={`${inputCls} pl-9`}
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+          </div>
+          <select
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+            className={`${selectCls} sm:w-[180px]`}
+          >
+            <option value="all" className="bg-[#0d0d0d]">
+              All Statuses
+            </option>
+            <option value="QUALIFIED" className="bg-[#0d0d0d]">
+              Qualified
+            </option>
+            <option value="DISQUALIFIED" className="bg-[#0d0d0d]">
+              Disqualified
+            </option>
+            <option value="PENDING" className="bg-[#0d0d0d]">
+              Pending
+            </option>
+          </select>
+        </div>
+
         {filteredLeads.length === 0 ? (
-          <div className="text-center py-12">
-            <Users className="h-12 w-12 text-gray-600 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-white">
+          <div className="text-center py-16 px-6">
+            <div className="mx-auto h-12 w-12 rounded-xl bg-white/[0.04] flex items-center justify-center mb-4">
+              <Users className="h-6 w-6 text-white/40" />
+            </div>
+            <h3 className="text-base font-semibold text-white">
               No leads found
             </h3>
-            <p className="text-gray-500">
+            <p className="text-sm text-white/60 mt-1">
               {search || statusFilter !== "all"
-                ? "Try adjusting your filters"
-                : "Share your form link to start receiving leads"}
+                ? "Try adjusting your filters."
+                : "Share your form link to start receiving leads."}
             </p>
           </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-white/[0.06] text-left bg-white/[0.02]">
+                <tr className="border-b border-white/[0.06] bg-white/[0.015] text-left">
                   <th className="px-6 py-3">
                     <button
                       onClick={() => toggleSort("name")}
-                      className="flex items-center gap-1 text-sm font-medium text-gray-500 hover:text-white"
+                      className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wider text-white/60 hover:text-white transition-colors"
                     >
                       Name
                       <SortIcon field="name" />
@@ -178,7 +284,7 @@ export default function LeadsPage() {
                   <th className="px-6 py-3">
                     <button
                       onClick={() => toggleSort("budget")}
-                      className="flex items-center gap-1 text-sm font-medium text-gray-500 hover:text-white"
+                      className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wider text-white/60 hover:text-white transition-colors"
                     >
                       Budget
                       <SortIcon field="budget" />
@@ -187,93 +293,91 @@ export default function LeadsPage() {
                   <th className="px-6 py-3">
                     <button
                       onClick={() => toggleSort("aiScore")}
-                      className="flex items-center gap-1 text-sm font-medium text-gray-500 hover:text-white"
+                      className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wider text-white/60 hover:text-white transition-colors"
                     >
                       AI Score
                       <SortIcon field="aiScore" />
                     </button>
                   </th>
-                  <th className="px-6 py-3 text-sm font-medium text-gray-500">
+                  <th className="px-6 py-3 text-[11px] font-semibold uppercase tracking-wider text-white/60">
                     Status
                   </th>
-                  <th className="px-6 py-3 text-sm font-medium text-gray-500">
+                  <th className="px-6 py-3 text-[11px] font-semibold uppercase tracking-wider text-white/60">
                     Source
                   </th>
                   <th className="px-6 py-3">
                     <button
                       onClick={() => toggleSort("createdAt")}
-                      className="flex items-center gap-1 text-sm font-medium text-gray-500 hover:text-white"
+                      className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wider text-white/60 hover:text-white transition-colors"
                     >
                       Date
                       <SortIcon field="createdAt" />
                     </button>
                   </th>
-                  <th className="px-6 py-3 text-sm font-medium text-gray-500">
-                    Actions
-                  </th>
+                  <th className="px-6 py-3" />
                 </tr>
               </thead>
               <tbody className="divide-y divide-white/[0.04]">
                 {filteredLeads.map((lead) => (
-                  <tr key={lead.id} className="hover:bg-white/[0.02] transition-colors">
-                    <td className="px-6 py-4">
+                  <tr
+                    key={lead.id}
+                    className="hover:bg-white/[0.02] transition-colors"
+                  >
+                    <td className="px-6 py-3.5">
                       <div className="flex items-center gap-3">
-                        <div className="h-8 w-8 rounded-full bg-gradient-to-br from-gray-600 to-gray-700 flex items-center justify-center text-xs font-bold text-white">
-                          {lead.name.split(" ").map(n => n[0]).join("").slice(0, 2).toUpperCase()}
+                        <div className="h-8 w-8 rounded-full flex items-center justify-center text-xs font-bold text-black flex-shrink-0"
+                          style={{ background: "var(--lg-gold-gradient)" }}
+                        >
+                          {lead.name
+                            .split(" ")
+                            .map((n) => n[0])
+                            .join("")
+                            .slice(0, 2)
+                            .toUpperCase()}
                         </div>
-                        <div>
+                        <div className="min-w-0">
                           <Link
                             href={`/dashboard/leads/${lead.id}`}
-                            className="font-medium text-white hover:text-[#ECCA66] transition-colors text-sm"
+                            className="block font-medium text-white hover:text-[#ffd87c] transition-colors text-sm truncate"
                           >
                             {lead.name}
                           </Link>
-                          <p className="text-xs text-gray-500">{lead.email}</p>
+                          <p className="text-xs text-white/50 truncate">
+                            {lead.email}
+                          </p>
                         </div>
                       </div>
                     </td>
-                    <td className="px-6 py-4 text-sm text-gray-400">
+                    <td className="px-6 py-3.5 text-sm text-white/70">
                       {lead.budget}
                     </td>
-                    <td className="px-6 py-4">
+                    <td className="px-6 py-3.5">
                       <span
-                        className={`inline-flex items-center justify-center h-7 w-7 rounded-full text-sm font-bold ${
-                          (lead.aiScore || 0) >= 8
-                            ? "bg-emerald-500/20 text-emerald-400 ring-1 ring-emerald-500/30"
-                            : (lead.aiScore || 0) >= 6
-                            ? "bg-blue-500/20 text-blue-400 ring-1 ring-blue-500/30"
-                            : (lead.aiScore || 0) >= 4
-                            ? "bg-amber-500/20 text-amber-400 ring-1 ring-amber-500/30"
-                            : "bg-rose-500/20 text-rose-400 ring-1 ring-rose-500/30"
-                        }`}
+                        className={`inline-flex items-center justify-center h-7 min-w-[2rem] px-1.5 rounded-full text-xs font-bold ring-1 ${scoreBadgeClasses(lead.aiScore)}`}
                       >
-                        {lead.aiScore || "—"}
+                        {lead.aiScore ?? "—"}
                       </span>
                     </td>
-                    <td className="px-6 py-4">
+                    <td className="px-6 py-3.5">
                       <span
-                        className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-semibold uppercase tracking-wide ${
-                          lead.status === "QUALIFIED"
-                            ? "bg-emerald-500/15 text-emerald-400"
-                            : lead.status === "DISQUALIFIED"
-                            ? "bg-rose-500/15 text-rose-400"
-                            : "bg-gray-500/15 text-gray-400"
-                        }`}
+                        className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold uppercase tracking-wider ${statusBadge(lead.status)}`}
                       >
                         {lead.status}
                       </span>
                     </td>
-                    <td className="px-6 py-4 text-sm text-gray-500">
+                    <td className="px-6 py-3.5 text-sm text-white/60">
                       {lead.source || "form"}
                     </td>
-                    <td className="px-6 py-4 text-sm text-gray-500">
+                    <td className="px-6 py-3.5 text-sm text-white/60 whitespace-nowrap">
                       {format(new Date(lead.createdAt), "MMM d, yyyy")}
                     </td>
-                    <td className="px-6 py-4">
-                      <Link href={`/dashboard/leads/${lead.id}`}>
-                        <button className="p-2 rounded-lg hover:bg-white/[0.06] text-gray-400 hover:text-white transition-colors">
-                          <Eye className="h-4 w-4" />
-                        </button>
+                    <td className="px-6 py-3.5 text-right">
+                      <Link
+                        href={`/dashboard/leads/${lead.id}`}
+                        className="inline-flex items-center justify-center h-8 w-8 rounded-lg hover:bg-white/[0.06] text-white/50 hover:text-white transition-colors"
+                        aria-label="View lead"
+                      >
+                        <Eye className="h-4 w-4" />
                       </Link>
                     </td>
                   </tr>

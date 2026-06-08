@@ -116,26 +116,139 @@
   --sidebar-ring: oklch(0.556 0 0);
 }
 
-/* Dashboard dark theme scope — applied via .dashboard-dark wrapper */
+/* Dashboard dark theme scope — applied via .dashboard-dark wrapper.
+   Tokens match the landing page premium gold/warm-black palette. */
 .dashboard-dark {
-  --background: #050505;
-  --foreground: #ffffff;
-  --card: rgba(10, 10, 10, 0.7);
-  --card-foreground: #ffffff;
+  /* Landing-page palette */
+  --lg-bg: #070707;
+  --lg-bg-elev-1: #0d0d0d;
+  --lg-bg-elev-2: #111111;
+  --lg-text: #f5f1e6;
+  --lg-text-muted: #8a7d6e;
+  --lg-gold: #ffd87c;
+  --lg-gold-soft: rgba(255, 216, 124, 0.12);
+  --lg-gold-softer: rgba(255, 216, 124, 0.06);
+  --lg-gold-strong: rgba(255, 216, 124, 0.3);
+  --lg-gold-gradient: linear-gradient(
+    135deg,
+    #a47a1e 0%,
+    #d3a84c 18%,
+    #ffec94 34%,
+    #e6be69 50%,
+    #ffd87c 66%,
+    #b58f3e 82%,
+    #956d13 100%
+  );
+
+  /* shadcn tokens mapped to landing palette */
+  --background: var(--lg-bg);
+  --foreground: var(--lg-text);
+  --card: rgba(13, 13, 13, 0.7);
+  --card-foreground: var(--lg-text);
   --popover: #0a0a0a;
-  --popover-foreground: #ffffff;
-  --primary: #D2AC47;
-  --primary-foreground: #050505;
+  --popover-foreground: var(--lg-text);
+  --primary: var(--lg-gold);
+  --primary-foreground: #1a1200;
   --secondary: rgba(255, 255, 255, 0.06);
-  --secondary-foreground: #9ca3af;
+  --secondary-foreground: var(--lg-text-muted);
   --muted: rgba(255, 255, 255, 0.06);
-  --muted-foreground: #9ca3af;
-  --accent: rgba(255, 255, 255, 0.08);
-  --accent-foreground: #ffffff;
+  --muted-foreground: var(--lg-text-muted);
+  --accent: rgba(255, 216, 124, 0.08);
+  --accent-foreground: var(--lg-text);
   --destructive: #ef4444;
-  --border: rgba(255, 255, 255, 0.08);
+  --border: rgba(255, 216, 124, 0.1);
   --input: rgba(255, 255, 255, 0.08);
-  --ring: #D2AC47;
+  --ring: var(--lg-gold);
+
+  background: var(--lg-bg);
+  color: var(--lg-text);
+  font-feature-settings: "ss01", "cv11";
+  -webkit-font-smoothing: antialiased;
+  letter-spacing: -0.01em;
+}
+.dashboard-dark h1,
+.dashboard-dark h2,
+.dashboard-dark h3,
+.dashboard-dark h4 {
+  letter-spacing: -0.03em;
+  font-weight: 600;
+}
+
+/* Shimmering gold text */
+.dashboard-dark .lg-gold-text {
+  background: var(--lg-gold-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  background-size: 200% 200%;
+  animation: lgGoldShimmer 8s ease-in-out infinite;
+}
+@keyframes lgGoldShimmer {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+/* Premium gold CTA button */
+.dashboard-dark .lg-btn-gold {
+  background: var(--lg-gold-gradient);
+  background-size: 200% 200%;
+  color: #1a1200;
+  font-weight: 700;
+  border: 0;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+.dashboard-dark .lg-btn-gold:hover {
+  background-position: 100% 50%;
+  box-shadow:
+    0 10px 40px -10px rgba(255, 216, 124, 0.5),
+    0 0 0 1px rgba(255, 236, 148, 0.4);
+  transform: translateY(-1px);
+}
+
+/* Gold gradient border (1px) */
+.dashboard-dark .lg-gold-border {
+  position: relative;
+}
+.dashboard-dark .lg-gold-border::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  padding: 1px;
+  border-radius: inherit;
+  background: var(--lg-gold-gradient);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  opacity: 0.55;
+}
+
+/* Hairline gold divider */
+.dashboard-dark .lg-divider-gold {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--lg-gold-strong), transparent);
+}
+
+/* Subtle film grain (matches landing) */
+.dashboard-dark .lg-grain::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.06 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+  pointer-events: none;
+  opacity: 0.5;
+  mix-blend-mode: overlay;
+  z-index: 1;
+}
+
+/* Ambient gold glow background */
+.dashboard-dark .lg-bg-gold-glow {
+  background:
+    radial-gradient(600px 300px at 85% 0%, rgba(255, 216, 124, 0.06), transparent 60%),
+    radial-gradient(500px 400px at 0% 30%, rgba(164, 122, 30, 0.05), transparent 60%),
+    var(--lg-bg);
 }
 
 @layer base {

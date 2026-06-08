@@ -56,7 +56,7 @@ const LOGOS = [
 const FEATURES = [
   { icon: "brain", title: "AI lead scoring (1–10)", desc: "Every prospect gets scored on budget fit, timeline, motivation, and readiness. You set the threshold." },
   { icon: "gate", title: "The Lead Gate™", desc: "Only prospects above your minimum score see your Calendly link. Everyone else gets a polite follow-up." },
-  { icon: "sliders", title: "Custom form questions", desc: "Pre-loaded with high-ticket fitness questions, or build your own in seconds. Tailor every question to your offer." },
+  { icon: "sliders", title: "Build your own form", desc: "You design the qualifying questions for your offer — short text, long text, or dropdown. Tailor every question to your exact coaching niche." },
   { icon: "calendar", title: "Calendly integration", desc: "Qualified leads see your Calendly link the second they're approved and book on the spot." },
   { icon: "chart", title: "Analytics dashboard", desc: "Total leads, qualification rate, projected revenue — all at a glance. Know who's worth following up." },
   { icon: "bolt", title: "Embed anywhere", desc: "Share your unique link or drop the embed code on your website. Setup takes about 5 minutes." },
@@ -77,7 +77,7 @@ const PAINS = [
 const FAQS = [
   { q: "How does LeadGate AI help me sign more high-ticket clients?", a: "LeadGate AI pre-qualifies every prospect that fills out your form using AI scoring. By filtering out people who aren't ready to invest in premium online coaching, you only spend time on discovery calls with serious buyers — which means higher close rates and more high-ticket sign-ups each month." },
   { q: "Do I need technical skills to set up?", a: "Not at all. Sign up, customize your form questions if you like, and share your unique link — or paste the embed code onto your website. The entire setup takes about 5 minutes." },
-  { q: "Can I customize the questions for my coaching niche?", a: "Yes. The form comes pre-loaded with questions tailored for high-ticket online fitness coaching (transformation goals, investment readiness, commitment level), but you can add, remove, or reorder questions from your Settings page to match your exact niche." },
+  { q: "Can I customize the questions for my coaching niche?", a: "Yes — LeadGate works across any niche (fitness, business, mindset, executive, relationships, and more) because you build your own questions. Use the Form Builder to add, edit, reorder, and remove the questions you want to ask. Name, email, and phone are always included." },
   { q: "How does the lead scoring work?", a: "Our AI evaluates each prospect on budget fit, timeline, motivation level, and overall readiness. Each lead gets a score from 1–10. You set the minimum qualifying score, and only leads above that threshold see your booking link." },
   { q: "How do I get started?", a: "Sign up, customize your form questions if you like, and share your unique link — or paste the embed code onto your website. The entire setup takes about 5 minutes." },
   { q: "Can I integrate this with my existing website?", a: "Absolutely. You can embed the lead qualification form on any website with a simple iframe code snippet, or just share the direct link on social media, in emails, or anywhere you connect with prospects." },
@@ -94,8 +94,8 @@ const CASE_STUDIES = [
     role: "Founder",
   },
   {
-    company: "Velocity Fitness",
-    industry: "Fitness Coaching",
+    company: "Velocity Mindset",
+    industry: "Mindset Coaching",
     before: { revenue: "$8k/mo", rate: "28%", calls: "35/wk" },
     after: { revenue: "$24k/mo", rate: "76%", calls: "14/wk" },
     quote: "LeadGate filtered out 80% of our discovery calls. Revenue went up.",
@@ -618,7 +618,7 @@ function Hero({ onCTA, onVideo }: { onCTA: () => void; onVideo: () => void }) {
             }}
           >
             <Icon name="sparkle" size={13} />
-            Built for High-Ticket Online Fitness Coaches
+            Built for High-Ticket Online Coaches
           </div>
 
           <h1 style={{ fontSize: "clamp(44px, 5.2vw, 72px)", lineHeight: 1.02, margin: 0, fontWeight: 600, letterSpacing: "-0.035em", color: "#f5f1e6" }}>
@@ -933,7 +933,7 @@ function SocialProof() {
               Built for <span className="lg-gold-text">coaches like you</span>
             </div>
             <div style={{ fontSize: 11.5, color: "#8a7d6e", marginTop: 2 }}>
-              Online fitness pros done with tire-kickers
+              Online coaches done with tire-kickers
             </div>
           </div>
         </div>
@@ -1303,7 +1303,7 @@ function Pricing({ onCTA }: { onCTA: () => void }) {
               <Icon name="sparkle" size={11} /> Everything included
             </div>
           </div>
-          <div style={{ fontSize: 13, color: "#8a7d6e", marginBottom: 26 }}>For high-ticket online fitness coaches.</div>
+          <div style={{ fontSize: 13, color: "#8a7d6e", marginBottom: 26 }}>For high-ticket online coaches in any niche.</div>
 
           <div style={{ display: "flex", alignItems: "baseline", gap: 4, marginBottom: 28 }}>
             <span className="lg-gold-text" style={{ fontSize: 64, fontWeight: 700, letterSpacing: "-0.035em", lineHeight: 1 }}>
