@@ -400,7 +400,7 @@ export default function BillingPage() {
                 </div>
               ) : (
                 <p className="mt-2 text-sm text-white/60">
-                  You don't have any invoices yet. They'll appear here after
+                  You don&apos;t have any invoices yet. They&apos;ll appear here after
                   your first billing cycle.
                 </p>
               )}
