@@ -79,12 +79,14 @@ export default function LeadsPage() {
 
   useEffect(() => {
     fetch("/api/leads")
-      .then((r) => r.json())
-      .then((data) => {
-        if (Array.isArray(data)) setLeads(data);
-        setLoading(false);
+      .then(async (r) => {
+        if (!r.ok) return [] as Lead[];
+        const data = await r.json();
+        return Array.isArray(data) ? (data as Lead[]) : [];
       })
-      .catch(() => setLoading(false));
+      .then((data) => setLeads(data))
+      .catch(() => setLeads([]))
+      .finally(() => setLoading(false));
   }, []);
 
   const stats = useMemo(() => {

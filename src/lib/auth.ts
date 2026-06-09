@@ -81,9 +81,11 @@ providers.push(
   })
 );
 
+const SIXTY_DAYS = 60 * 24 * 60 * 60;
+
 export const { handlers, auth, signIn, signOut } = NextAuth({
   adapter: PrismaAdapter(prisma) as never,
-  session: { strategy: "jwt" },
+  session: { strategy: "jwt", maxAge: SIXTY_DAYS, updateAge: 24 * 60 * 60 },
   pages: {
     signIn: "/login",
   },
@@ -108,6 +110,29 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         session.user.id = token.id as string;
       }
       return session;
+    },
+  },
+  events: {
+    // Mark this device as "returning" so the landing page can redirect future
+    // visits straight to /login (welcome back) instead of the marketing page.
+    async signIn({ user }) {
+      try {
+        const { cookies } = await import("next/headers");
+        const jar = await cookies();
+        const opts = {
+          httpOnly: false,
+          sameSite: "lax" as const,
+          secure: process.env.NODE_ENV === "production",
+          path: "/",
+          maxAge: 60 * 60 * 24 * 365, // 1 year
+        };
+        jar.set("lg_returning", "1", opts);
+        if (user?.email) {
+          jar.set("lg_last_email", user.email, opts);
+        }
+      } catch {
+        // cookies() throws outside request scope (e.g. some OAuth flows); ignore.
+      }
     },
   },
 });

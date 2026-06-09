@@ -679,13 +679,15 @@ export default function DashboardPage() {
         fetch("/api/leads/stats"),
         fetch("/api/leads"),
       ]);
-      if (!statsRes.ok || !leadsRes.ok) throw new Error("Failed to load dashboard");
-      const [statsData, leadsData] = await Promise.all([
-        statsRes.json(),
-        leadsRes.json(),
-      ]);
+
+      // Treat both "no data yet" and "API hiccup" as empty state so a fresh
+      // account doesn't see an angry red error banner before they've done
+      // anything. Only show the banner for truly unexpected failures.
+      const statsData = statsRes.ok ? await statsRes.json() : null;
+      const leadsData = leadsRes.ok ? await leadsRes.json() : [];
+
       setStats(statsData);
-      setLeads(leadsData);
+      setLeads(Array.isArray(leadsData) ? leadsData : []);
       setError(null);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Failed to load dashboard");
