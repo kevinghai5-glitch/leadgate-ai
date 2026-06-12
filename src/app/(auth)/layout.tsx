@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 
 export default function AuthLayout({
@@ -50,24 +51,14 @@ export default function AuthLayout({
           zIndex: 2,
         }}
       >
-        <svg width={26} height={26} viewBox="0 0 24 24" fill="none" aria-hidden="true">
-          <defs>
-            <linearGradient
-              id="lgAuthLayoutLogo"
-              x1="0"
-              y1="0"
-              x2="24"
-              y2="24"
-              gradientUnits="userSpaceOnUse"
-            >
-              <stop offset="0" stopColor="#a47a1e" />
-              <stop offset=".35" stopColor="#ffec94" />
-              <stop offset=".65" stopColor="#e6be69" />
-              <stop offset="1" stopColor="#956d13" />
-            </linearGradient>
-          </defs>
-          <path d="M13 2L3 14h7l-1 8 10-12h-7l1-8z" fill="url(#lgAuthLayoutLogo)" />
-        </svg>
+        <Image
+          src="/leadgate-logo.png"
+          alt=""
+          width={28}
+          height={28}
+          priority
+          style={{ borderRadius: 7, display: "block" }}
+        />
         <span
           style={{
             fontSize: 19,

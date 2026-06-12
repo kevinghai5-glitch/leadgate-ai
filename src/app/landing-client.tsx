@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
@@ -90,25 +91,20 @@ const FAQS = [
   { q: "Can I integrate this with my existing website?", a: "Absolutely. You can embed the lead qualification form on any website with a simple iframe code snippet, or just share the direct link on social media, in emails, or anywhere you connect with prospects." },
 ];
 
-const CASE_STUDIES = [
-  {
-    company: "Atlas Coaching",
-    industry: "Executive Coaching",
-    before: { revenue: "$18k/mo", rate: "32%", calls: "40/wk" },
-    after: { revenue: "$47k/mo", rate: "81%", calls: "12/wk" },
-    quote: "We tripled revenue with fewer calls. The math doesn't lie.",
-    name: "Jenna Cross",
-    role: "Founder",
-  },
-  {
-    company: "Velocity Mindset",
-    industry: "Mindset Coaching",
-    before: { revenue: "$8k/mo", rate: "28%", calls: "35/wk" },
-    after: { revenue: "$24k/mo", rate: "76%", calls: "14/wk" },
-    quote: "LeadGate filtered out 80% of our discovery calls. Revenue went up.",
-    name: "Ray Okafor",
-    role: "Head Coach",
-  },
+const WORKFLOW_BEFORE = [
+  "Every form fill lands on your calendar",
+  "You find out the budget on the call",
+  "Tire-kickers and \u201Cjust looking\u201D book freely",
+  "Prep time burned on dead-end conversations",
+  "Show-up rates are a coin flip",
+];
+
+const WORKFLOW_AFTER = [
+  "AI scores every lead 1\u201310 before booking",
+  "Budget, timeline, and intent known up front",
+  "Only leads above your threshold see the calendar",
+  "Your week fills with serious, qualified buyers",
+  "You walk into every call already in context",
 ];
 
 // ─── Icons ─────────────────────────────────────────────────────────────────
@@ -165,22 +161,18 @@ function Icon({ name, size = 20, stroke = 1.5, className = "", style = {} }: Ico
       return <svg {...common}><path d="M3 3v18h18M7 15l4-4 3 3 6-6" /></svg>;
     case "plus":
       return <svg {...common}><path d="M12 5v14M5 12h14" /></svg>;
-    case "logo": {
-      const gid = `lg-${size}-${stroke}`;
+    case "logo":
       return (
-        <svg width={size} height={size} viewBox="0 0 24 24" fill="none" className={className} style={style}>
-          <defs>
-            <linearGradient id={gid} x1="0" y1="0" x2="24" y2="24" gradientUnits="userSpaceOnUse">
-              <stop offset="0" stopColor="#a47a1e" />
-              <stop offset=".35" stopColor="#ffec94" />
-              <stop offset=".65" stopColor="#e6be69" />
-              <stop offset="1" stopColor="#956d13" />
-            </linearGradient>
-          </defs>
-          <path d="M13 2L3 14h7l-1 8 10-12h-7l1-8z" fill={`url(#${gid})`} />
-        </svg>
+        <Image
+          src="/leadgate-logo.png"
+          alt="LeadGate AI"
+          width={size}
+          height={size}
+          priority
+          className={className}
+          style={{ borderRadius: Math.round(size * 0.24), display: "block", ...style }}
+        />
       );
-    }
     case "quote":
       return <svg {...common} stroke="none" fill="currentColor"><path d="M7 7h4v4H9c0 2 1 3 3 3v2c-3 0-5-2-5-5V7zm8 0h4v4h-2c0 2 1 3 3 3v2c-3 0-5-2-5-5V7z" /></svg>;
     default:
@@ -711,19 +703,30 @@ function Hero({ onCTA, onVideo }: { onCTA: () => void; onVideo: () => void }) {
             style={{
               display: "inline-flex",
               alignItems: "center",
-              gap: 8,
-              padding: "7px 14px",
-              borderRadius: 999,
-              background: "rgba(255,216,124,0.06)",
-              border: "1px solid rgba(255,216,124,0.25)",
-              fontSize: 12,
-              fontWeight: 600,
-              color: "#ffd87c",
-              marginBottom: 32,
+              gap: 12,
+              marginBottom: 30,
             }}
           >
-            <Icon name="sparkle" size={13} />
-            Built for High-Ticket Online Coaches
+            <span
+              aria-hidden="true"
+              style={{
+                width: 28,
+                height: 1,
+                background:
+                  "linear-gradient(90deg, transparent, rgba(255,216,124,0.7))",
+              }}
+            />
+            <span
+              style={{
+                fontSize: 12,
+                fontWeight: 500,
+                letterSpacing: "0.22em",
+                textTransform: "uppercase",
+                color: "#b9b09a",
+              }}
+            >
+              Lead qualification for high-ticket coaches
+            </span>
           </div>
 
           <h1 style={{ fontSize: "clamp(44px, 5.2vw, 72px)", lineHeight: 1.02, margin: 0, fontWeight: 600, letterSpacing: "-0.035em", color: "#f5f1e6" }}>
@@ -1302,68 +1305,134 @@ function Testimonials() {
 function Cases() {
   return (
     <section id="cases" style={{ padding: "80px 32px", maxWidth: 1280, margin: "0 auto" }}>
-      <div className="lg-reveal" style={{ marginBottom: 48 }}>
+      <div className="lg-reveal" style={{ marginBottom: 48, maxWidth: 620 }}>
         <div style={{ fontSize: 11, letterSpacing: "0.2em", color: "#ffd87c", fontWeight: 600, textTransform: "uppercase", marginBottom: 14 }}>
-          CASE STUDIES
+          The difference
         </div>
         <h2 style={{ fontSize: "clamp(36px, 4vw, 52px)", margin: 0, letterSpacing: "-0.03em", fontWeight: 600, color: "#f5f1e6" }}>
-          Before &amp; <span className="lg-gold-text" style={{ fontWeight: 400 }}>after</span>.
+          Your calendar, <span className="lg-gold-text" style={{ fontWeight: 400 }}>before &amp; after</span>.
         </h2>
+        <p style={{ fontSize: 16, color: "#a49e8e", margin: "16px 0 0", lineHeight: 1.6 }}>
+          Same leads, same niche. The only thing that changes is what reaches your booking link.
+        </p>
       </div>
 
-      <div className="lg-cases-grid lg-reveal-stagger lg-mobile-swipe">
-        {CASE_STUDIES.map((c, i) => (
-          <div
-            key={i}
-            className="lg-card-hover"
-            style={{
-              background: "#0d0d0d",
-              border: "1px solid rgba(255,216,124,0.12)",
-              borderRadius: 18,
-              padding: 30,
-            }}
-          >
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 20 }}>
-              <div>
-                <h3 style={{ margin: 0, fontSize: 22, color: "#f5f1e6" }}>{c.company}</h3>
-                <div style={{ fontSize: 12, color: "#8a7d6e" }}>{c.industry}</div>
-              </div>
-              <Icon name="arrow-up-right" size={18} className="lg-gold-text" />
-            </div>
-
-            <div style={{ display: "grid", gridTemplateColumns: "1fr auto 1fr", gap: 14, alignItems: "center", marginBottom: 22 }}>
-              <div style={{ padding: 16, borderRadius: 12, background: "rgba(255,92,92,0.05)", border: "1px solid rgba(255,92,92,0.15)" }}>
-                <div style={{ fontSize: 10, color: "#ff8a8a", textTransform: "uppercase", letterSpacing: "0.1em", fontWeight: 600, marginBottom: 10 }}>
-                  Before
-                </div>
-                {Object.entries(c.before).map(([k, v]) => (
-                  <div key={k} style={{ display: "flex", justifyContent: "space-between", fontSize: 12, color: "#c9c2b0", marginBottom: 4, textTransform: "capitalize" }}>
-                    <span style={{ color: "#8a7d6e" }}>{k}</span>
-                    <span>{v}</span>
-                  </div>
-                ))}
-              </div>
-              <Icon name="arrow-right" size={20} className="lg-gold-text" />
-              <div className="lg-gold-border" style={{ padding: 16, borderRadius: 12 }}>
-                <div className="lg-gold-text" style={{ fontSize: 10, textTransform: "uppercase", letterSpacing: "0.1em", fontWeight: 700, marginBottom: 10 }}>
-                  After
-                </div>
-                {Object.entries(c.after).map(([k, v]) => (
-                  <div key={k} style={{ display: "flex", justifyContent: "space-between", fontSize: 12, color: "#f5f1e6", marginBottom: 4, textTransform: "capitalize", fontWeight: 500 }}>
-                    <span style={{ color: "#8a7d6e" }}>{k}</span>
-                    <span>{v}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <p style={{ margin: 0, fontSize: 14, color: "#d4cdbc", fontStyle: "italic", lineHeight: 1.5 }}>&ldquo;{c.quote}&rdquo;</p>
-            <div style={{ marginTop: 10, fontSize: 12, color: "#8a7d6e" }}>
-              — {c.name}, {c.role}
-            </div>
+      <div className="lg-cases-grid lg-reveal-stagger">
+        {/* Without LeadGate */}
+        <div
+          className="lg-card-hover"
+          style={{
+            background: "#0d0d0d",
+            border: "1px solid rgba(255,92,92,0.15)",
+            borderRadius: 18,
+            padding: 32,
+          }}
+        >
+          <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 6 }}>
+            <span
+              style={{
+                fontSize: 11,
+                color: "#ff8a8a",
+                textTransform: "uppercase",
+                letterSpacing: "0.14em",
+                fontWeight: 700,
+              }}
+            >
+              Without LeadGate
+            </span>
           </div>
-        ))}
+          <div style={{ fontSize: 14, color: "#8a7d6e", marginBottom: 24 }}>
+            Anyone can book a call.
+          </div>
+          <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: 14 }}>
+            {WORKFLOW_BEFORE.map((t) => (
+              <li key={t} style={{ display: "flex", alignItems: "flex-start", gap: 12, fontSize: 15, color: "#c9c2b0", lineHeight: 1.45 }}>
+                <span
+                  style={{
+                    flexShrink: 0,
+                    width: 22,
+                    height: 22,
+                    borderRadius: "50%",
+                    background: "rgba(255,92,92,0.08)",
+                    border: "1px solid rgba(255,92,92,0.2)",
+                    display: "inline-flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    color: "#ff8a8a",
+                    marginTop: 1,
+                  }}
+                >
+                  <Icon name="x" size={12} stroke={2.5} />
+                </span>
+                {t}
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        {/* With LeadGate */}
+        <div
+          className="lg-card-hover lg-gold-border"
+          style={{
+            background: "linear-gradient(180deg, #100b02 0%, #0a0805 100%)",
+            borderRadius: 18,
+            padding: 32,
+          }}
+        >
+          <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 6 }}>
+            <span
+              className="lg-gold-text"
+              style={{
+                fontSize: 11,
+                textTransform: "uppercase",
+                letterSpacing: "0.14em",
+                fontWeight: 700,
+              }}
+            >
+              With LeadGate
+            </span>
+          </div>
+          <div style={{ fontSize: 14, color: "#8a7d6e", marginBottom: 24 }}>
+            Only qualified leads book.
+          </div>
+          <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: 14 }}>
+            {WORKFLOW_AFTER.map((t) => (
+              <li key={t} style={{ display: "flex", alignItems: "flex-start", gap: 12, fontSize: 15, color: "#f0ebdc", lineHeight: 1.45 }}>
+                <span
+                  style={{
+                    flexShrink: 0,
+                    width: 22,
+                    height: 22,
+                    borderRadius: "50%",
+                    background: "rgba(255,216,124,0.1)",
+                    border: "1px solid rgba(255,216,124,0.3)",
+                    display: "inline-flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    color: "#ffd87c",
+                    marginTop: 1,
+                  }}
+                >
+                  <Icon name="check" size={12} stroke={2.6} />
+                </span>
+                {t}
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
+
+      <p
+        className="lg-reveal"
+        style={{
+          margin: "32px 0 0",
+          fontSize: 13,
+          color: "#6a6458",
+          textAlign: "center",
+        }}
+      >
+        No staged screenshots, no invented testimonials — just a qualification layer that does one job well.
+      </p>
     </section>
   );
 }
