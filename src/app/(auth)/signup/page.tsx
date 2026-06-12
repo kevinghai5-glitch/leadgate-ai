@@ -457,7 +457,7 @@ export default function SignupPage() {
               boxShadow: "0 0 8px rgba(74, 222, 128, 0.6)",
             }}
           />
-          Encrypted in transit · SOC 2-aligned · Trusted by 1,250+ coaches
+          Encrypted in transit · Your leads stay private
         </div>
       </div>
     </>

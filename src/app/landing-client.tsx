@@ -9,9 +9,9 @@ import { useRouter } from "next/navigation";
 // Cal.com / Calendly link that handles Zoom auto-creation. Swap the URL
 // below for your real booking link — keep the env override so prod can
 // point somewhere different from local without a code change.
-const SALES_CALL_URL =
+export const SALES_CALL_URL =
   process.env.NEXT_PUBLIC_SALES_CALL_URL ||
-  "https://cal.com/leadgate-ai/sales-call";
+  "https://calendly.com/kevinghai5/discovery-call";
 
 // ─── Data ──────────────────────────────────────────────────────────────────
 
@@ -43,11 +43,21 @@ const BAD_LEADS: BadLead[] = [
 ];
 
 const GOOD_LEADS: GoodLead[] = [
-  { id: 1, name: "Emma B.", initials: "EB", status: "Qualified", score: 94, reason: "Clear goal: lose 20lbs in 12 weeks. Budget approved. Ready to start this week.", meta: "Goal: fat loss · Budget confirmed" },
-  { id: 2, name: "John D.", initials: "JD", status: "Qualified", score: 91, reason: "Busy exec, tried DIY, ready to pay for structure and accountability. High commitment.", meta: "Exec · Hires coaches · Urgent" },
-  { id: 3, name: "Lisa M.", initials: "LM", status: "Qualified", score: 88, reason: "Post-partum, 6 months in. Has trained before. Specific goal, specific timeline.", meta: "Returning client type" },
-  { id: 4, name: "Mark S.", initials: "MS", status: "Qualified", score: 96, reason: "Competitor prep, 16 weeks out. Knows what he needs. Done this before. Pays upfront.", meta: "Competitor · Pays upfront" },
-  { id: 5, name: "Rachel W.", initials: "RW", status: "Qualified", score: 90, reason: "Wedding in 5 months. Specific goal, hard deadline, budget ready.", meta: "Hard deadline · Motivated" },
+  { id: 1, name: "Emma B.", initials: "EB", status: "Qualified", score: 9.4, reason: "Clear goal: lose 20lbs in 12 weeks. Budget approved. Ready to start this week.", meta: "Goal: fat loss · Budget confirmed" },
+  { id: 2, name: "John D.", initials: "JD", status: "Qualified", score: 9.1, reason: "Busy exec, tried DIY, ready to pay for structure and accountability. High commitment.", meta: "Exec · Hires coaches · Urgent" },
+  { id: 3, name: "Lisa M.", initials: "LM", status: "Qualified", score: 8.8, reason: "Post-partum, 6 months in. Has trained before. Specific goal, specific timeline.", meta: "Returning client type" },
+  { id: 4, name: "Mark S.", initials: "MS", status: "Qualified", score: 9.6, reason: "Competitor prep, 16 weeks out. Knows what he needs. Done this before. Pays upfront.", meta: "Competitor · Pays upfront" },
+  { id: 5, name: "Rachel W.", initials: "RW", status: "Qualified", score: 9.0, reason: "Wedding in 5 months. Specific goal, hard deadline, budget ready.", meta: "Hard deadline · Motivated" },
+];
+
+// Polished professional portraits (Unsplash) used as the "coaches like you"
+// avatar cluster. These are illustrative stock photos, not real customers.
+const COACH_AVATARS = [
+  "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=96&h=96&fit=crop&crop=faces&q=80",
+  "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=96&h=96&fit=crop&crop=faces&q=80",
+  "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=96&h=96&fit=crop&crop=faces&q=80",
+  "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=96&h=96&fit=crop&crop=faces&q=80",
+  "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=96&h=96&fit=crop&crop=faces&q=80",
 ];
 
 const LOGOS = [
@@ -62,12 +72,12 @@ const LOGOS = [
 ];
 
 const FEATURES = [
-  { icon: "brain", title: "AI lead scoring (1–10)", desc: "Every prospect gets scored on budget fit, timeline, motivation, and readiness. You set the threshold." },
-  { icon: "gate", title: "The Lead Gate™", desc: "Only prospects above your minimum score see your Calendly link. Everyone else gets a polite follow-up." },
-  { icon: "sliders", title: "Build your own form", desc: "You design the qualifying questions for your offer — short text, long text, or dropdown. Tailor every question to your exact coaching niche." },
+  { icon: "gauge", title: "AI lead scoring (1–10)", desc: "Every prospect gets scored on budget fit, timeline, motivation, and readiness. You set the threshold." },
+  { icon: "gate", title: "The lead gate", desc: "Only prospects above your minimum score see your Calendly link. Everyone else gets a polite follow-up." },
+  { icon: "form", title: "Build your own form", desc: "You design the qualifying questions for your offer — short text, long text, or dropdown. Tailor every question to your exact coaching niche." },
   { icon: "calendar", title: "Calendly integration", desc: "Qualified leads see your Calendly link the second they're approved and book on the spot." },
   { icon: "chart", title: "Analytics dashboard", desc: "Total leads, qualification rate, projected revenue — all at a glance. Know who's worth following up." },
-  { icon: "bolt", title: "Embed anywhere", desc: "Share your unique link or drop the embed code on your website. Setup takes about 5 minutes." },
+  { icon: "code", title: "Embed anywhere", desc: "Share your unique link or drop the embed code on your website. Setup takes about 5 minutes." },
 ];
 
 const STEPS = [
@@ -77,9 +87,9 @@ const STEPS = [
 ];
 
 const PAINS = [
-  { quote: "I just spent 45 minutes pitching someone who can't afford a $1000 coaching program.", label: "every coach, every week" },
-  { quote: "My calendar is full. My bank account doesn't show it.", label: "the high-volume trap" },
-  { quote: "Half the people who book don't even show up. The other half want a free program.", label: "the discovery call death spiral" },
+  { quote: "I just spent 45 minutes pitching someone who can't afford a $1000 coaching program.", label: "wasted discovery calls" },
+  { quote: "My calendar is full. My bank account doesn't show it.", label: "busy but not booked" },
+  { quote: "Half the people who book don't even show up. The other half want a free program.", label: "low-intent leads" },
 ];
 
 const FAQS = [
@@ -117,7 +127,7 @@ type IconProps = {
   style?: React.CSSProperties;
 };
 
-function Icon({ name, size = 20, stroke = 1.5, className = "", style = {} }: IconProps) {
+export function Icon({ name, size = 20, stroke = 1.5, className = "", style = {} }: IconProps) {
   const common = {
     width: size,
     height: size,
@@ -161,6 +171,20 @@ function Icon({ name, size = 20, stroke = 1.5, className = "", style = {} }: Ico
       return <svg {...common}><path d="M3 3v18h18M7 15l4-4 3 3 6-6" /></svg>;
     case "plus":
       return <svg {...common}><path d="M12 5v14M5 12h14" /></svg>;
+    case "filter":
+      return <svg {...common}><path d="M3 5h18l-7 8v6l-4-2v-4L3 5z" /></svg>;
+    case "trending-up":
+      return <svg {...common}><path d="M3 17l6-6 4 4 8-8M15 7h6v6" /></svg>;
+    case "target":
+      return <svg {...common}><circle cx="12" cy="12" r="9" /><circle cx="12" cy="12" r="5" /><circle cx="12" cy="12" r="1.5" fill="currentColor" stroke="none" /></svg>;
+    case "form":
+      return <svg {...common}><rect x="4" y="3" width="16" height="18" rx="2" /><path d="M8 8h8M8 12h8M8 16h4" /></svg>;
+    case "code":
+      return <svg {...common}><path d="M8 9l-3 3 3 3M16 9l3 3-3 3M13 7l-2 10" /></svg>;
+    case "gauge":
+      return <svg {...common}><path d="M12 14l4-4M5 18a9 9 0 1 1 14 0" /><circle cx="12" cy="14" r="1.5" fill="currentColor" stroke="none" /></svg>;
+    case "chat":
+      return <svg {...common}><path d="M21 11.5a8.38 8.38 0 0 1-8.5 8.5 8.5 8.5 0 0 1-3.8-.9L3 21l1.9-5.7a8.5 8.5 0 0 1-.9-3.8A8.38 8.38 0 0 1 12.5 3a8.38 8.38 0 0 1 8.5 8.5z" /></svg>;
     case "logo":
       return (
         <Image
@@ -255,7 +279,7 @@ function BrandLogo({ name }: { name: string }) {
 
 // ─── Nav ───────────────────────────────────────────────────────────────────
 
-function Nav({ onCTA }: { onCTA: () => void }) {
+export function Nav({ onCTA }: { onCTA: () => void }) {
   const [scrolled, setScrolled] = React.useState(false);
   const [menuOpen, setMenuOpen] = React.useState(false);
 
@@ -280,15 +304,25 @@ function Nav({ onCTA }: { onCTA: () => void }) {
     { label: "How It Works", href: "#how" },
     { label: "Features", href: "#features" },
     { label: "Pricing", href: "#pricing" },
-    { label: "Case Studies", href: "#cases" },
+    { label: "Meet the Founder", href: "/founder" },
     { label: "FAQ", href: "#faq" },
   ];
 
   const smoothScroll = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    // Real route links (e.g. /founder) navigate normally.
+    if (href.startsWith("/")) {
+      setMenuOpen(false);
+      return;
+    }
     e.preventDefault();
     setMenuOpen(false);
     const el = document.querySelector(href);
-    if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth", block: "start" });
+    } else {
+      // Anchor target lives on the landing page — go there.
+      window.location.href = "/" + href;
+    }
   };
 
   return (
@@ -673,18 +707,69 @@ function ReasoningPopover({ activeId }: { activeId: string | null }) {
       }}
     >
       <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
-        <Icon name="sparkle" size={14} className={isGood ? "lg-gold-text" : ""} style={{ color: isGood ? undefined : "#ff8a8a" }} />
+        <Icon name="brain" size={14} style={{ color: isGood ? "#ffd87c" : "#ff8a8a" }} />
         <div style={{ fontSize: 10, textTransform: "uppercase", letterSpacing: "0.1em", fontWeight: 600, color: isGood ? "#ffd87c" : "#ff8a8a" }}>
           AI Reasoning · {lead.name}
         </div>
         {isGood && score !== undefined && (
           <div className="lg-gold-text" style={{ marginLeft: "auto", fontSize: 11, fontWeight: 700 }}>
-            Score {score}/100
+            Score {score.toFixed(1)}/10
           </div>
         )}
       </div>
       <div style={{ fontSize: 13, color: "#d4cdbc", lineHeight: 1.5 }}>{lead.reason}</div>
       {meta && <div style={{ marginTop: 6, fontSize: 11, color: "#8a7d6e" }}>{meta}</div>}
+    </div>
+  );
+}
+
+const HERO_BENEFITS = [
+  { t: "Eliminate time-wasters", icon: "filter" },
+  { t: "Increase show-up rates", icon: "trending-up" },
+  { t: "Close more high-ticket clients", icon: "target" },
+];
+
+function RotatingBenefits() {
+  const [i, setI] = React.useState(0);
+  React.useEffect(() => {
+    const t = setInterval(() => setI((n) => (n + 1) % HERO_BENEFITS.length), 2600);
+    return () => clearInterval(t);
+  }, []);
+  const { t, icon } = HERO_BENEFITS[i];
+  return (
+    <div style={{ height: 36, margin: "0 0 36px 0", display: "flex", alignItems: "center", gap: 14 }}>
+      <div
+        key={i}
+        className="lg-benefit-swap"
+        style={{ display: "flex", alignItems: "center", gap: 10, fontSize: 14, fontWeight: 400, color: "#cfc8b8" }}
+      >
+        <span
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            color: "#ffd87c",
+            flexShrink: 0,
+          }}
+        >
+          <Icon name={icon} size={20} stroke={2} />
+        </span>
+        {t}
+      </div>
+      <div aria-hidden="true" style={{ display: "flex", gap: 6, marginLeft: 4 }}>
+        {HERO_BENEFITS.map((_, j) => (
+          <span
+            key={j}
+            style={{
+              width: j === i ? 18 : 6,
+              height: 6,
+              borderRadius: 999,
+              background: j === i ? "#ffd87c" : "rgba(255,216,124,0.25)",
+              transition: "width .35s ease, background .35s ease",
+            }}
+          />
+        ))}
+      </div>
     </div>
   );
 }
@@ -730,39 +815,19 @@ function Hero({ onCTA, onVideo }: { onCTA: () => void; onVideo: () => void }) {
           </div>
 
           <h1 style={{ fontSize: "clamp(44px, 5.2vw, 72px)", lineHeight: 1.02, margin: 0, fontWeight: 600, letterSpacing: "-0.035em", color: "#f5f1e6" }}>
-            Stop coaching
+            Sign{" "}
+            <span className="lg-gold-text" style={{ fontWeight: 500 }}>1&ndash;2 more</span>
             <br />
-            <span className="lg-gold-text" style={{ fontWeight: 500 }}>broke leads</span>
+            high-ticket clients
             <br />
-            for free.
+            per month.
           </h1>
 
           <p style={{ fontSize: 17, lineHeight: 1.55, color: "#a49e8e", marginTop: 24, marginBottom: 28, maxWidth: 520 }}>
             LeadGate AI pre-qualifies every prospect using advanced AI so you only get high-quality discovery calls with people who are serious, qualified, and ready to invest in premium online coaching.
           </p>
 
-          <ul style={{ listStyle: "none", padding: 0, margin: "0 0 36px 0", display: "flex", flexDirection: "column", gap: 10 }}>
-            {["Eliminate time-wasters", "Increase show-up rates", "Close more high-ticket clients"].map((t) => (
-              <li key={t} style={{ display: "flex", alignItems: "center", gap: 10, fontSize: 15, color: "#d4cdbc" }}>
-                <span
-                  className="lg-gold-text"
-                  style={{
-                    width: 20,
-                    height: 20,
-                    borderRadius: "50%",
-                    background: "rgba(255,216,124,0.1)",
-                    border: "1px solid rgba(255,216,124,0.3)",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                >
-                  <Icon name="check" size={12} stroke={2.5} />
-                </span>
-                {t}
-              </li>
-            ))}
-          </ul>
+          <RotatingBenefits />
 
           <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
             <button
@@ -780,44 +845,13 @@ function Hero({ onCTA, onVideo }: { onCTA: () => void; onVideo: () => void }) {
               <Icon name="play-circle" size={18} stroke={2} style={{ color: "#ffd87c" }} />
               See How It Works
             </button>
-            <a
-              href={SALES_CALL_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="lg-btn-ghost"
-              style={{ padding: "14px 22px", borderRadius: 12, display: "inline-flex", alignItems: "center", gap: 10, cursor: "pointer", fontWeight: 500, fontSize: 16, textDecoration: "none" }}
-            >
-              <Icon name="video" size={18} stroke={2} style={{ color: "#ffd87c" }} />
-              Talk to Sales
-            </a>
           </div>
 
-          <p
-            style={{
-              marginTop: 14,
-              fontSize: 13,
-              color: "#7d7666",
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 8,
-            }}
-          >
-            <span
-              style={{
-                width: 6,
-                height: 6,
-                borderRadius: "50%",
-                background: "#4ade80",
-                boxShadow: "0 0 8px rgba(74,222,128,0.6)",
-              }}
-            />
-            15-min Zoom · No pitch, just answers · Talk directly with the founder
-          </p>
         </div>
 
         {/* RIGHT */}
         <div className="lg-hero-right-enter" style={{ position: "relative" }}>
-          <div className="lg-hero-compare" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24, alignItems: "start", position: "relative" }}>
+          <div className="lg-hero-compare lg-mobile-swipe" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24, alignItems: "start", position: "relative" }}>
             <BadCalendarCard activeId={activeId} setActiveId={setActiveId} />
             <GoodCalendarCard activeId={activeId} setActiveId={setActiveId} />
 
@@ -861,9 +895,9 @@ function Hero({ onCTA, onVideo }: { onCTA: () => void; onVideo: () => void }) {
 // ─── Mini widgets (Social proof bar) ───────────────────────────────────────
 
 function MiniAIScore() {
-  const [score, setScore] = React.useState(87);
+  const [score, setScore] = React.useState(8.7);
   React.useEffect(() => {
-    const scores = [87, 92, 76, 94, 81, 90, 88];
+    const scores = [8.7, 9.2, 7.6, 9.4, 8.1, 9.0, 8.8];
     let i = 0;
     const t = setInterval(() => {
       i = (i + 1) % scores.length;
@@ -873,7 +907,7 @@ function MiniAIScore() {
   }, []);
   const r = 16;
   const c = 2 * Math.PI * r;
-  const pct = score / 100;
+  const pct = score / 10;
   return (
     <div
       style={{
@@ -910,7 +944,7 @@ function MiniAIScore() {
           style={{ transition: "stroke-dashoffset .6s cubic-bezier(.4,0,.2,1)" }}
         />
       </svg>
-      <span className="lg-gold-text" style={{ fontSize: 12, fontWeight: 700, letterSpacing: "-0.02em" }}>{score}</span>
+      <span className="lg-gold-text" style={{ fontSize: 11, fontWeight: 700, letterSpacing: "-0.02em" }}>{score.toFixed(1)}</span>
     </div>
   );
 }
@@ -1035,11 +1069,11 @@ function SocialProof() {
       <div className="lg-social-grid">
         <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
           <div style={{ display: "flex" }}>
-            {[11, 47, 33, 52, 22].map((id, i) => (
+            {COACH_AVATARS.map((url, i) => (
               // eslint-disable-next-line @next/next/no-img-element
               <img
-                key={id}
-                src={`https://i.pravatar.cc/64?img=${id}`}
+                key={i}
+                src={url}
                 alt=""
                 style={{
                   width: 38,
@@ -1123,7 +1157,7 @@ function HowItWorks() {
           Three steps. <span className="lg-gold-text" style={{ fontWeight: 400 }}>Fifteen minutes.</span>
         </h2>
         <p style={{ fontSize: 16, color: "#a49e8e", maxWidth: 600, margin: "14px auto 0" }}>
-          From signup to gating your first lead. Faster than making a coffee.
+          From signup to gating your first lead — no developer, no setup call.
         </p>
       </div>
 
@@ -1216,7 +1250,6 @@ function Features() {
             }}
           >
             <div
-              className="lg-gold-text"
               style={{
                 width: 42,
                 height: 42,
@@ -1226,9 +1259,10 @@ function Features() {
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
+                color: "#ffd87c",
               }}
             >
-              <Icon name={f.icon} size={20} />
+              <Icon name={f.icon} size={20} stroke={1.8} />
             </div>
             <h3 style={{ margin: 0, fontSize: 17, color: "#f5f1e6" }}>{f.title}</h3>
             <p style={{ margin: 0, fontSize: 14, lineHeight: 1.6, color: "#a49e8e" }}>{f.desc}</p>
@@ -1295,9 +1329,6 @@ function Testimonials() {
         ))}
       </div>
 
-      <div style={{ textAlign: "center", marginTop: 40, fontSize: 13, color: "#6a6458", fontStyle: "italic" }}>
-        Real coach testimonials coming soon. We&apos;re onboarding our first wave now.
-      </div>
     </section>
   );
 }
@@ -1317,7 +1348,7 @@ function Cases() {
         </p>
       </div>
 
-      <div className="lg-cases-grid lg-reveal-stagger">
+      <div className="lg-cases-grid lg-reveal-stagger lg-mobile-swipe">
         {/* Without LeadGate */}
         <div
           className="lg-card-hover"
@@ -1492,7 +1523,7 @@ function Pricing({ onCTA }: { onCTA: () => void }) {
                 letterSpacing: "0.08em",
               }}
             >
-              <Icon name="sparkle" size={11} /> Everything included
+              <Icon name="check" size={11} stroke={2.5} /> Everything included
             </div>
           </div>
           <div style={{ fontSize: 13, color: "#8a7d6e", marginBottom: 26 }}>For high-ticket online coaches in any niche.</div>
@@ -1623,6 +1654,66 @@ function FAQ() {
   );
 }
 
+export function Founder() {
+  return (
+    <section id="founder" style={{ padding: "100px 32px", maxWidth: 1160, margin: "0 auto" }}>
+      <div className="lg-founder-grid lg-reveal">
+        {/* Photo */}
+        <div className="lg-founder-photo">
+          <Image
+            src="/founder.jpg"
+            alt="Kevin Ghai, founder of LeadGate AI"
+            width={1013}
+            height={1206}
+            sizes="(max-width: 880px) 100vw, 440px"
+            style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 30%", display: "block" }}
+          />
+        </div>
+
+        {/* Copy */}
+        <div className="lg-founder-copy">
+          <div style={{ fontSize: 11, letterSpacing: "0.2em", color: "#ffd87c", fontWeight: 600, textTransform: "uppercase", marginBottom: 18 }}>
+            MEET THE FOUNDER
+          </div>
+
+          <h2 style={{ margin: 0, fontSize: "clamp(30px, 3.6vw, 44px)", letterSpacing: "-0.03em", fontWeight: 600, color: "#f5f1e6", lineHeight: 1.1 }}>
+            Hey, I&rsquo;m <span className="lg-gold-text" style={{ fontWeight: 500 }}>Kevin Ghai</span>.
+          </h2>
+
+          <div style={{ display: "flex", flexDirection: "column", gap: 16, margin: "22px 0 30px" }}>
+            <p style={{ margin: 0, fontSize: 16, lineHeight: 1.7, color: "#bdb6a6" }}>
+              I&rsquo;ve sat on both sides of the table &mdash; building AI systems and running sales.
+              I watched closers burn hour after hour on discovery calls with people who were never
+              going to buy. Tire-kickers, &ldquo;just looking,&rdquo; broke-but-curious. It wasn&rsquo;t a
+              closing problem. It was a <span style={{ color: "#f5f1e6", fontWeight: 500 }}>filtering</span> problem.
+            </p>
+            <p style={{ margin: 0, fontSize: 16, lineHeight: 1.7, color: "#bdb6a6" }}>
+              So I built LeadGate to do what a great sales assistant would &mdash; qualify every lead
+              before it ever hits your calendar, so the only calls you take are with people ready to invest.
+            </p>
+          </div>
+
+          <div style={{ display: "flex", alignItems: "center", gap: 16, flexWrap: "wrap" }}>
+            <a
+              href={SALES_CALL_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="lg-btn-gold"
+              style={{ padding: "14px 26px", borderRadius: 12, fontSize: 15, cursor: "pointer", display: "inline-flex", alignItems: "center", gap: 10, textDecoration: "none" }}
+            >
+              <Icon name="video" size={17} stroke={2.2} />
+              Book a call with me
+            </a>
+            <span style={{ fontSize: 13, color: "#8a7d6e" }}>
+              15 minutes · no pitch, just straight answers
+            </span>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function FinalCTA({ onCTA }: { onCTA: () => void }) {
   return (
     <section style={{ padding: "80px 32px", maxWidth: 1280, margin: "0 auto" }}>
@@ -1654,7 +1745,7 @@ function FinalCTA({ onCTA }: { onCTA: () => void }) {
               marginBottom: 24,
             }}
           >
-            <Icon name="sparkle" size={12} /> One plan · Get started in 5 minutes
+            <Icon name="check" size={12} stroke={2.5} /> One plan · Get started in 5 minutes
           </div>
           <h2 style={{ margin: 0, fontSize: "clamp(40px, 5vw, 64px)", letterSpacing: "-0.035em", fontWeight: 600, color: "#f5f1e6", lineHeight: 1.05 }}>
             Your next call could be
@@ -1662,7 +1753,7 @@ function FinalCTA({ onCTA }: { onCTA: () => void }) {
             <span className="lg-gold-text" style={{ fontWeight: 400 }}>a closed deal</span>.
           </h2>
           <p style={{ fontSize: 16, color: "#a49e8e", maxWidth: 560, margin: "18px auto 32px" }}>
-            Join 1,250+ coaches who stopped wasting time on tire-kickers and started talking only to buyers.
+            Stop spending discovery calls on tire-kickers. Talk only to the buyers who are ready to invest.
           </p>
           <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
             <button
@@ -1689,7 +1780,7 @@ function FinalCTA({ onCTA }: { onCTA: () => void }) {
   );
 }
 
-function Footer() {
+export function Footer() {
   const cols = [
     { title: "Product", links: ["Features", "Pricing", "Case Studies", "Changelog"] },
     { title: "Company", links: ["About", "Blog", "Careers", "Contact"] },
@@ -1789,34 +1880,18 @@ function VideoModal({ open, onClose }: { open: boolean; onClose: () => void }) {
           style={{
             aspectRatio: "16/9",
             borderRadius: 12,
-            background: "linear-gradient(135deg, #1a1408, #0a0805)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
+            background: "#000",
             position: "relative",
             overflow: "hidden",
           }}
         >
-          <div style={{ position: "absolute", inset: 0, opacity: 0.3, background: "radial-gradient(circle at 50% 50%, rgba(255,216,124,0.3), transparent 60%)" }} />
-          <div
-            style={{
-              width: 84,
-              height: 84,
-              borderRadius: "50%",
-              background: "var(--lg-gold-gradient)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              boxShadow: "0 12px 40px rgba(255,216,124,0.4)",
-              cursor: "pointer",
-              color: "#1a1200",
-            }}
-          >
-            <Icon name="play" size={32} stroke={0} />
-          </div>
-          <div style={{ position: "absolute", bottom: 24, left: 24, fontSize: 14, color: "#a49e8e" }}>
-            How LeadGate works in 60 seconds
-          </div>
+          <iframe
+            src="https://www.youtube-nocookie.com/embed/QAOoRF4M3r0?autoplay=1&rel=0&modestbranding=1"
+            title="How LeadGate AI works"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowFullScreen
+            style={{ position: "absolute", inset: 0, width: "100%", height: "100%", border: "none" }}
+          />
         </div>
       </div>
     </div>
@@ -1825,7 +1900,7 @@ function VideoModal({ open, onClose }: { open: boolean; onClose: () => void }) {
 
 // ─── Page ──────────────────────────────────────────────────────────────────
 
-function useScrollReveal() {
+export function useScrollReveal() {
   React.useEffect(() => {
     const reduced =
       typeof window !== "undefined" &&
@@ -1852,6 +1927,73 @@ function useScrollReveal() {
     nodes.forEach((el) => obs.observe(el));
     return () => obs.disconnect();
   }, []);
+}
+
+function FounderAssistant() {
+  const [open, setOpen] = React.useState(false);
+
+  return (
+    <div className="lg-assistant">
+      {/* Panel */}
+      {open && (
+        <div className="lg-assistant-panel" role="dialog" aria-label="Talk to the founder">
+          <div className="lg-assistant-head">
+            <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+              <div className="lg-assistant-avatar">
+                <Image src="/leadgate-logo.png" alt="" width={40} height={40} style={{ borderRadius: 10, display: "block" }} />
+                <span className="lg-assistant-dot" aria-hidden="true" />
+              </div>
+              <div>
+                <div style={{ fontSize: 14, fontWeight: 600, color: "#f5f1e6", letterSpacing: "-0.01em" }}>
+                  Questions before you buy?
+                </div>
+                <div style={{ fontSize: 11.5, color: "#7fe2a8", marginTop: 2, display: "flex", alignItems: "center", gap: 5 }}>
+                  <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#7fe2a8", display: "inline-block" }} />
+                  Founder · usually replies same day
+                </div>
+              </div>
+            </div>
+            <button onClick={() => setOpen(false)} aria-label="Close" className="lg-assistant-close">
+              <Icon name="x" size={16} stroke={2} />
+            </button>
+          </div>
+
+          <div className="lg-assistant-body">
+            <div className="lg-assistant-bubble">
+              Hey — I&apos;m the founder. If you&apos;re weighing whether LeadGate fits your
+              coaching offer, grab 15 minutes with me. No pitch, just straight answers.
+            </div>
+          </div>
+
+          <div className="lg-assistant-foot">
+            <a
+              href={SALES_CALL_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="lg-btn-gold"
+              style={{ padding: "13px 18px", borderRadius: 11, fontSize: 14.5, fontWeight: 700, width: "100%", display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 9, textDecoration: "none" }}
+            >
+              <Icon name="video" size={17} stroke={2} />
+              Book a Zoom with the founder
+            </a>
+            <div style={{ textAlign: "center", marginTop: 9, fontSize: 11, color: "#6a6458" }}>
+              15-min call · Zoom link sent instantly
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Launcher */}
+      <button
+        onClick={() => setOpen((o) => !o)}
+        className="lg-assistant-fab"
+        aria-label={open ? "Close founder chat" : "Talk to the founder"}
+      >
+        <Icon name={open ? "x" : "chat"} size={24} stroke={2} />
+        {!open && <span className="lg-assistant-fab-pulse" aria-hidden="true" />}
+      </button>
+    </div>
+  );
 }
 
 export default function LandingPage() {
@@ -1881,6 +2023,7 @@ export default function LandingPage() {
       </main>
       <Footer />
       <VideoModal open={videoOpen} onClose={() => setVideoOpen(false)} />
+      <FounderAssistant />
     </div>
   );
 }
@@ -2082,6 +2225,142 @@ const LANDING_CSS = `
           transform: translate(-50%, 0);
         }
       }
+      .lg-assistant {
+        position: fixed;
+        bottom: 24px;
+        right: 24px;
+        z-index: 60;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 16px;
+      }
+      .lg-assistant-fab {
+        position: relative;
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        border: 1px solid rgba(255, 216, 124, 0.45);
+        background: var(--lg-gold-gradient);
+        background-size: 200% 200%;
+        color: #1a1200;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        box-shadow: 0 14px 38px -8px rgba(255, 216, 124, 0.5);
+        transition: transform 0.18s ease, box-shadow 0.18s ease;
+      }
+      .lg-assistant-fab:hover {
+        transform: translateY(-2px) scale(1.04);
+        box-shadow: 0 18px 46px -8px rgba(255, 216, 124, 0.62);
+      }
+      .lg-assistant-fab-pulse {
+        position: absolute;
+        inset: -1px;
+        border-radius: 50%;
+        border: 1px solid rgba(255, 216, 124, 0.6);
+        animation: lgPulseRing 2.4s ease-out infinite;
+        pointer-events: none;
+      }
+      .lg-assistant-panel {
+        width: 340px;
+        max-width: calc(100vw - 32px);
+        background: #0c0b09;
+        border: 1px solid rgba(255, 216, 124, 0.22);
+        border-radius: 18px;
+        overflow: hidden;
+        box-shadow: 0 30px 70px -18px rgba(0, 0, 0, 0.8),
+          0 0 0 1px rgba(255, 216, 124, 0.04);
+        transform-origin: bottom right;
+        animation: lgAssistantPop 0.28s cubic-bezier(0.34, 1.4, 0.5, 1);
+      }
+      @keyframes lgAssistantPop {
+        from {
+          opacity: 0;
+          transform: translateY(12px) scale(0.94);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0) scale(1);
+        }
+      }
+      .lg-assistant-head {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 18px 18px 14px;
+        background: linear-gradient(180deg, rgba(255, 216, 124, 0.07), transparent);
+        border-bottom: 1px solid rgba(255, 216, 124, 0.1);
+      }
+      .lg-assistant-avatar {
+        position: relative;
+        flex-shrink: 0;
+      }
+      .lg-assistant-dot {
+        position: absolute;
+        right: -2px;
+        bottom: -2px;
+        width: 11px;
+        height: 11px;
+        border-radius: 50%;
+        background: #7fe2a8;
+        border: 2px solid #0c0b09;
+      }
+      .lg-assistant-close {
+        background: transparent;
+        border: none;
+        color: #8a8478;
+        cursor: pointer;
+        padding: 4px;
+        border-radius: 8px;
+        display: flex;
+        transition: color 0.15s ease, background 0.15s ease;
+      }
+      .lg-assistant-close:hover {
+        color: #f5f1e6;
+        background: rgba(255, 255, 255, 0.06);
+      }
+      .lg-assistant-body {
+        padding: 18px 18px 6px;
+      }
+      .lg-assistant-bubble {
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 216, 124, 0.1);
+        border-radius: 14px;
+        border-top-left-radius: 4px;
+        padding: 13px 15px;
+        font-size: 13.5px;
+        line-height: 1.55;
+        color: #d4cdbc;
+      }
+      .lg-assistant-foot {
+        padding: 14px 18px 18px;
+      }
+      @media (max-width: 600px) {
+        .lg-assistant {
+          bottom: 18px;
+          right: 18px;
+        }
+        .lg-assistant-fab {
+          width: 54px;
+          height: 54px;
+        }
+      }
+      .lg-benefit-swap {
+        animation: lgBenefitSwap 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+      @keyframes lgBenefitSwap {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
       @keyframes lgMiniBounce {
         0%,
         80%,
@@ -2103,6 +2382,36 @@ const LANDING_CSS = `
 
       .lg-feature-cell:hover {
         background: #111 !important;
+      }
+
+      /* ── Meet the Founder ── */
+      .lg-founder-grid {
+        display: grid;
+        grid-template-columns: 400px 1fr;
+        gap: 56px;
+        align-items: center;
+      }
+      .lg-founder-photo {
+        position: relative;
+        aspect-ratio: 4 / 5;
+        overflow: hidden;
+        border-radius: 20px;
+        border: 1px solid rgba(255, 216, 124, 0.14);
+        box-shadow: 0 24px 60px -24px rgba(0, 0, 0, 0.8);
+      }
+      .lg-founder-copy {
+        max-width: 560px;
+      }
+      @media (max-width: 880px) {
+        .lg-founder-grid {
+          grid-template-columns: 1fr;
+          gap: 32px;
+          max-width: 440px;
+          margin: 0 auto;
+        }
+        .lg-founder-photo {
+          aspect-ratio: 1 / 1;
+        }
       }
 
       /* ── Nav (desktop default + mobile drawer) ── */
@@ -2251,27 +2560,49 @@ const LANDING_CSS = `
           padding: 14px 18px;
         }
         .lg-hero-section {
-          padding-top: 110px;
-          padding-bottom: 60px;
+          padding-top: 104px;
+          padding-bottom: 48px;
         }
         .lg-hero-grid {
           padding: 0 18px;
           gap: 36px;
+          grid-template-columns: minmax(0, 1fr) !important;
         }
-        .lg-hero-compare {
-          grid-template-columns: 1fr !important;
-          gap: 16px !important;
+        /* Center the hero heading + copy on mobile only (desktop stays left-aligned) */
+        .lg-hero-enter {
+          text-align: center;
+        }
+        .lg-hero-enter h1 {
+          font-size: 34px !important;
+          letter-spacing: -0.02em !important;
+        }
+        .lg-hero-enter p {
+          font-size: 15.5px !important;
+        }
+        .lg-hero-enter p {
+          margin-left: auto;
+          margin-right: auto;
+        }
+        .lg-hero-enter > div {
+          justify-content: center;
         }
         .lg-hero-arrow {
-          top: 50% !important;
-          left: 50% !important;
-          transform: translate(-50%, -50%) rotate(90deg) !important;
+          display: none !important;
         }
         .lg-social-grid {
           grid-template-columns: 1fr;
         }
         .lg-footer-grid {
           grid-template-columns: 1fr;
+        }
+        /* Tighten vertical rhythm + gutters so sections don't feel like big empty stacked blocks */
+        .lg-root main > section {
+          padding-left: 20px !important;
+          padding-right: 20px !important;
+        }
+        .lg-root main > section:not(.lg-hero-section) {
+          padding-top: 58px !important;
+          padding-bottom: 58px !important;
         }
       }
 
@@ -2424,6 +2755,6 @@ const LANDING_CSS = `
       }
 `;
 
-function LandingStyles() {
+export function LandingStyles() {
   return <style dangerouslySetInnerHTML={{ __html: LANDING_CSS }} />;
 }
