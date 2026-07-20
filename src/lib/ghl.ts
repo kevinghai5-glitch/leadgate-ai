@@ -239,16 +239,15 @@ export async function updateOpportunity(
   input: {
     opportunityId: string;
     pipelineId: string;
-    locationId: string;
     name: string;
     pipelineStageId?: string | null;
     status?: string;
     monetaryValue?: number | null;
   }
 ): Promise<string> {
+  // NOTE: locationId is NOT accepted by PUT /opportunities/{id} (422 if included).
   const payload: Record<string, unknown> = {
     pipelineId: input.pipelineId,
-    locationId: input.locationId,
     name: input.name,
     status: input.status ?? "open",
   };
@@ -374,7 +373,6 @@ export async function pushLeadToGHL(
             opportunityId = await updateOpportunity(config.token, {
               opportunityId: existingOppId,
               pipelineId: config.pipelineId,
-              locationId: config.locationId,
               name: oppName,
               pipelineStageId: stageId,
               status: "open",
