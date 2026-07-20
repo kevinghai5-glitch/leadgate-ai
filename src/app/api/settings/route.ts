@@ -2,6 +2,14 @@ import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { requirePro } from "@/lib/require-pro";
+import { encryptSecret } from "@/lib/crypto";
+
+// Empty string / whitespace-only from a form input means "clear this field".
+function orNull(v: unknown): string | null {
+  if (typeof v !== "string") return null;
+  const t = v.trim();
+  return t.length ? t : null;
+}
 
 export async function GET() {
   try {
@@ -24,7 +32,16 @@ export async function GET() {
         closeRate: true,
         avgCallMinutes: true,
         stripeSubscriptionStatus: true,
+        plan: true,
         rules: true,
+        // GHL config — the secret token is intentionally NOT returned to the
+        // client; we expose only whether one is set.
+        ghlLocationId: true,
+        ghlPrivateToken: true,
+        ghlPipelineId: true,
+        ghlQualifiedStageId: true,
+        ghlNewLeadStageId: true,
+        ghlBookingUrl: true,
       },
     });
 
@@ -32,7 +49,13 @@ export async function GET() {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
-    return NextResponse.json(user);
+    // Strip the raw token; surface only a presence flag so it never reaches
+    // the client bundle.
+    const { ghlPrivateToken, ...safe } = user;
+    return NextResponse.json({
+      ...safe,
+      ghlPrivateTokenSet: !!ghlPrivateToken,
+    });
   } catch (error) {
     console.error("Get settings error:", error);
     return NextResponse.json(
@@ -59,6 +82,12 @@ export async function PATCH(req: Request) {
       closeRate,
       avgCallMinutes,
       name,
+      ghlLocationId,
+      ghlPrivateToken,
+      ghlPipelineId,
+      ghlQualifiedStageId,
+      ghlNewLeadStageId,
+      ghlBookingUrl,
     } = body;
 
     // Validate numeric ranges where applicable
@@ -84,6 +113,20 @@ export async function PATCH(req: Request) {
         ...(offerPrice !== undefined && { offerPrice: offerPrice === null ? null : Number(offerPrice) }),
         ...(closeRate !== undefined && { closeRate: closeRate === null ? null : Number(closeRate) }),
         ...(avgCallMinutes !== undefined && { avgCallMinutes: avgCallMinutes === null ? null : Number(avgCallMinutes) }),
+        // GHL config (non-secret fields).
+        ...(ghlLocationId !== undefined && { ghlLocationId: orNull(ghlLocationId) }),
+        ...(ghlPipelineId !== undefined && { ghlPipelineId: orNull(ghlPipelineId) }),
+        ...(ghlQualifiedStageId !== undefined && { ghlQualifiedStageId: orNull(ghlQualifiedStageId) }),
+        ...(ghlNewLeadStageId !== undefined && { ghlNewLeadStageId: orNull(ghlNewLeadStageId) }),
+        ...(ghlBookingUrl !== undefined && { ghlBookingUrl: orNull(ghlBookingUrl) }),
+        // Secret token: only touched when explicitly provided. A non-empty value
+        // is encrypted at rest; an empty value clears it. Omitting the key (or
+        // sending undefined) leaves the stored token untouched.
+        ...(ghlPrivateToken !== undefined && {
+          ghlPrivateToken: orNull(ghlPrivateToken)
+            ? encryptSecret((ghlPrivateToken as string).trim())
+            : null,
+        }),
       },
     });
 

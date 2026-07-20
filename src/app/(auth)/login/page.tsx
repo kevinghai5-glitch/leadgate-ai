@@ -372,7 +372,7 @@ export default function LoginPage() {
                   autoComplete="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="you@coaching.com"
+                  placeholder="you@yourbusiness.com"
                   disabled={isLoading}
                   className="lg-auth-input"
                 />

@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { scoreLead, generateLeadSummary } from "@/lib/openai";
 import { leadFormSchema } from "@/lib/validations";
 import { requireProForUser } from "@/lib/require-pro";
+import { syncLeadRowToGHL } from "@/lib/ghl-sync";
 
 export async function POST(req: Request) {
   try {
@@ -73,12 +74,24 @@ export async function POST(req: Request) {
       },
     });
 
+    // Push to the tenant's GoHighLevel sub-account (ReclaimedHQ retainer).
+    // Fully non-fatal: the lead is already persisted above, and syncLeadRowToGHL
+    // records its own status; a GHL outage can never break the form experience.
+    try {
+      await syncLeadRowToGHL(user, lead);
+    } catch (err) {
+      console.error("GHL sync unexpected error:", err);
+    }
+
     return NextResponse.json({
       leadId: lead.id,
       score: scoreResult.score,
       reasoning: scoreResult.reasoning,
       qualified: isQualified,
-      calendarLink: isQualified ? user.calendarLink : null,
+      // Phase 2: prefer the tenant's GHL booking URL; fall back to Calendly.
+      calendarLink: isQualified
+        ? user.ghlBookingUrl || user.calendarLink
+        : null,
       summary: aiSummary,
     });
   } catch (error) {

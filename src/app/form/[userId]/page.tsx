@@ -69,7 +69,7 @@ export default function LeadFormPage({
         }
       })
       .catch(() => {
-        // Silently fail — coach hasn't built form
+        // Silently fail — business hasn't built form
       })
       .finally(() => setQuestionsLoading(false));
   }, [userId]);
@@ -128,7 +128,7 @@ export default function LeadFormPage({
             Reviewing your application...
           </h2>
           <p className="mt-2 text-gray-400">
-            We&apos;re assessing if this coaching program is right for you
+            We&apos;re checking if we&apos;re the right fit for you
           </p>
         </div>
       </div>
@@ -144,18 +144,18 @@ export default function LeadFormPage({
               <CheckCircle2 className="h-8 w-8 text-green-600" />
             </div>
             <CardTitle className="text-2xl">
-              Great news! You&apos;re a strong fit for our program.
+              Great news! You&apos;re a strong fit.
             </CardTitle>
             <CardDescription className="text-base">
-              Based on your application, we&apos;d love to help you hit your
-              goals. Let&apos;s set up a quick call.
+              Based on your answers, we&apos;d love to help. Let&apos;s set up a
+              quick call.
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
             {result?.summary && (
               <div className="text-left bg-[#D2AC47]/10 rounded-lg p-4">
                 <p className="text-sm text-[#ECCA66] font-medium mb-1">
-                  Your Coaching Profile
+                  Your Profile
                 </p>
                 <p className="text-sm text-[#ECCA66]">
                   {result.summary.split("\n\n")[0]}
@@ -165,7 +165,7 @@ export default function LeadFormPage({
             {result?.calendarLink ? (
               <div>
                 <p className="text-sm text-gray-400 mb-3">
-                  Book a free discovery call:
+                  Book a free call:
                 </p>
                 <Button
                   size="lg"
@@ -178,14 +178,14 @@ export default function LeadFormPage({
                     rel="noopener noreferrer"
                   >
                     <Calendar className="mr-2 h-5 w-5" />
-                    Book Your Free Discovery Call
+                    Book Your Free Call
                   </a>
                 </Button>
               </div>
             ) : (
               <div className="bg-amber-500/10 rounded-lg p-4">
                 <p className="text-sm text-amber-400">
-                  Our team will reach out to schedule your free discovery call
+                  Our team will reach out to schedule your free call
                   shortly.
                 </p>
               </div>
@@ -240,7 +240,7 @@ export default function LeadFormPage({
             </div>
             <CardTitle className="text-2xl">Form not ready yet</CardTitle>
             <CardDescription className="text-base">
-              This coach hasn&apos;t finished setting up their qualification
+              This business hasn&apos;t finished setting up their qualification
               form. Please check back soon.
             </CardDescription>
           </CardHeader>
@@ -259,14 +259,14 @@ export default function LeadFormPage({
         <div className="text-center mb-8">
           <div className="inline-flex items-center gap-2 rounded-full bg-[#D2AC47]/10 border border-[#D2AC47]/20 px-4 py-1.5 text-sm font-medium text-[#ECCA66] mb-4">
             <Sparkles className="h-4 w-4" />
-            Free Coaching Assessment
+            Free Assessment
           </div>
           <h1 className="text-3xl font-bold text-white">
-            See If This Coaching Program Is Right for You
+            See If We&apos;re the Right Fit for You
           </h1>
           <p className="mt-2 text-gray-400">
             Answer a few quick questions so we can see if we&apos;re the right
-            fit for your goals.
+            fit.
           </p>
         </div>
 

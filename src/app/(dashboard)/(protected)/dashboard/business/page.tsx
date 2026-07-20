@@ -10,6 +10,7 @@ import {
   Target,
   Calendar,
   Sliders,
+  Plug,
 } from "lucide-react";
 
 interface BusinessProfile {
@@ -22,24 +23,31 @@ interface BusinessProfile {
   avgCallMinutes: string;
   calendarLink: string;
   minScore: string;
+  ghlLocationId: string;
+  ghlPrivateToken: string;
+  ghlPipelineId: string;
+  ghlQualifiedStageId: string;
+  ghlNewLeadStageId: string;
+  ghlBookingUrl: string;
 }
 
-type TabId = "about" | "offer" | "qualification" | "booking";
+type TabId = "about" | "offer" | "qualification" | "booking" | "integrations";
 
 const TABS: { id: TabId; label: string; icon: typeof Briefcase }[] = [
   { id: "about", label: "About", icon: Briefcase },
   { id: "offer", label: "Offer & Revenue", icon: DollarSign },
   { id: "qualification", label: "Qualification", icon: Sliders },
   { id: "booking", label: "Booking Link", icon: Calendar },
+  { id: "integrations", label: "GoHighLevel", icon: Plug },
 ];
 
 const NICHES = [
-  "Fitness Coaching",
-  "Business Coaching",
-  "Mindset Coaching",
-  "Executive Coaching",
-  "Relationship Coaching",
-  "Career Coaching",
+  "Dental & Orthodontics",
+  "Med Spa & Aesthetics",
+  "Roofing & Exteriors",
+  "Home Services",
+  "Legal Services",
+  "Real Estate",
   "Health & Wellness",
   "Other",
 ];
@@ -118,8 +126,17 @@ export default function BusinessProfilePage() {
     avgCallMinutes: "30",
     calendarLink: "",
     minScore: "6",
+    ghlLocationId: "",
+    ghlPrivateToken: "",
+    ghlPipelineId: "",
+    ghlQualifiedStageId: "",
+    ghlNewLeadStageId: "",
+    ghlBookingUrl: "",
   });
   const [original, setOriginal] = useState<BusinessProfile | null>(null);
+  // Whether a GHL token is already stored (the token itself is never sent to
+  // the client). Kept out of `profile` so it doesn't affect the dirty check.
+  const [ghlTokenSet, setGhlTokenSet] = useState(false);
 
   useEffect(() => {
     fetch("/api/settings")
@@ -137,9 +154,16 @@ export default function BusinessProfilePage() {
           calendarLink: data.calendarLink || "",
           minScore:
             data.rules?.minScore != null ? String(data.rules.minScore) : "6",
+          ghlLocationId: data.ghlLocationId || "",
+          ghlPrivateToken: "", // never returned by the API; typed to replace
+          ghlPipelineId: data.ghlPipelineId || "",
+          ghlQualifiedStageId: data.ghlQualifiedStageId || "",
+          ghlNewLeadStageId: data.ghlNewLeadStageId || "",
+          ghlBookingUrl: data.ghlBookingUrl || "",
         };
         setProfile(next);
         setOriginal(next);
+        setGhlTokenSet(!!data.ghlPrivateTokenSet);
       })
       .catch(() => toast.error("Failed to load your business profile"))
       .finally(() => setLoading(false));
@@ -155,16 +179,23 @@ export default function BusinessProfilePage() {
   );
 
   async function handleSave() {
-    if (profile.calendarLink.trim()) {
-      try {
-        const url = new URL(profile.calendarLink.trim());
-        if (!url.href.startsWith("https://calendly.com/")) {
-          toast.error("Calendly link must start with https://calendly.com/");
+    // Booking links may now be Calendly OR a GoHighLevel calendar — accept any
+    // valid https URL rather than forcing the Calendly domain.
+    for (const [val, label] of [
+      [profile.calendarLink, "booking link"],
+      [profile.ghlBookingUrl, "GoHighLevel booking URL"],
+    ] as const) {
+      if (val.trim()) {
+        try {
+          const url = new URL(val.trim());
+          if (url.protocol !== "https:") {
+            toast.error(`Your ${label} must start with https://`);
+            return;
+          }
+        } catch {
+          toast.error(`Please enter a valid ${label} (https://…)`);
           return;
         }
-      } catch {
-        toast.error("Please enter a valid Calendly URL");
-        return;
       }
     }
 
@@ -200,33 +231,49 @@ export default function BusinessProfilePage() {
 
     setSaving(true);
     try {
+      const payload: Record<string, unknown> = {
+        name: profile.name.trim() || null,
+        businessName: profile.businessName.trim() || null,
+        niche: profile.niche || null,
+        offerName: profile.offerName.trim() || null,
+        offerPrice,
+        closeRate,
+        avgCallMinutes,
+        calendarLink: profile.calendarLink.trim() || null,
+        ghlLocationId: profile.ghlLocationId.trim() || null,
+        ghlPipelineId: profile.ghlPipelineId.trim() || null,
+        ghlQualifiedStageId: profile.ghlQualifiedStageId.trim() || null,
+        ghlNewLeadStageId: profile.ghlNewLeadStageId.trim() || null,
+        ghlBookingUrl: profile.ghlBookingUrl.trim() || null,
+        scoringRules: {
+          budgetWeight: 30,
+          timelineWeight: 25,
+          urgencyWeight: 25,
+          qualityWeight: 20,
+          minScore,
+        },
+      };
+      // Only send the token when the user actually typed a new one, so routine
+      // saves don't wipe the stored (encrypted) token.
+      if (profile.ghlPrivateToken.trim()) {
+        payload.ghlPrivateToken = profile.ghlPrivateToken.trim();
+      }
+
       const res = await fetch("/api/settings", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: profile.name.trim() || null,
-          businessName: profile.businessName.trim() || null,
-          niche: profile.niche || null,
-          offerName: profile.offerName.trim() || null,
-          offerPrice,
-          closeRate,
-          avgCallMinutes,
-          calendarLink: profile.calendarLink.trim() || null,
-          scoringRules: {
-            budgetWeight: 30,
-            timelineWeight: 25,
-            urgencyWeight: 25,
-            qualityWeight: 20,
-            minScore,
-          },
-        }),
+        body: JSON.stringify(payload),
       });
       const data = await res.json();
       if (!res.ok) {
         toast.error(data.error || "Failed to save");
         return;
       }
-      setOriginal(profile);
+      // Clear the token input after a successful save; mark it as stored.
+      const cleared = { ...profile, ghlPrivateToken: "" };
+      setProfile(cleared);
+      setOriginal(cleared);
+      if (payload.ghlPrivateToken) setGhlTokenSet(true);
       toast.success("Business profile saved");
     } catch {
       toast.error("Failed to save. Please try again.");
@@ -327,14 +374,14 @@ export default function BusinessProfilePage() {
                   <Field label="Business name">
                     <input
                       className={inputCls}
-                      placeholder="Velocity Coaching"
+                      placeholder="Summit Dental Group"
                       value={profile.businessName}
                       onChange={(e) => update("businessName", e.target.value)}
                     />
                   </Field>
                 </div>
                 <Field
-                  label="Coaching niche"
+                  label="Business niche"
                   hint="Used to help the AI tailor its qualification scoring to your niche."
                 >
                   <select
@@ -387,7 +434,7 @@ export default function BusinessProfilePage() {
                   </Field>
                   <Field
                     label="Estimated close rate (%)"
-                    hint="% of qualified discovery calls that become clients."
+                    hint="% of qualified calls that become customers."
                   >
                     <input
                       type="number"
@@ -400,7 +447,7 @@ export default function BusinessProfilePage() {
                     />
                   </Field>
                   <Field
-                    label="Avg discovery call (min)"
+                    label="Avg call length (min)"
                     hint="Used to estimate the time saved by filtering tire-kickers."
                   >
                     <input
@@ -459,19 +506,118 @@ export default function BusinessProfilePage() {
           {tab === "booking" && (
             <ProfileCard
               title="Booking link"
-              description="Where qualified leads book a discovery call after submitting your form."
+              description="Where qualified leads book after submitting your form. Used as the fallback when no GoHighLevel booking URL is set."
               footer={SaveButton}
             >
               <div className="mt-2">
                 <Field
-                  label="Calendly link"
-                  hint="Qualified leads see this link instantly after submitting your form."
+                  label="Booking link (Calendly or other)"
+                  hint="Qualified leads see this link instantly after submitting your form. A GoHighLevel booking URL (set in the GoHighLevel tab) takes priority over this."
                 >
                   <input
                     className={inputCls}
-                    placeholder="https://calendly.com/your-name/discovery-call"
+                    placeholder="https://calendly.com/your-name/intro-call"
                     value={profile.calendarLink}
                     onChange={(e) => update("calendarLink", e.target.value)}
+                  />
+                </Field>
+              </div>
+            </ProfileCard>
+          )}
+
+          {tab === "integrations" && (
+            <ProfileCard
+              title="GoHighLevel"
+              description="Push every scored lead into this client's GoHighLevel sub-account. Leave blank to disable — LeadGate works exactly as before when unset."
+              footer={SaveButton}
+            >
+              <div className="mt-2 space-y-4">
+                <div className="rounded-lg border border-[#ffd87c]/20 bg-[#ffd87c]/[0.05] p-4 text-xs text-white/70 leading-relaxed">
+                  Generate a <span className="text-[#ffd87c]">Private Integration Token</span> in
+                  the client&apos;s GHL sub-account: <span className="text-white/90">Settings →
+                  Private Integrations → Create New Integration</span>, with the{" "}
+                  <span className="text-white/90">contacts.write</span> and{" "}
+                  <span className="text-white/90">opportunities.write</span> scopes. Find the
+                  Pipeline and Stage IDs under <span className="text-white/90">Opportunities →
+                  Pipelines</span>.
+                </div>
+
+                <Field
+                  label="Location ID"
+                  hint="The GHL sub-account (location) ID for this client."
+                >
+                  <input
+                    className={inputCls}
+                    placeholder="ve9EPM428h8vShlRW1KT"
+                    value={profile.ghlLocationId}
+                    onChange={(e) => update("ghlLocationId", e.target.value)}
+                  />
+                </Field>
+
+                <Field
+                  label="Private Integration Token"
+                  hint={
+                    ghlTokenSet
+                      ? "A token is saved. Leave blank to keep it, or paste a new one to replace it."
+                      : "Stored server-side and encrypted at rest when ENCRYPTION_KEY is configured."
+                  }
+                >
+                  <input
+                    type="password"
+                    autoComplete="off"
+                    className={inputCls}
+                    placeholder={ghlTokenSet ? "•••••••••• saved" : "pit-xxxxxxxx-xxxx-xxxx"}
+                    value={profile.ghlPrivateToken}
+                    onChange={(e) => update("ghlPrivateToken", e.target.value)}
+                  />
+                </Field>
+
+                <Field
+                  label="Pipeline ID"
+                  hint="The pipeline scored leads are added to (e.g. Client Conversion Pipeline)."
+                >
+                  <input
+                    className={inputCls}
+                    placeholder="VDm7RPYC2GLUvdpKmBfC"
+                    value={profile.ghlPipelineId}
+                    onChange={(e) => update("ghlPipelineId", e.target.value)}
+                  />
+                </Field>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <Field
+                    label="Qualified Stage ID"
+                    hint="Qualified leads land here (e.g. Qualified)."
+                  >
+                    <input
+                      className={inputCls}
+                      placeholder="7915dedc-8f18-…"
+                      value={profile.ghlQualifiedStageId}
+                      onChange={(e) => update("ghlQualifiedStageId", e.target.value)}
+                    />
+                  </Field>
+                  <Field
+                    label="New Lead Stage ID"
+                    hint="Disqualified leads land here for nurture (e.g. New Lead)."
+                  >
+                    <input
+                      className={inputCls}
+                      placeholder="a1b2c3d4-…"
+                      value={profile.ghlNewLeadStageId}
+                      onChange={(e) => update("ghlNewLeadStageId", e.target.value)}
+                    />
+                  </Field>
+                </div>
+
+                <Field
+                  label="GoHighLevel booking URL"
+                  hint="Qualified leads are sent here instead of the Calendly booking link. Leave blank to use the Booking Link tab."
+                >
+                  <input
+                    className={inputCls}
+                    placeholder="https://api.leadconnectorhq.com/widget/booking/…"
+                    value={profile.ghlBookingUrl}
+                    onChange={(e) => update("ghlBookingUrl", e.target.value)}
                   />
                 </Field>
               </div>

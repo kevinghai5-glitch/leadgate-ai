@@ -17,8 +17,19 @@ model User {
   stripeCustomerId         String?  @unique
   stripeSubscriptionId     String?  @unique
   stripeSubscriptionStatus String?  @default("inactive")
+  plan                     String?  @default("free")
   calendarLink             String?
   slackWebhookUrl          String?
+  // ─── GoHighLevel / LeadConnector per-tenant config (ReclaimedHQ retainer) ───
+  // All optional: when unset, LeadGate behaves exactly as before (no GHL push).
+  // ghlPrivateToken is a Sub-Account Private Integration Token; stored server-side
+  // only, encrypted at rest when ENCRYPTION_KEY is set (see src/lib/crypto.ts).
+  ghlLocationId            String?
+  ghlPrivateToken          String?  @db.Text
+  ghlPipelineId            String?
+  ghlQualifiedStageId      String?
+  ghlNewLeadStageId        String?
+  ghlBookingUrl            String?
   businessName             String?
   niche                    String?
   offerName                String?
@@ -70,6 +81,11 @@ model Lead {
   aiSummary          String?    @db.Text
   status             LeadStatus @default(PENDING)
   source             String?    @default("form")
+  // ─── GoHighLevel sync state (null = no push attempted; behaves as before) ───
+  ghlSyncStatus      String?    // "synced" | "failed" | "skipped"
+  ghlContactId       String?
+  ghlOpportunityId   String?
+  ghlSyncError       String?    @db.Text
   createdAt          DateTime   @default(now())
   updatedAt          DateTime   @updatedAt
 
@@ -78,6 +94,7 @@ model Lead {
   @@index([userId])
   @@index([status])
   @@index([createdAt])
+  @@index([ghlSyncStatus])
 }
 
 model ScoringRules {

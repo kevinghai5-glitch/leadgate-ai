@@ -91,6 +91,26 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   },
   providers,
   callbacks: {
+    // Signup lockdown: Google is a sign-IN method for already-provisioned
+    // tenants, not a self-signup path. Deny OAuth for any email that doesn't
+    // already have an account (returning false here aborts before the adapter
+    // can auto-create a user). Credentials logins are unaffected.
+    async signIn({ user, account }) {
+      if (account?.provider === "google") {
+        const email = user?.email;
+        if (!email) return false;
+        // Exact match on purpose: the PrismaAdapter's getUserByEmail uses a
+        // case-SENSITIVE findUnique. A case-insensitive gate here would let an
+        // email that differs only in case pass this check and then fall through
+        // to the adapter's createUser — silently self-provisioning an account.
+        const existing = await prisma.user.findUnique({
+          where: { email },
+          select: { id: true },
+        });
+        return !!existing;
+      }
+      return true;
+    },
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id;

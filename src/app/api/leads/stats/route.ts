@@ -60,7 +60,7 @@ export async function GET() {
     const qualificationRate =
       totalLeads > 0 ? Math.round((qualifiedLeads / totalLeads) * 100) : 0;
 
-    // Revenue model: prefer the coach's configured offer price × close rate.
+    // Revenue model: prefer the business's configured offer price × close rate.
     // Fall back to summing budgets parsed from lead answers if offer price isn't set.
     const offerPrice = profile?.offerPrice ?? null;
     const closeRate = profile?.closeRate ?? 25;

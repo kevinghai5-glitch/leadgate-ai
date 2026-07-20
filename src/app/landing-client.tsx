@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 
 // ─── Sales call booking ───────────────────────────────────────────────────
 // Cal.com / Calendly link that handles Zoom auto-creation. Swap the URL
-// below for your real booking link — keep the env override so prod can
+// below for your real booking link, keep the env override so prod can
 // point somewhere different from local without a code change.
 export const SALES_CALL_URL =
   process.env.NEXT_PUBLIC_SALES_CALL_URL ||
@@ -35,22 +35,22 @@ type GoodLead = {
 };
 
 const BAD_LEADS: BadLead[] = [
-  { id: 1, name: "Mike R.", initials: "MR", color: "#c26b5e", status: "Broke", reason: "Wants results but can't afford coaching. Asked for a free program instead." },
-  { id: 2, name: "Sarah T.", initials: "ST", color: "#a87455", status: "Tire-kicker", reason: "Shopping 4 coaches. No timeline. Vibe: just gathering info." },
-  { id: 3, name: "David L.", initials: "DL", color: "#b5825e", status: "Not ready", reason: "Looking for free workout plans. Not in the market for 1:1 coaching." },
-  { id: 4, name: "James K.", initials: "JK", color: "#986650", status: "Wrong fit", reason: "Wants to become a coach. Not looking to hire one." },
-  { id: 5, name: "Alex P.", initials: "AP", color: "#a07355", status: "No-show risk", reason: "Signals: low commitment, vague goals, no stated budget." },
+  { id: 1, name: "Mike R.", initials: "MR", color: "#c26b5e", status: "Price shopper", reason: "Just wants the cheapest quote. No timeline, comparing five companies." },
+  { id: 2, name: "Sarah T.", initials: "ST", color: "#a87455", status: "Tire-kicker", reason: "Gathering quotes for 'someday.' No real intent to book anything." },
+  { id: 3, name: "David L.", initials: "DL", color: "#b5825e", status: "Out of area", reason: "Outside your service area. Can't be helped even if booked." },
+  { id: 4, name: "James K.", initials: "JK", color: "#986650", status: "Wrong fit", reason: "Looking for a free DIY fix, not the actual service you offer." },
+  { id: 5, name: "Alex P.", initials: "AP", color: "#a07355", status: "No-show risk", reason: "Signals: vague problem, won't commit to a callback time." },
 ];
 
 const GOOD_LEADS: GoodLead[] = [
-  { id: 1, name: "Emma B.", initials: "EB", status: "Qualified", score: 9.4, reason: "Clear goal: lose 20lbs in 12 weeks. Budget approved. Ready to start this week.", meta: "Goal: fat loss · Budget confirmed" },
-  { id: 2, name: "John D.", initials: "JD", status: "Qualified", score: 9.1, reason: "Busy exec, tried DIY, ready to pay for structure and accountability. High commitment.", meta: "Exec · Hires coaches · Urgent" },
-  { id: 3, name: "Lisa M.", initials: "LM", status: "Qualified", score: 8.8, reason: "Post-partum, 6 months in. Has trained before. Specific goal, specific timeline.", meta: "Returning client type" },
-  { id: 4, name: "Mark S.", initials: "MS", status: "Qualified", score: 9.6, reason: "Competitor prep, 16 weeks out. Knows what he needs. Done this before. Pays upfront.", meta: "Competitor · Pays upfront" },
-  { id: 5, name: "Rachel W.", initials: "RW", status: "Qualified", score: 9.0, reason: "Wedding in 5 months. Specific goal, hard deadline, budget ready.", meta: "Hard deadline · Motivated" },
+  { id: 1, name: "Emma B.", initials: "EB", status: "Qualified", score: 9.4, reason: "Knows exactly what she needs. Budget approved. Ready to book this week.", meta: "Ready to book · Budget confirmed" },
+  { id: 2, name: "John D.", initials: "JD", status: "Qualified", score: 9.1, reason: "Urgent issue, wants it handled now. Has hired pros before. High intent.", meta: "Urgent · Decision-maker" },
+  { id: 3, name: "Lisa M.", initials: "LM", status: "Qualified", score: 8.8, reason: "Clear scope, realistic timeline, already asked about availability.", meta: "Clear scope · Motivated" },
+  { id: 4, name: "Mark S.", initials: "MS", status: "Qualified", score: 9.6, reason: "Repeat-customer type. Knows the process, decisive, pays upfront.", meta: "Repeat type · Pays upfront" },
+  { id: 5, name: "Rachel W.", initials: "RW", status: "Qualified", score: 9.0, reason: "Hard deadline, specific need, budget ready to go.", meta: "Hard deadline · Motivated" },
 ];
 
-// Polished professional portraits (Unsplash) used as the "coaches like you"
+// Polished professional portraits (Unsplash) used as the "businesses like you"
 // avatar cluster. These are illustrative stock photos, not real customers.
 const COACH_AVATARS = [
   "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=96&h=96&fit=crop&crop=faces&q=80",
@@ -74,30 +74,30 @@ const LOGOS = [
 const FEATURES = [
   { icon: "gauge", title: "AI lead scoring (1–10)", desc: "Every prospect gets scored on budget fit, timeline, motivation, and readiness. You set the threshold." },
   { icon: "gate", title: "The lead gate", desc: "Only prospects above your minimum score see your Calendly link. Everyone else gets a polite follow-up." },
-  { icon: "form", title: "Build your own form", desc: "You design the qualifying questions for your offer — short text, long text, or dropdown. Tailor every question to your exact coaching niche." },
+  { icon: "form", title: "Build your own form", desc: "You design the qualifying questions for your offer, whether short text, long text, or dropdown. Tailor every question to your exact service and area." },
   { icon: "calendar", title: "Calendly integration", desc: "Qualified leads see your Calendly link the second they're approved and book on the spot." },
-  { icon: "chart", title: "Analytics dashboard", desc: "Total leads, qualification rate, projected revenue — all at a glance. Know who's worth following up." },
+  { icon: "chart", title: "Analytics dashboard", desc: "Total leads, qualification rate, projected revenue, all at a glance. Know who's worth following up." },
   { icon: "code", title: "Embed anywhere", desc: "Share your unique link or drop the embed code on your website. Setup takes about 5 minutes." },
 ];
 
 const STEPS = [
   { num: "01", title: "Prospects fill out your form", desc: "Share your unique link or embed the form on your site. Prospects answer questions about their goals, commitment, and investment readiness." },
-  { num: "02", title: "AI identifies serious buyers", desc: "Our AI scores every prospect on commitment level, budget fit, and readiness — you know exactly who's ready to invest in high-ticket online coaching." },
-  { num: "03", title: "Qualified leads book instantly", desc: "High-scoring prospects see your Calendly link and book a discovery call on the spot. Low-intent leads get a polite follow-up." },
+  { num: "02", title: "AI identifies serious buyers", desc: "Our AI scores every prospect on intent, budget fit, and readiness, so you know exactly who's ready to actually book and pay." },
+  { num: "03", title: "Qualified leads book instantly", desc: "High-scoring prospects see your Calendly link and book on the spot. Low-intent leads get a polite follow-up." },
 ];
 
 const PAINS = [
-  { quote: "I just spent 45 minutes pitching someone who can't afford a $1000 coaching program.", label: "wasted discovery calls" },
-  { quote: "My calendar is full. My bank account doesn't show it.", label: "busy but not booked" },
-  { quote: "Half the people who book don't even show up. The other half want a free program.", label: "low-intent leads" },
+  { quote: "I just spent 30 minutes quoting someone who was never going to book.", label: "wasted estimates" },
+  { quote: "My phone rings all day. My bank account doesn't show it.", label: "busy but not booked" },
+  { quote: "Half the people who call never show. The other half just want a free quote.", label: "low-intent leads" },
 ];
 
 const FAQS = [
-  { q: "How does LeadGate AI help me sign more high-ticket clients?", a: "LeadGate AI pre-qualifies every prospect that fills out your form using AI scoring. By filtering out people who aren't ready to invest in premium online coaching, you only spend time on discovery calls with serious buyers — which means higher close rates and more high-ticket sign-ups each month." },
-  { q: "Do I need technical skills to set up?", a: "Not at all. Sign up, customize your form questions if you like, and share your unique link — or paste the embed code onto your website. The entire setup takes about 5 minutes." },
-  { q: "Can I customize the questions for my coaching niche?", a: "Yes — LeadGate works across any niche (fitness, business, mindset, executive, relationships, and more) because you build your own questions. Use the Form Builder to add, edit, reorder, and remove the questions you want to ask. Name, email, and phone are always included." },
+  { q: "How does LeadGate AI help me close more jobs?", a: "LeadGate AI pre-qualifies every lead that fills out your form using AI scoring. By filtering out price shoppers and people who aren't ready to buy, you only spend time on calls with serious prospects, which means higher close rates and more booked jobs each month." },
+  { q: "Do I need technical skills to set up?", a: "Not at all. Sign up, customize your form questions if you like, and share your unique link, or paste the embed code onto your website. The entire setup takes about 5 minutes." },
+  { q: "Can I customize the questions for my business?", a: "Yes, LeadGate works for any local service business (dental, med spa, roofing, legal, home services, and more) because you build your own questions. Use the Form Builder to add, edit, reorder, and remove the questions you want to ask. Name, email, and phone are always included." },
   { q: "How does the lead scoring work?", a: "Our AI evaluates each prospect on budget fit, timeline, motivation level, and overall readiness. Each lead gets a score from 1–10. You set the minimum qualifying score, and only leads above that threshold see your booking link." },
-  { q: "How do I get started?", a: "Sign up, customize your form questions if you like, and share your unique link — or paste the embed code onto your website. The entire setup takes about 5 minutes." },
+  { q: "How do I get started?", a: "Sign up, customize your form questions if you like, and share your unique link, or paste the embed code onto your website. The entire setup takes about 5 minutes." },
   { q: "Can I integrate this with my existing website?", a: "Absolutely. You can embed the lead qualification form on any website with a simple iframe code snippet, or just share the direct link on social media, in emails, or anywhere you connect with prospects." },
 ];
 
@@ -320,7 +320,7 @@ export function Nav({ onCTA }: { onCTA: () => void }) {
     if (el) {
       el.scrollIntoView({ behavior: "smooth", block: "start" });
     } else {
-      // Anchor target lives on the landing page — go there.
+      // Anchor target lives on the landing page, go there.
       window.location.href = "/" + href;
     }
   };
@@ -726,7 +726,7 @@ function ReasoningPopover({ activeId }: { activeId: string | null }) {
 const HERO_BENEFITS = [
   { t: "Eliminate time-wasters", icon: "filter" },
   { t: "Increase show-up rates", icon: "trending-up" },
-  { t: "Close more high-ticket clients", icon: "target" },
+  { t: "Book more qualified jobs", icon: "target" },
 ];
 
 function RotatingBenefits() {
@@ -784,47 +784,17 @@ function Hero({ onCTA, onVideo }: { onCTA: () => void; onVideo: () => void }) {
       <div className="lg-hero-grid">
         {/* LEFT */}
         <div className="lg-hero-enter">
-          <div
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 12,
-              marginBottom: 30,
-            }}
-          >
-            <span
-              aria-hidden="true"
-              style={{
-                width: 28,
-                height: 1,
-                background:
-                  "linear-gradient(90deg, transparent, rgba(255,216,124,0.7))",
-              }}
-            />
-            <span
-              style={{
-                fontSize: 12,
-                fontWeight: 500,
-                letterSpacing: "0.22em",
-                textTransform: "uppercase",
-                color: "#b9b09a",
-              }}
-            >
-              Lead qualification for high-ticket coaches
-            </span>
-          </div>
-
           <h1 style={{ fontSize: "clamp(44px, 5.2vw, 72px)", lineHeight: 1.02, margin: 0, fontWeight: 600, letterSpacing: "-0.035em", color: "#f5f1e6" }}>
-            Sign{" "}
-            <span className="lg-gold-text" style={{ fontWeight: 500 }}>1&ndash;2 more</span>
+            Stop losing the{" "}
+            <span className="lg-gold-text" style={{ fontWeight: 500 }}>leads</span>
             <br />
-            high-ticket clients
+            you already
             <br />
-            per month.
+            paid for.
           </h1>
 
           <p style={{ fontSize: 17, lineHeight: 1.55, color: "#a49e8e", marginTop: 24, marginBottom: 28, maxWidth: 520 }}>
-            LeadGate AI pre-qualifies every prospect using advanced AI so you only get high-quality discovery calls with people who are serious, qualified, and ready to invest in premium online coaching.
+            The add-on that keeps your system working between builds. LeadGate AI qualifies every inbound lead the second it comes in, so the ones ready to buy get scored and sent straight to your calendar, while price shoppers and tire-kickers get filtered out automatically.
           </p>
 
           <RotatingBenefits />
@@ -882,7 +852,7 @@ function Hero({ onCTA, onVideo }: { onCTA: () => void; onVideo: () => void }) {
 
           <ReasoningPopover activeId={activeId} />
 
-          <div style={{ position: "absolute", top: -34, left: 0, fontSize: 11, color: "#6a6458", display: "flex", alignItems: "center", gap: 6 }}>
+          <div className="lg-hero-hint" style={{ position: "absolute", top: -34, left: 0, fontSize: 11, color: "#6a6458", display: "flex", alignItems: "center", gap: 6 }}>
             <div style={{ width: 6, height: 6, borderRadius: "50%", background: "#ffd87c", animation: "lgPulseRing 1.5s ease-out infinite" }} />
             Hover any lead to see AI reasoning
           </div>
@@ -1058,6 +1028,251 @@ function MiniIntegrations() {
 
 // ─── Sections ──────────────────────────────────────────────────────────────
 
+const SCORER_QUESTIONS = [
+  {
+    key: "budget",
+    label: "What's their budget?",
+    icon: "target",
+    options: [
+      { t: "Ready to spend $2k+", pts: 4 },
+      { t: "Open if the ROI is clear", pts: 2.5 },
+      { t: "Looking for free or cheap", pts: 0 },
+    ],
+  },
+  {
+    key: "timeline",
+    label: "When do they want to start?",
+    icon: "calendar",
+    options: [
+      { t: "This week", pts: 3 },
+      { t: "In the next month or two", pts: 1.8 },
+      { t: "Just browsing for now", pts: 0 },
+    ],
+  },
+  {
+    key: "commitment",
+    label: "How committed are they?",
+    icon: "trending-up",
+    options: [
+      { t: "Hired a pro before, ready to go", pts: 3 },
+      { t: "Motivated, but new to this", pts: 2 },
+      { t: "Curious, no real goal yet", pts: 0.4 },
+    ],
+  },
+] as const;
+
+function scorerVerdict(score: number) {
+  if (score >= 7)
+    return {
+      label: "Qualified",
+      color: "#7fe2a8",
+      bg: "rgba(127,226,168,0.1)",
+      border: "rgba(127,226,168,0.3)",
+      reason:
+        "Strong budget signal, a real timeline, and genuine commitment. This is a buyer, they'd instantly see your Calendly link and book a call.",
+      outcome: "Sees your booking link \u2192 lands on your calendar",
+    };
+  if (score >= 4.5)
+    return {
+      label: "Borderline",
+      color: "#ffd87c",
+      bg: "rgba(255,216,124,0.1)",
+      border: "rgba(255,216,124,0.3)",
+      reason:
+        "Some intent, but a soft spot on budget, timing, or commitment. Below your threshold they\u2019re held back from the calendar and sent a polite nurture follow-up instead.",
+      outcome: "Held back \u2192 automatic follow-up, not a call",
+    };
+  return {
+    label: "Filtered out",
+    color: "#ff8a8a",
+    bg: "rgba(255,92,92,0.1)",
+    border: "rgba(255,92,92,0.3)",
+    reason:
+      "Low budget, no timeline, and weak commitment. This is the call that wastes 45 minutes. LeadGate keeps them off your calendar and sends a courteous decline.",
+    outcome: "Kept off your calendar \u2192 no wasted call",
+  };
+}
+
+function LiveScorer({ onCTA }: { onCTA: () => void }) {
+  const [answers, setAnswers] = React.useState<Record<string, number>>({});
+  const [display, setDisplay] = React.useState(0);
+  const [step, setStep] = React.useState(0);
+  const trackRef = React.useRef<HTMLDivElement>(null);
+
+  const goTo = React.useCallback((i: number) => {
+    const track = trackRef.current;
+    const clamped = Math.max(0, Math.min(SCORER_QUESTIONS.length - 1, i));
+    if (track) track.scrollTo({ left: clamped * track.clientWidth, behavior: "smooth" });
+    setStep(clamped);
+  }, []);
+
+  const onTrackScroll = React.useCallback(() => {
+    const track = trackRef.current;
+    if (!track) return;
+    setStep(Math.round(track.scrollLeft / track.clientWidth));
+  }, []);
+
+  const allAnswered = SCORER_QUESTIONS.every((q) => answers[q.key] !== undefined);
+  const rawScore = SCORER_QUESTIONS.reduce(
+    (sum, q) => sum + (answers[q.key] !== undefined ? q.options[answers[q.key]].pts : 0),
+    0
+  );
+  const score = allAnswered ? Math.max(1, Math.min(10, rawScore)) : 0;
+  const verdict = scorerVerdict(score);
+
+  React.useEffect(() => {
+    if (!allAnswered) {
+      setDisplay(0);
+      return;
+    }
+    let frame = 0;
+    const start = performance.now();
+    const from = display;
+    const tick = (now: number) => {
+      const p = Math.min(1, (now - start) / 600);
+      const eased = 1 - Math.pow(1 - p, 3);
+      setDisplay(from + (score - from) * eased);
+      if (p < 1) frame = requestAnimationFrame(tick);
+    };
+    frame = requestAnimationFrame(tick);
+    // Guarantee the number lands on the exact score even if rAF is throttled
+    // (e.g. the tab is backgrounded mid-animation).
+    const settle = setTimeout(() => setDisplay(score), 650);
+    return () => {
+      cancelAnimationFrame(frame);
+      clearTimeout(settle);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [score, allAnswered]);
+
+  return (
+    <section id="demo" style={{ padding: "100px 32px", maxWidth: 1160, margin: "0 auto" }}>
+      <div className="lg-reveal" style={{ textAlign: "center", marginBottom: 48 }}>
+        <div style={{ fontSize: 11, letterSpacing: "0.2em", color: "#ffd87c", fontWeight: 600, textTransform: "uppercase", marginBottom: 14 }}>
+          TRY IT YOURSELF
+        </div>
+        <h2 style={{ fontSize: "clamp(36px, 4vw, 52px)", margin: 0, letterSpacing: "-0.03em", fontWeight: 600, color: "#f5f1e6" }}>
+          Score a lead <span className="lg-gold-text" style={{ fontWeight: 400 }}>in real time</span>.
+        </h2>
+        <p style={{ fontSize: 16, color: "#a49e8e", maxWidth: 580, margin: "14px auto 0", lineHeight: 1.6 }}>
+          A simplified, hands-on demo of how the scoring works. Answer like a prospect would and watch the AI decide whether they&rsquo;d reach your calendar. On your real form, <span style={{ color: "#cfc8b8" }}>you write your own questions</span> for your exact offer.
+        </p>
+      </div>
+
+      <div className="lg-reveal lg-gold-border lg-scorer-card" style={{ borderRadius: 22, padding: 0, overflow: "hidden", boxShadow: "0 30px 80px -28px rgba(255,216,124,0.18)" }}>
+        <div className="lg-scorer-grid">
+          {/* Questions */}
+          <div className="lg-scorer-questions">
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, marginBottom: 20, flexWrap: "wrap" }}>
+              <div className="lg-badge lg-badge--demo">
+                <Icon name="sparkle" size={12} style={{ color: "#ffd87c" }} />
+                Interactive demo
+              </div>
+              <span style={{ fontSize: 11.5, color: "#7a7263" }}>Question {Math.min(step + 1, SCORER_QUESTIONS.length)} of {SCORER_QUESTIONS.length}</span>
+            </div>
+
+            <div className="lg-scorer-swipe" ref={trackRef} onScroll={onTrackScroll}>
+              {SCORER_QUESTIONS.map((q) => (
+                <div className="lg-scorer-slide" key={q.key}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 9, marginBottom: 13 }}>
+                    <Icon name={q.icon} size={15} stroke={2} style={{ color: "#ffd87c" }} />
+                    <span style={{ fontSize: 14, fontWeight: 600, color: "#f5f1e6", letterSpacing: "-0.01em" }}>{q.label}</span>
+                  </div>
+                  <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                    {q.options.map((opt, oi) => {
+                      const selected = answers[q.key] === oi;
+                      return (
+                        <button
+                          key={oi}
+                          type="button"
+                          onClick={() => {
+                            setAnswers((a) => ({ ...a, [q.key]: oi }));
+                            const idx = SCORER_QUESTIONS.findIndex((x) => x.key === q.key);
+                            if (idx < SCORER_QUESTIONS.length - 1) {
+                              window.setTimeout(() => goTo(idx + 1), 240);
+                            }
+                          }}
+                          className={`lg-scorer-opt ${selected ? "selected" : ""}`}
+                        >
+                          <span className="lg-scorer-radio" aria-hidden="true">
+                            {selected && <Icon name="check" size={11} stroke={3} />}
+                          </span>
+                          {opt.t}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className="lg-scorer-dots">
+              {SCORER_QUESTIONS.map((q, di) => (
+                <button
+                  key={q.key}
+                  type="button"
+                  aria-label={`Go to question ${di + 1}`}
+                  onClick={() => goTo(di)}
+                  className={`lg-scorer-dot ${di === step ? "active" : ""} ${answers[q.key] !== undefined ? "answered" : ""}`}
+                />
+              ))}
+            </div>
+
+          </div>
+
+          {/* Result */}
+          <div className="lg-scorer-result">
+            <div style={{ fontSize: 10, textTransform: "uppercase", letterSpacing: "0.14em", fontWeight: 600, color: "#8a7d6e", marginBottom: 18, display: "flex", alignItems: "center", gap: 8 }}>
+              <Icon name="brain" size={14} style={{ color: allAnswered ? verdict.color : "#6a6458" }} />
+              AI Verdict
+            </div>
+
+            <div style={{ display: "flex", alignItems: "baseline", gap: 6, marginBottom: 6 }}>
+              <span style={{ fontSize: 68, fontWeight: 700, letterSpacing: "-0.04em", lineHeight: 1, color: allAnswered ? verdict.color : "#3a3730", transition: "color .3s" }}>
+                {allAnswered ? display.toFixed(1) : "-"}
+              </span>
+              <span style={{ fontSize: 20, color: "#6a6458", fontWeight: 500 }}>/10</span>
+            </div>
+
+            {/* Score bar */}
+            <div style={{ height: 6, borderRadius: 999, background: "rgba(255,255,255,0.06)", overflow: "hidden", marginBottom: 22 }}>
+              <div style={{ height: "100%", width: `${(display / 10) * 100}%`, background: allAnswered ? verdict.color : "transparent", borderRadius: 999, transition: "width .1s linear, background .3s" }} />
+            </div>
+
+            {allAnswered ? (
+              <>
+                <div style={{ display: "inline-flex", alignItems: "center", gap: 7, padding: "5px 12px", borderRadius: 999, background: verdict.bg, border: `1px solid ${verdict.border}`, color: verdict.color, fontSize: 12, fontWeight: 600, marginBottom: 16 }}>
+                  {verdict.label === "Filtered out" ? <Icon name="x" size={12} stroke={2.5} /> : <Icon name="check" size={12} stroke={2.5} />}
+                  {verdict.label}
+                </div>
+                <p style={{ fontSize: 14, lineHeight: 1.6, color: "#cfc8b8", margin: "0 0 14px" }}>{verdict.reason}</p>
+                <div style={{ display: "flex", alignItems: "center", gap: 9, fontSize: 12.5, color: "#8a7d6e", paddingTop: 14, borderTop: "1px solid rgba(255,255,255,0.06)" }}>
+                  <Icon name="gate" size={15} style={{ color: verdict.color, flexShrink: 0 }} />
+                  <span style={{ color: "#a49e8e" }}>{verdict.outcome}</span>
+                </div>
+              </>
+            ) : (
+              <p style={{ fontSize: 14, lineHeight: 1.6, color: "#7a7263", margin: 0 }}>
+                These three are just an example. In LeadGate you build your own qualifying questions, any niche, any wording, and the AI scores answers the same way.
+              </p>
+            )}
+
+            {allAnswered && (
+              <button
+                className="lg-btn-gold"
+                onClick={onCTA}
+                style={{ marginTop: 22, padding: "13px 20px", borderRadius: 11, fontSize: 14.5, fontWeight: 700, width: "100%", display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 9, cursor: "pointer" }}
+              >
+                Score your real leads <Icon name="arrow-right" size={15} stroke={2.4} />
+              </button>
+            )}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function SocialProof() {
   const widgets: { widget: React.ReactNode; title: string; sub: string }[] = [
     { widget: <MiniAIScore />, title: "AI scoring", sub: "1–10 on every lead" },
@@ -1067,7 +1282,7 @@ function SocialProof() {
   return (
     <section style={{ maxWidth: 1280, margin: "0 auto", padding: "0 32px 32px" }}>
       <div className="lg-social-grid">
-        <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+        <div className="lg-social-intro" style={{ display: "flex", alignItems: "center", gap: 16 }}>
           <div style={{ display: "flex" }}>
             {COACH_AVATARS.map((url, i) => (
               // eslint-disable-next-line @next/next/no-img-element
@@ -1090,10 +1305,10 @@ function SocialProof() {
           </div>
           <div>
             <div style={{ fontSize: 13, fontWeight: 600, color: "#f5f1e6", letterSpacing: "-0.01em" }}>
-              Built for <span className="lg-gold-text">coaches like you</span>
+              Built for <span className="lg-gold-text">businesses like you</span>
             </div>
             <div style={{ fontSize: 11.5, color: "#8a7d6e", marginTop: 2 }}>
-              Online coaches done with tire-kickers
+              Local service businesses done with tire-kickers
             </div>
           </div>
         </div>
@@ -1157,7 +1372,7 @@ function HowItWorks() {
           Three steps. <span className="lg-gold-text" style={{ fontWeight: 400 }}>Fifteen minutes.</span>
         </h2>
         <p style={{ fontSize: 16, color: "#a49e8e", maxWidth: 600, margin: "14px auto 0" }}>
-          From signup to gating your first lead — no developer, no setup call.
+          From signup to gating your first lead, no developer, no setup call.
         </p>
       </div>
 
@@ -1223,7 +1438,7 @@ function Features() {
           </h2>
         </div>
         <p style={{ fontSize: 15, color: "#a49e8e", maxWidth: 360, margin: 0 }}>
-          Built from the ground up for coaches who are done wasting Tuesdays on discovery calls that go nowhere.
+          Built from the ground up for local businesses done wasting time on quotes and calls that go nowhere.
         </p>
       </div>
 
@@ -1284,7 +1499,7 @@ function Testimonials() {
           If any of this hits, <span className="lg-gold-text" style={{ fontWeight: 500 }}>this is for you</span>.
         </h2>
         <p style={{ fontSize: 16, color: "#a49e8e", maxWidth: 620, margin: "14px auto 0" }}>
-          We built LeadGate because we kept hearing the same three things from online coaches. If you&apos;ve thought any of these in the last 30 days, keep reading.
+          We built LeadGate because we kept hearing the same three things from local business owners. If you&apos;ve thought any of these in the last 30 days, keep reading.
         </p>
       </div>
 
@@ -1322,7 +1537,7 @@ function Testimonials() {
             >
               <div style={{ width: 6, height: 6, borderRadius: "50%", background: "var(--lg-gold-gradient)" }} />
               <div style={{ fontSize: 12, color: "#a49e8e", letterSpacing: "0.02em", textTransform: "uppercase", fontWeight: 600 }}>
-                — {p.label}
+                - {p.label}
               </div>
             </div>
           </div>
@@ -1344,7 +1559,7 @@ function Cases() {
           Your calendar, <span className="lg-gold-text" style={{ fontWeight: 400 }}>before &amp; after</span>.
         </h2>
         <p style={{ fontSize: 16, color: "#a49e8e", margin: "16px 0 0", lineHeight: 1.6 }}>
-          Same leads, same niche. The only thing that changes is what reaches your booking link.
+          Same leads, same ad spend. The only thing that changes is what reaches your booking link.
         </p>
       </div>
 
@@ -1408,8 +1623,12 @@ function Cases() {
             background: "linear-gradient(180deg, #100b02 0%, #0a0805 100%)",
             borderRadius: 18,
             padding: 32,
+            position: "relative",
+            overflow: "hidden",
           }}
         >
+          <div className="lg-dot-grid" style={{ position: "absolute", inset: 0, opacity: 0.4, pointerEvents: "none" }} />
+          <div style={{ position: "relative" }}>
           <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 6 }}>
             <span
               className="lg-gold-text"
@@ -1450,6 +1669,7 @@ function Cases() {
               </li>
             ))}
           </ul>
+          </div>
         </div>
       </div>
 
@@ -1462,7 +1682,7 @@ function Cases() {
           textAlign: "center",
         }}
       >
-        No staged screenshots, no invented testimonials — just a qualification layer that does one job well.
+        No staged screenshots, no invented testimonials, just a qualification layer that does one job well.
       </p>
     </section>
   );
@@ -1472,7 +1692,7 @@ function Pricing({ onCTA }: { onCTA: () => void }) {
   const features = [
     "Unlimited lead qualification",
     "AI-powered scoring & summaries",
-    "High-ticket coaching form questions",
+    "Pre-built qualifying questions",
     "Custom form questions",
     "Calendly integration",
     "Lead analytics dashboard",
@@ -1484,13 +1704,13 @@ function Pricing({ onCTA }: { onCTA: () => void }) {
     <section id="pricing" style={{ padding: "80px 32px", maxWidth: 1280, margin: "0 auto" }}>
       <div className="lg-reveal" style={{ textAlign: "center", marginBottom: 56 }}>
         <div style={{ fontSize: 11, letterSpacing: "0.2em", color: "#ffd87c", fontWeight: 600, textTransform: "uppercase", marginBottom: 14 }}>
-          PRICING
+          THE ADD-ON
         </div>
         <h2 style={{ fontSize: "clamp(36px, 4vw, 52px)", margin: 0, letterSpacing: "-0.03em", fontWeight: 600, color: "#f5f1e6" }}>
-          One simple plan. <span className="lg-gold-text" style={{ fontWeight: 500 }}>More premium clients.</span>
+          Add it to your setup. <span className="lg-gold-text" style={{ fontWeight: 500 }}>Book more jobs.</span>
         </h2>
         <p style={{ fontSize: 16, color: "#a49e8e", maxWidth: 580, margin: "14px auto 0" }}>
-          Pays for itself with one high-ticket client. No hidden fees.
+          The optional monthly layer that runs on the system we already built for you. Pays for itself with one extra booked job.
         </p>
       </div>
 
@@ -1502,11 +1722,14 @@ function Pricing({ onCTA }: { onCTA: () => void }) {
             borderRadius: 20,
             padding: "40px 36px",
             position: "relative",
+            overflow: "hidden",
             boxShadow: "0 30px 80px -20px rgba(255,216,124,0.2)",
           }}
         >
+          <div className="lg-dot-grid" style={{ position: "absolute", inset: 0, opacity: 0.4, pointerEvents: "none" }} />
+          <div style={{ position: "relative" }}>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 4 }}>
-            <h3 style={{ margin: 0, fontSize: 22, color: "#f5f1e6", letterSpacing: "-0.015em" }}>Pro Plan</h3>
+            <h3 style={{ margin: 0, fontSize: 22, color: "#f5f1e6", letterSpacing: "-0.015em" }}>Monthly Add-On</h3>
             <div
               style={{
                 display: "inline-flex",
@@ -1526,7 +1749,7 @@ function Pricing({ onCTA }: { onCTA: () => void }) {
               <Icon name="check" size={11} stroke={2.5} /> Everything included
             </div>
           </div>
-          <div style={{ fontSize: 13, color: "#8a7d6e", marginBottom: 26 }}>For high-ticket online coaches in any niche.</div>
+          <div style={{ fontSize: 13, color: "#8a7d6e", marginBottom: 26 }}>The ongoing layer that runs after your done-for-you setup.</div>
 
           <div style={{ display: "flex", alignItems: "baseline", gap: 4, marginBottom: 28 }}>
             <span className="lg-gold-text" style={{ fontSize: 64, fontWeight: 700, letterSpacing: "-0.035em", lineHeight: 1 }}>
@@ -1582,7 +1805,8 @@ function Pricing({ onCTA }: { onCTA: () => void }) {
           </button>
 
           <div style={{ textAlign: "center", marginTop: 16, fontSize: 12, color: "#6a6458" }}>
-            Pays for itself with one high-ticket client. Cancel anytime.
+            Pays for itself with one extra booked job. Cancel anytime.
+          </div>
           </div>
         </div>
       </div>
@@ -1591,7 +1815,7 @@ function Pricing({ onCTA }: { onCTA: () => void }) {
 }
 
 function FAQ() {
-  const [open, setOpen] = React.useState<number>(0);
+  const [open, setOpen] = React.useState<number>(-1);
   return (
     <section id="faq" style={{ padding: "80px 32px", maxWidth: 900, margin: "0 auto" }}>
       <div className="lg-reveal" style={{ textAlign: "center", marginBottom: 48 }}>
@@ -1682,14 +1906,14 @@ export function Founder() {
 
           <div style={{ display: "flex", flexDirection: "column", gap: 16, margin: "22px 0 30px" }}>
             <p style={{ margin: 0, fontSize: 16, lineHeight: 1.7, color: "#bdb6a6" }}>
-              I&rsquo;ve sat on both sides of the table &mdash; building AI systems and running sales.
-              I watched closers burn hour after hour on discovery calls with people who were never
-              going to buy. Tire-kickers, &ldquo;just looking,&rdquo; broke-but-curious. It wasn&rsquo;t a
+              I&rsquo;ve sat on both sides of the table, building AI systems and running sales.
+              I watched businesses burn hour after hour on calls and quotes with people who were never
+              going to buy. Price shoppers, &ldquo;just looking,&rdquo; out-of-area. It wasn&rsquo;t a
               closing problem. It was a <span style={{ color: "#f5f1e6", fontWeight: 500 }}>filtering</span> problem.
             </p>
             <p style={{ margin: 0, fontSize: 16, lineHeight: 1.7, color: "#bdb6a6" }}>
-              So I built LeadGate to do what a great sales assistant would &mdash; qualify every lead
-              before it ever hits your calendar, so the only calls you take are with people ready to invest.
+              So I built LeadGate to do what a great sales assistant would, qualify every lead
+              before it ever hits your calendar, so the only calls you take are with people ready to buy.
             </p>
           </div>
 
@@ -1745,7 +1969,7 @@ function FinalCTA({ onCTA }: { onCTA: () => void }) {
               marginBottom: 24,
             }}
           >
-            <Icon name="check" size={12} stroke={2.5} /> One plan · Get started in 5 minutes
+            <Icon name="check" size={12} stroke={2.5} /> Monthly add-on · Set up in 5 minutes
           </div>
           <h2 style={{ margin: 0, fontSize: "clamp(40px, 5vw, 64px)", letterSpacing: "-0.035em", fontWeight: 600, color: "#f5f1e6", lineHeight: 1.05 }}>
             Your next call could be
@@ -1753,7 +1977,7 @@ function FinalCTA({ onCTA }: { onCTA: () => void }) {
             <span className="lg-gold-text" style={{ fontWeight: 400 }}>a closed deal</span>.
           </h2>
           <p style={{ fontSize: 16, color: "#a49e8e", maxWidth: 560, margin: "18px auto 32px" }}>
-            Stop spending discovery calls on tire-kickers. Talk only to the buyers who are ready to invest.
+            Stop spending calls and quotes on tire-kickers. Talk only to the buyers who are ready to book.
           </p>
           <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
             <button
@@ -1773,6 +1997,9 @@ function FinalCTA({ onCTA }: { onCTA: () => void }) {
               <Icon name="video" size={18} stroke={2} style={{ color: "#ffd87c" }} />
               Talk to Sales
             </a>
+          </div>
+          <div style={{ marginTop: 20, fontSize: 13, color: "#6a6458" }}>
+            Cancel anytime · No long-term contract · Setup in about 5 minutes
           </div>
         </div>
       </div>
@@ -1804,7 +2031,7 @@ export function Footer() {
             </span>
           </div>
           <p style={{ margin: 0, fontSize: 13, color: "#8a7d6e", maxWidth: 280, lineHeight: 1.6 }}>
-            The AI that filters your leads so you only talk to clients ready to invest.
+            The AI that filters your leads so you only talk to customers ready to book.
           </p>
         </div>
         {cols.map((col) => (
@@ -1825,7 +2052,7 @@ export function Footer() {
       <div className="lg-divider-gold" style={{ marginBottom: 20 }} />
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: 12, color: "#6a6458", flexWrap: "wrap", gap: 12 }}>
         <div>© 2026 LeadGate AI · All rights reserved.</div>
-        <div>Made for high-ticket coaches who close.</div>
+        <div>Made for local businesses that close.</div>
       </div>
     </footer>
   );
@@ -1929,6 +2156,48 @@ export function useScrollReveal() {
   }, []);
 }
 
+function StickyCTA({ onCTA }: { onCTA: () => void }) {
+  const [show, setShow] = React.useState(false);
+  const [dismissed, setDismissed] = React.useState(false);
+
+  React.useEffect(() => {
+    const onScroll = () => setShow(window.scrollY > 760);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  const visible = show && !dismissed;
+
+  React.useEffect(() => {
+    document.body.classList.toggle("lg-sticky-active", visible);
+    return () => document.body.classList.remove("lg-sticky-active");
+  }, [visible]);
+
+  return (
+    <div className={`lg-sticky-cta ${visible ? "show" : ""}`} aria-hidden={!visible}>
+      <button
+        type="button"
+        className="lg-sticky-close"
+        aria-label="Dismiss"
+        onClick={() => setDismissed(true)}
+      >
+        <Icon name="x" size={14} stroke={2.4} />
+      </button>
+      <div style={{ minWidth: 0, fontSize: 13.5, fontWeight: 600, color: "#f5f1e6", letterSpacing: "-0.01em", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+        Filter out the tire-kickers
+      </div>
+      <button
+        className="lg-btn-gold"
+        onClick={onCTA}
+        style={{ padding: "7px 14px", borderRadius: 9, fontSize: 13, fontWeight: 700, display: "inline-flex", alignItems: "center", gap: 6, cursor: "pointer", flexShrink: 0, whiteSpace: "nowrap" }}
+      >
+        Get Started <Icon name="arrow-right" size={14} stroke={2.4} />
+      </button>
+    </div>
+  );
+}
+
 function FounderAssistant() {
   const [open, setOpen] = React.useState(false);
 
@@ -1960,8 +2229,8 @@ function FounderAssistant() {
 
           <div className="lg-assistant-body">
             <div className="lg-assistant-bubble">
-              Hey — I&apos;m the founder. If you&apos;re weighing whether LeadGate fits your
-              coaching offer, grab 15 minutes with me. No pitch, just straight answers.
+              Hey, I&apos;m the founder. If you&apos;re weighing whether LeadGate fits your
+              business, grab 15 minutes with me. No pitch, just straight answers.
             </div>
           </div>
 
@@ -2014,6 +2283,7 @@ export default function LandingPage() {
         <SocialProof />
         <Logos />
         <HowItWorks />
+        <LiveScorer onCTA={goToSignup} />
         <Features />
         <Testimonials />
         <Cases />
@@ -2023,6 +2293,7 @@ export default function LandingPage() {
       </main>
       <Footer />
       <VideoModal open={videoOpen} onClose={() => setVideoOpen(false)} />
+      <StickyCTA onCTA={goToSignup} />
       <FounderAssistant />
     </div>
   );
@@ -2225,6 +2496,67 @@ const LANDING_CSS = `
           transform: translate(-50%, 0);
         }
       }
+      /* ── Sticky mobile CTA bar ── */
+      .lg-sticky-cta {
+        display: none;
+      }
+      @media (max-width: 767px) {
+        .lg-sticky-cta {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 14px;
+          position: fixed;
+          left: 12px;
+          right: 12px;
+          bottom: 12px;
+          z-index: 55;
+          padding: 6px 8px 6px 16px;
+          border-radius: 13px;
+          background: rgba(14, 12, 8, 0.92);
+          backdrop-filter: blur(14px);
+          -webkit-backdrop-filter: blur(14px);
+          border: 1px solid rgba(255, 216, 124, 0.22);
+          box-shadow: 0 18px 50px -12px rgba(0, 0, 0, 0.85);
+          transform: translateY(140%);
+          opacity: 0;
+          transition: transform 0.32s cubic-bezier(0.34, 1.2, 0.5, 1), opacity 0.25s ease;
+        }
+        .lg-sticky-cta.show {
+          transform: translateY(0);
+          opacity: 1;
+        }
+        .lg-sticky-close {
+          position: absolute;
+          top: -10px;
+          right: -4px;
+          width: 24px;
+          height: 24px;
+          padding: 0;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          border-radius: 50%;
+          background: rgba(20, 18, 12, 0.96);
+          border: 1px solid rgba(255, 216, 124, 0.28);
+          color: #b8b0a0;
+          cursor: pointer;
+          box-shadow: 0 6px 16px -4px rgba(0, 0, 0, 0.7);
+          transition: color 0.18s ease, border-color 0.18s ease;
+        }
+        .lg-sticky-close:hover {
+          color: #f5f1e6;
+          border-color: rgba(255, 216, 124, 0.5);
+        }
+        /* Lift the founder chat FAB above the sticky bar while it's visible */
+        body.lg-sticky-active .lg-assistant {
+          bottom: 86px;
+        }
+        /* Keep footer content from hiding behind the bar */
+        body.lg-sticky-active {
+          padding-bottom: 80px;
+        }
+      }
       .lg-assistant {
         position: fixed;
         bottom: 24px;
@@ -2234,6 +2566,7 @@ const LANDING_CSS = `
         flex-direction: column;
         align-items: flex-end;
         gap: 16px;
+        transition: bottom 0.3s ease;
       }
       .lg-assistant-fab {
         position: relative;
@@ -2518,6 +2851,160 @@ const LANDING_CSS = `
         grid-template-columns: 1fr 1fr;
         gap: 24px;
       }
+      /* ── Pill badge (SaaS eyebrow / label) ── */
+      .lg-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 6px 14px 6px 11px;
+        border-radius: 999px;
+        background: linear-gradient(180deg, rgba(255, 216, 124, 0.1), rgba(255, 216, 124, 0.03));
+        border: 1px solid rgba(255, 216, 124, 0.2);
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06), 0 4px 14px -6px rgba(255, 216, 124, 0.22);
+        font-size: 12.5px;
+        font-weight: 500;
+        letter-spacing: 0.01em;
+        color: #e7dcc2;
+        white-space: nowrap;
+        backdrop-filter: blur(6px);
+        -webkit-backdrop-filter: blur(6px);
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+      }
+      .lg-badge:hover {
+        border-color: rgba(255, 216, 124, 0.34);
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 6px 18px -6px rgba(255, 216, 124, 0.32);
+      }
+      .lg-badge-dot {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        flex-shrink: 0;
+        background: var(--lg-gold-gradient);
+        animation: lgPulseRing 2.4s ease-out infinite;
+      }
+      .lg-badge--demo {
+        padding: 5px 13px 5px 10px;
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.07em;
+        color: #ffd87c;
+      }
+      /* ── Live lead scorer ── */
+      .lg-scorer-card {
+        background: linear-gradient(180deg, #100b02 0%, #0a0805 100%);
+      }
+      .lg-scorer-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 0.9fr);
+      }
+      .lg-scorer-questions {
+        min-width: 0;
+        padding: 40px;
+      }
+      .lg-scorer-result {
+        min-width: 0;
+        padding: 40px;
+        background: rgba(255, 216, 124, 0.025);
+        border-left: 1px solid rgba(255, 216, 124, 0.1);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+      .lg-scorer-opt {
+        display: flex;
+        align-items: center;
+        gap: 11px;
+        width: 100%;
+        text-align: left;
+        padding: 12px 14px;
+        border-radius: 11px;
+        font-size: 13.5px;
+        color: #cfc8b8;
+        background: rgba(255, 255, 255, 0.02);
+        border: 1px solid rgba(255, 255, 255, 0.07);
+        cursor: pointer;
+        transition: all 0.18s ease;
+      }
+      .lg-scorer-opt:hover {
+        border-color: rgba(255, 216, 124, 0.32);
+        background: rgba(255, 216, 124, 0.05);
+        color: #f5f1e6;
+      }
+      .lg-scorer-opt.selected {
+        border-color: rgba(255, 216, 124, 0.55);
+        background: rgba(255, 216, 124, 0.09);
+        color: #f5f1e6;
+      }
+      .lg-scorer-radio {
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        flex-shrink: 0;
+        border: 1.5px solid rgba(255, 255, 255, 0.18);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #1a1200;
+        transition: all 0.18s ease;
+      }
+      .lg-scorer-opt.selected .lg-scorer-radio {
+        background: var(--lg-gold-gradient);
+        border-color: transparent;
+      }
+      .lg-scorer-swipe {
+        display: flex;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        scroll-behavior: smooth;
+      }
+      .lg-scorer-swipe::-webkit-scrollbar {
+        display: none;
+      }
+      .lg-scorer-slide {
+        flex: 0 0 100%;
+        min-width: 0;
+        scroll-snap-align: start;
+        padding: 2px 2px 0;
+      }
+      .lg-scorer-dots {
+        display: flex;
+        gap: 8px;
+        justify-content: center;
+        margin-top: 22px;
+      }
+      .lg-scorer-dot {
+        width: 8px;
+        height: 8px;
+        padding: 0;
+        border: none;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.16);
+        cursor: pointer;
+        transition: all 0.25s ease;
+      }
+      .lg-scorer-dot.answered {
+        background: rgba(255, 216, 124, 0.45);
+      }
+      .lg-scorer-dot.active {
+        width: 24px;
+        background: var(--lg-gold-gradient);
+      }
+      @media (max-width: 767px) {
+        .lg-scorer-grid {
+          grid-template-columns: minmax(0, 1fr);
+        }
+        .lg-scorer-questions {
+          padding: 28px 22px;
+        }
+        .lg-scorer-result {
+          padding: 28px 22px;
+          border-left: none;
+          border-top: 1px solid rgba(255, 216, 124, 0.1);
+        }
+      }
       .lg-footer-grid {
         display: grid;
         grid-template-columns: 1.4fr 1fr 1fr 1fr;
@@ -2560,7 +3047,7 @@ const LANDING_CSS = `
           padding: 14px 18px;
         }
         .lg-hero-section {
-          padding-top: 104px;
+          padding-top: 88px;
           padding-bottom: 48px;
         }
         .lg-hero-grid {
@@ -2586,11 +3073,26 @@ const LANDING_CSS = `
         .lg-hero-enter > div {
           justify-content: center;
         }
+        /* Push the cards block down so it clears the CTAs, and pin the hint right above the cards (centered) */
+        .lg-hero-right-enter {
+          margin-top: 22px;
+        }
+        .lg-hero-hint {
+          top: -24px !important;
+          left: -8px !important;
+          justify-content: flex-start;
+          white-space: nowrap;
+        }
         .lg-hero-arrow {
           display: none !important;
         }
         .lg-social-grid {
           grid-template-columns: 1fr;
+        }
+        .lg-social-intro {
+          flex-direction: column;
+          align-items: flex-start !important;
+          gap: 12px !important;
         }
         .lg-footer-grid {
           grid-template-columns: 1fr;

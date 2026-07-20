@@ -34,6 +34,7 @@ interface SettingsData {
   closeRate: number | null;
   avgCallMinutes: number | null;
   stripeSubscriptionStatus: string | null;
+  plan: string | null;
 }
 
 type TabId =
@@ -217,7 +218,9 @@ export default function SettingsPage() {
     .toUpperCase();
 
   const planStatus = data.stripeSubscriptionStatus ?? "free";
-  const isPro = ["active", "trialing"].includes(planStatus);
+  // ReclaimedHQ-provisioned tenants (plan="agency") are always active.
+  const isManaged = data.plan === "agency";
+  const isPro = isManaged || ["active", "trialing"].includes(planStatus);
 
   return (
     <div className="max-w-6xl mx-auto">
@@ -515,11 +518,11 @@ export default function SettingsPage() {
                           : "bg-white/[0.06] text-white/70 border border-white/10"
                       }`}
                     >
-                      {isPro ? "Pro" : "Free"}
+                      {isManaged ? "Agency" : isPro ? "Pro" : "Free"}
                     </span>
                   </div>
                   <p className="text-xs text-white/50 mt-1 capitalize">
-                    Status: {planStatus}
+                    Status: {isManaged ? "Managed by ReclaimedHQ" : planStatus}
                   </p>
                 </div>
                 <Link href="/billing" className={btnPrimary}>

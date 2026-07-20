@@ -884,7 +884,7 @@ export default function DashboardPage() {
             </span>
           </div>
           <p className="text-sm text-gray-500 mt-1">
-            Lead qualification system for high-ticket businesses.
+            Lead qualification system for local service businesses.
           </p>
         </div>
         <button className="inline-flex items-center gap-2 h-10 px-3.5 rounded-xl border border-white/10 bg-white/[0.03] hover:bg-white/[0.06] hover:border-white/[0.18] text-sm text-gray-200 transition-colors shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]">

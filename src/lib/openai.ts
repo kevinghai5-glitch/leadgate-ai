@@ -25,7 +25,7 @@ interface LeadSummary {
 }
 
 export async function scoreLead(lead: LeadData): Promise<ScoreResult> {
-  const prompt = `You are a high-ticket coaching lead qualification assistant. Evaluate the following prospect based on the coach's custom intake questions to determine how likely they are to become a premium client. The coach may be in any niche (fitness, business, mindset, executive, relationships, etc.) — infer the niche from the questions and answers themselves.
+  const prompt = `You are a lead qualification assistant for a local service business. Evaluate the following prospect based on the business's custom intake questions to determine how likely they are to become a paying customer. The business may be in any local service niche (dental, med spa, roofing, legal, home services, fitness, etc.) — infer the niche from the questions and answers themselves.
 
 Prospect Information:
 - Name: ${lead.name}
@@ -40,7 +40,7 @@ Evaluate the prospect holistically on:
 - Financial readiness and investment level
 - Timeline urgency (how soon they want to start)
 - Clarity of goals and motivation
-- Previous coaching experience and attitude
+- Previous experience hiring this kind of service and attitude
 
 Return a JSON object with exactly this structure:
 {
@@ -78,7 +78,7 @@ Return ONLY the JSON object, no other text.`;
 export async function generateLeadSummary(
   lead: LeadData & { aiScore: number; aiReasoning: string }
 ): Promise<LeadSummary> {
-  const prompt = `You are a sales preparation assistant for a high-ticket online coaching business (niche may be fitness, business, mindset, executive, relationships, or other — infer from the intake answers). Generate a brief summary and suggested sales angle for this qualified prospect.
+  const prompt = `You are a sales preparation assistant for a local service business (niche may be dental, med spa, roofing, legal, home services, fitness, or other — infer from the intake answers). Generate a brief summary and suggested sales angle for this qualified prospect.
 
 Prospect Information:
 - Name: ${lead.name}
@@ -91,7 +91,7 @@ Prospect Information:
 Return a JSON object with exactly this structure:
 {
   "summary": "<2-3 sentence overview of the prospect and their needs>",
-  "salesAngle": "<1-2 sentence suggested approach for the discovery call>"
+  "salesAngle": "<1-2 sentence suggested approach for the sales call>"
 }
 
 Return ONLY the JSON object, no other text.`;

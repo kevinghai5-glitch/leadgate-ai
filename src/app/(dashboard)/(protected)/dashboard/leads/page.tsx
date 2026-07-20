@@ -13,8 +13,10 @@ import {
   CheckCircle2,
   XCircle,
   Clock,
+  RefreshCw,
 } from "lucide-react";
 import { format } from "date-fns";
+import { toast } from "sonner";
 
 interface Lead {
   id: string;
@@ -26,6 +28,7 @@ interface Lead {
   aiScore: number | null;
   status: string;
   source: string | null;
+  ghlSyncStatus: string | null;
   createdAt: string;
 }
 
@@ -76,6 +79,37 @@ export default function LeadsPage() {
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [sortField, setSortField] = useState<string>("createdAt");
   const [sortDir, setSortDir] = useState<"asc" | "desc">("desc");
+  const [resyncing, setResyncing] = useState<string | null>(null);
+  // Only show the GHL sync column once we know at least one lead carries a
+  // sync status (i.e. the tenant has GHL configured) — keeps the table clean
+  // for tenants who don't use the integration.
+  const hasGhlSync = leads.some((l) => l.ghlSyncStatus != null);
+
+  async function resync(id: string) {
+    setResyncing(id);
+    try {
+      const res = await fetch(`/api/leads/${id}/resync`, { method: "POST" });
+      const data = await res.json();
+      if (!res.ok) {
+        toast.error(data.error || "Re-sync failed");
+        return;
+      }
+      setLeads((prev) =>
+        prev.map((l) =>
+          l.id === id ? { ...l, ghlSyncStatus: data.status ?? l.ghlSyncStatus } : l
+        )
+      );
+      if (data.status === "synced") {
+        toast.success("Lead synced to GoHighLevel");
+      } else {
+        toast.error("Re-sync failed — check your GoHighLevel settings");
+      }
+    } catch {
+      toast.error("Re-sync failed. Please try again.");
+    } finally {
+      setResyncing(null);
+    }
+  }
 
   useEffect(() => {
     fetch("/api/leads")
@@ -175,6 +209,43 @@ export default function LeadsPage() {
       return "bg-emerald-500/15 text-emerald-300";
     if (status === "DISQUALIFIED") return "bg-rose-500/15 text-rose-300";
     return "bg-white/[0.05] text-white/60";
+  }
+
+  function SyncCell({ lead }: { lead: Lead }) {
+    const s = lead.ghlSyncStatus;
+    const busy = resyncing === lead.id;
+    if (s == null) return <span className="text-xs text-white/30">—</span>;
+
+    const chip: Record<string, string> = {
+      synced: "bg-emerald-500/15 text-emerald-300",
+      failed: "bg-rose-500/15 text-rose-300",
+      skipped: "bg-amber-500/15 text-amber-300",
+    };
+    const label = s.charAt(0).toUpperCase() + s.slice(1);
+    const retryable = s === "failed" || s === "skipped";
+
+    return (
+      <div className="flex items-center gap-2">
+        <span
+          className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold uppercase tracking-wider ${
+            chip[s] ?? "bg-white/[0.05] text-white/60"
+          }`}
+        >
+          {label}
+        </span>
+        {retryable && (
+          <button
+            onClick={() => resync(lead.id)}
+            disabled={busy}
+            className="inline-flex items-center justify-center h-6 w-6 rounded-md hover:bg-white/[0.06] text-white/50 hover:text-white transition-colors disabled:opacity-50"
+            aria-label="Re-sync to GoHighLevel"
+            title="Re-sync to GoHighLevel"
+          >
+            <RefreshCw className={`h-3.5 w-3.5 ${busy ? "animate-spin" : ""}`} />
+          </button>
+        )}
+      </div>
+    );
   }
 
   if (loading) {
@@ -307,6 +378,11 @@ export default function LeadsPage() {
                   <th className="px-6 py-3 text-[11px] font-semibold uppercase tracking-wider text-white/60">
                     Source
                   </th>
+                  {hasGhlSync && (
+                    <th className="px-6 py-3 text-[11px] font-semibold uppercase tracking-wider text-white/60">
+                      GHL Sync
+                    </th>
+                  )}
                   <th className="px-6 py-3">
                     <button
                       onClick={() => toggleSort("createdAt")}
@@ -370,6 +446,11 @@ export default function LeadsPage() {
                     <td className="px-6 py-3.5 text-sm text-white/60">
                       {lead.source || "form"}
                     </td>
+                    {hasGhlSync && (
+                      <td className="px-6 py-3.5">
+                        <SyncCell lead={lead} />
+                      </td>
+                    )}
                     <td className="px-6 py-3.5 text-sm text-white/60 whitespace-nowrap">
                       {format(new Date(lead.createdAt), "MMM d, yyyy")}
                     </td>

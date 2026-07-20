@@ -16,6 +16,7 @@ import {
 
 interface BillingInfo {
   stripeSubscriptionStatus: string | null;
+  plan: string | null;
 }
 
 type TabId = "plan" | "payment" | "invoices" | "usage";
@@ -78,7 +79,10 @@ export default function BillingPage() {
     fetch("/api/settings")
       .then((r) => r.json())
       .then((data) => {
-        setBilling({ stripeSubscriptionStatus: data.stripeSubscriptionStatus });
+        setBilling({
+          stripeSubscriptionStatus: data.stripeSubscriptionStatus,
+          plan: data.plan ?? null,
+        });
         setLoading(false);
       })
       .catch(() => {
@@ -134,7 +138,10 @@ export default function BillingPage() {
   }
 
   const planStatus = billing?.stripeSubscriptionStatus ?? "free";
-  const isPro = ["active", "trialing"].includes(planStatus);
+  // ReclaimedHQ-managed tenants (plan="agency") are always active and are not
+  // billed through Stripe here — the retainer is handled by ReclaimedHQ.
+  const isManaged = billing?.plan === "agency";
+  const isPro = isManaged || ["active", "trialing"].includes(planStatus);
 
   return (
     <div className="max-w-6xl mx-auto">
@@ -205,7 +212,11 @@ export default function BillingPage() {
                     <div>
                       <div className="flex items-center gap-2">
                         <p className="text-base font-semibold text-white">
-                          {isPro ? "Pro Plan" : "Free Plan"}
+                          {isManaged
+                            ? "Agency Plan"
+                            : isPro
+                              ? "Pro Plan"
+                              : "Free Plan"}
                         </p>
                         <span
                           className={`text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full ${
@@ -214,17 +225,21 @@ export default function BillingPage() {
                               : "bg-amber-500/15 text-amber-300"
                           }`}
                         >
-                          {isPro ? planStatus : "Inactive"}
+                          {isManaged ? "Managed" : isPro ? planStatus : "Inactive"}
                         </span>
                       </div>
                       <p className="text-xs text-white/60 mt-0.5">
-                        {isPro
-                          ? "$499 / month · billed monthly"
-                          : "Upgrade to unlock unlimited qualification."}
+                        {isManaged
+                          ? "Included in your ReclaimedHQ retainer — nothing to pay here."
+                          : isPro
+                            ? "$499 / month · billed monthly"
+                            : "Your account is managed by ReclaimedHQ."}
                       </p>
                     </div>
                   </div>
-                  {isPro && (
+                  {/* Stripe portal only for legacy self-serve subscribers, not
+                      ReclaimedHQ-managed tenants. */}
+                  {isPro && !isManaged && (
                     <button
                       onClick={handlePortal}
                       disabled={portalLoading}
