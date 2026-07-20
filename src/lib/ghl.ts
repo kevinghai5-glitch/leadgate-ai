@@ -229,6 +229,42 @@ export async function createOpportunity(
 }
 
 /**
+ * Move an existing opportunity to a new pipeline stage.
+ * Used when a repeat submitter (same email → same GHL contact) re-enters the
+ * funnel and we need to update the stage rather than create a duplicate.
+ * Rule: new submission = latest truth; move accordingly.
+ */
+export async function updateOpportunity(
+  token: string,
+  input: {
+    opportunityId: string;
+    pipelineId: string;
+    locationId: string;
+    name: string;
+    pipelineStageId?: string | null;
+    status?: string;
+    monetaryValue?: number | null;
+  }
+): Promise<string> {
+  const payload: Record<string, unknown> = {
+    pipelineId: input.pipelineId,
+    locationId: input.locationId,
+    name: input.name,
+    status: input.status ?? "open",
+  };
+  if (input.pipelineStageId) payload.pipelineStageId = input.pipelineStageId;
+  if (input.monetaryValue != null) payload.monetaryValue = input.monetaryValue;
+
+  await ghlRequest(
+    token,
+    "PUT",
+    `/opportunities/${input.opportunityId}`,
+    payload
+  );
+  return input.opportunityId;
+}
+
+/**
  * Attach a note (AI reasoning + answers) to a contact.
  * NOTE: the contact-notes endpoint was NOT part of the three specs verified in
  * recon — it is a well-known GHL v2 endpoint but should be confirmed against a
@@ -309,24 +345,56 @@ export async function pushLeadToGHL(
   // second opportunity for a lead that already has one (e.g. on manual re-sync).
   let opportunityId = existing?.opportunityId ?? null;
   if (!opportunityId) {
+    const oppName = `${lead.name} — LeadGate ${
+      lead.isQualified ? "qualified" : "disqualified"
+    }`;
+    const monetaryValue = lead.isQualified
+      ? config.offerPrice ?? undefined
+      : undefined;
     try {
       opportunityId = await createOpportunity(config.token, {
         pipelineId: config.pipelineId,
         locationId: config.locationId,
         contactId,
-        name: `${lead.name} — LeadGate ${
-          lead.isQualified ? "qualified" : "disqualified"
-        }`,
+        name: oppName,
         pipelineStageId: stageId,
         status: "open",
-        monetaryValue: lead.isQualified
-          ? config.offerPrice ?? undefined
-          : undefined,
+        monetaryValue,
       });
     } catch (err) {
-      // Preserve the contact we already created so the caller can persist it.
-      if (err instanceof GhlError) err.contactId = contactId;
-      throw err;
+      // GHL rejects duplicate opportunities (400 + meta.existingId) when the
+      // same contact already owns one in this pipeline (repeat submitter whose
+      // earlier lead row already synced). Rule: new submission = latest truth —
+      // move the existing opportunity to the correct stage instead of failing.
+      if (err instanceof GhlError && err.status === 400) {
+        const match = /"existingId"\s*:\s*"([^"]+)"/.exec(err.message);
+        if (match) {
+          const existingOppId = match[1];
+          try {
+            opportunityId = await updateOpportunity(config.token, {
+              opportunityId: existingOppId,
+              pipelineId: config.pipelineId,
+              locationId: config.locationId,
+              name: oppName,
+              pipelineStageId: stageId,
+              status: "open",
+              monetaryValue,
+            });
+          } catch (updateErr) {
+            // Preserve the contact so the caller can persist it.
+            if (updateErr instanceof GhlError) updateErr.contactId = contactId;
+            throw updateErr;
+          }
+        } else {
+          // 400 but no existingId — re-throw as before.
+          if (err instanceof GhlError) err.contactId = contactId;
+          throw err;
+        }
+      } else {
+        // Preserve the contact we already created so the caller can persist it.
+        if (err instanceof GhlError) err.contactId = contactId;
+        throw err;
+      }
     }
   }
 
