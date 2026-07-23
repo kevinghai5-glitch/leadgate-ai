@@ -38,15 +38,14 @@ export async function POST(req: Request) {
         },
       });
 
-      // Send email
+      // Send email. Swallow failures (log only) so the response is identical
+      // whether or not the account exists — otherwise the status code leaks
+      // account existence (email enumeration), defeating the point of the
+      // generic message below.
       try {
         await sendPasswordResetEmail(email, token);
       } catch (err) {
         console.error("Failed to send password reset email:", err);
-        return NextResponse.json(
-          { error: "Failed to send email. Please try again later." },
-          { status: 500 }
-        );
       }
     }
 

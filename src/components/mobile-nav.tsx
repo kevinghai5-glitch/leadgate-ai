@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
 import { cn } from "@/lib/utils";
@@ -10,7 +11,6 @@ import {
   Users,
   Settings,
   CreditCard,
-  Zap,
   LogOut,
   Menu,
   X,
@@ -35,7 +35,14 @@ export function MobileNav() {
     <div className="md:hidden">
       <div className="flex h-14 items-center justify-between border-b border-white/[0.06] bg-[#0a0a0a] px-4">
         <Link href="/dashboard" className="flex items-center gap-2" onClick={() => setOpen(false)}>
-          <Zap className="h-5 w-5 text-[#ffd87c]" />
+          <Image
+            src="/leadgate-logo.png"
+            alt="LeadGate AI"
+            width={22}
+            height={22}
+            priority
+            className="rounded-md"
+          />
           <span className="text-base font-bold text-white">LeadGate AI</span>
         </Link>
         <button

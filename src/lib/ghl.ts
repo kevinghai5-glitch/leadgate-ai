@@ -284,6 +284,75 @@ export async function createContactNote(
   return data?.note?.id ?? null;
 }
 
+export interface GhlStage {
+  id: string;
+  name: string;
+}
+export interface GhlPipeline {
+  id: string;
+  name: string;
+  stages: GhlStage[];
+}
+
+/**
+ * List the location's opportunity pipelines and their stages.
+ * GET /opportunities/pipelines?locationId=... — used to auto-fill Pipeline ID +
+ * Stage IDs so the operator never hand-copies raw GHL IDs.
+ */
+export async function getPipelines(
+  token: string,
+  locationId: string
+): Promise<GhlPipeline[]> {
+  const data = await ghlRequest<{ pipelines?: unknown[] }>(
+    token,
+    "GET",
+    `/opportunities/pipelines?locationId=${encodeURIComponent(locationId)}`
+  );
+  const pipelines = Array.isArray(data.pipelines) ? data.pipelines : [];
+  return pipelines.map((p) => {
+    const pp = p as { id?: string; name?: string; stages?: unknown[] };
+    const stages = Array.isArray(pp.stages) ? pp.stages : [];
+    return {
+      id: pp.id ?? "",
+      name: pp.name ?? "",
+      stages: stages.map((s) => {
+        const ss = s as { id?: string; name?: string };
+        return { id: ss.id ?? "", name: ss.name ?? "" };
+      }),
+    };
+  });
+}
+
+/**
+ * Auto-match the pipeline + the two stages LeadGate needs from a fetched list.
+ * Because every client sub-account is cloned from the same master template, the
+ * NAMES ("Client Conversion Pipeline", "Qualified", "New Lead") are consistent
+ * even though the IDs differ per client — so match by name, fall back sensibly.
+ */
+export function autoMatchPipeline(pipelines: GhlPipeline[]): {
+  pipelineId: string | null;
+  pipelineName: string | null;
+  qualifiedStageId: string | null;
+  newLeadStageId: string | null;
+} {
+  const pick =
+    pipelines.find((p) => /client\s*conversion/i.test(p.name)) ??
+    pipelines[0] ??
+    null;
+  if (!pick) {
+    return { pipelineId: null, pipelineName: null, qualifiedStageId: null, newLeadStageId: null };
+  }
+  const qualified = pick.stages.find((s) => /qualif/i.test(s.name));
+  const newLead =
+    pick.stages.find((s) => /new\s*lead/i.test(s.name)) ?? pick.stages[0];
+  return {
+    pipelineId: pick.id || null,
+    pipelineName: pick.name || null,
+    qualifiedStageId: qualified?.id ?? null,
+    newLeadStageId: newLead?.id ?? null,
+  };
+}
+
 /** Build the note body from the lead's AI reasoning + submitted answers. */
 export function buildNoteBody(lead: GhlLeadInput): string {
   const lines: string[] = [];

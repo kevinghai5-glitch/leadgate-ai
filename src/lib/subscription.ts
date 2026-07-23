@@ -1,6 +1,5 @@
 import { prisma } from "@/lib/prisma";
-
-const ADMIN_EMAILS = ["leafsbuzztv@gmail.com"];
+import { isAdminEmail } from "@/lib/admin";
 
 export async function getUserSubscription(userId: string) {
   const user = await prisma.user.findUnique({
@@ -8,7 +7,7 @@ export async function getUserSubscription(userId: string) {
     select: { stripeSubscriptionStatus: true, email: true, plan: true },
   });
 
-  const isAdmin = ADMIN_EMAILS.includes(user?.email || "");
+  const isAdmin = isAdminEmail(user?.email);
   // ReclaimedHQ-provisioned tenants carry plan="agency" and pass every gate
   // without a Stripe subscription (LeadGate is no longer self-serve).
   const isAgency = user?.plan === "agency";

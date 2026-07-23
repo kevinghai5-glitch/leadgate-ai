@@ -166,6 +166,17 @@
   -webkit-font-smoothing: antialiased;
   letter-spacing: -0.01em;
 }
+
+/* Native <button> defaults to the arrow cursor — make every dashboard button
+   feel clickable, and disabled ones read as intentionally off. */
+.dashboard-dark button:not(:disabled),
+.dashboard-dark [role="button"]:not([aria-disabled="true"]) {
+  cursor: pointer;
+}
+.dashboard-dark button:disabled,
+.dashboard-dark [aria-disabled="true"] {
+  cursor: not-allowed;
+}
 .dashboard-dark h1,
 .dashboard-dark h2,
 .dashboard-dark h3,

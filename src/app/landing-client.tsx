@@ -3,15 +3,14 @@
 import * as React from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 
-// ─── Sales call booking ───────────────────────────────────────────────────
-// Cal.com / Calendly link that handles Zoom auto-creation. Swap the URL
-// below for your real booking link, keep the env override so prod can
-// point somewhere different from local without a code change.
-export const SALES_CALL_URL =
-  process.env.NEXT_PUBLIC_SALES_CALL_URL ||
-  "https://calendly.com/kevinghai5/discovery-call";
+// ─── Prospect funnel ────────────────────────────────────────────────────────
+// LeadGate is provisioned through ReclaimedHQ, not sold self-serve. Every
+// prospect CTA on this site points at the free-audit funnel; existing clients
+// go to /login. TODO(kevin): if a direct booking link ever converts better
+// than the funnel, set NEXT_PUBLIC_AUDIT_FUNNEL_URL — no code change needed.
+export const AUDIT_FUNNEL_URL =
+  process.env.NEXT_PUBLIC_AUDIT_FUNNEL_URL || "https://reclaimed-hq.agency/";
 
 // ─── Data ──────────────────────────────────────────────────────────────────
 
@@ -50,18 +49,17 @@ const GOOD_LEADS: GoodLead[] = [
   { id: 5, name: "Rachel W.", initials: "RW", status: "Qualified", score: 9.0, reason: "Hard deadline, specific need, budget ready to go.", meta: "Hard deadline · Motivated" },
 ];
 
-// Polished professional portraits (Unsplash) used as the "businesses like you"
-// avatar cluster. These are illustrative stock photos, not real customers.
-const COACH_AVATARS = [
-  "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=96&h=96&fit=crop&crop=faces&q=80",
-  "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=96&h=96&fit=crop&crop=faces&q=80",
-  "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=96&h=96&fit=crop&crop=faces&q=80",
-  "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=96&h=96&fit=crop&crop=faces&q=80",
-  "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=96&h=96&fit=crop&crop=faces&q=80",
+// Overlapping AI-score chips shown where a stock-photo avatar cluster used to
+// be. The page promises "no staged screenshots, no invented testimonials" —
+// so the imagery is the product (scores), not stock faces posing as customers.
+const SCORE_CHIPS = [
+  { label: "9.4", color: "#7fe2a8" },
+  { label: "8.8", color: "#ffd87c" },
+  { label: "9.1", color: "#7fe2a8" },
+  { label: "2.1", color: "#ff8a8a" },
 ];
 
 const LOGOS = [
-  { name: "Calendly", logo: "calendly" },
   { name: "Instagram", logo: "instagram" },
   { name: "TikTok", logo: "tiktok" },
   { name: "YouTube", logo: "youtube" },
@@ -73,17 +71,17 @@ const LOGOS = [
 
 const FEATURES = [
   { icon: "gauge", title: "AI lead scoring (1–10)", desc: "Every prospect gets scored on budget fit, timeline, motivation, and readiness. You set the threshold." },
-  { icon: "gate", title: "The lead gate", desc: "Only prospects above your minimum score see your Calendly link. Everyone else gets a polite follow-up." },
-  { icon: "form", title: "Build your own form", desc: "You design the qualifying questions for your offer, whether short text, long text, or dropdown. Tailor every question to your exact service and area." },
-  { icon: "calendar", title: "Calendly integration", desc: "Qualified leads see your Calendly link the second they're approved and book on the spot." },
+  { icon: "gate", title: "The lead gate", desc: "Only prospects above your minimum score see your booking calendar. Everyone else gets a polite follow-up." },
+  { icon: "form", title: "Questions built for your business", desc: "Qualifying questions tailored to your services and area, short text, long text, or dropdown. We build them with you during onboarding; you can tweak them anytime." },
+  { icon: "calendar", title: "Booking calendar integration", desc: "Qualified leads land on your booking calendar the second they're approved and book on the spot." },
   { icon: "chart", title: "Analytics dashboard", desc: "Total leads, qualification rate, projected revenue, all at a glance. Know who's worth following up." },
-  { icon: "code", title: "Embed anywhere", desc: "Share your unique link or drop the embed code on your website. Setup takes about 5 minutes." },
+  { icon: "code", title: "Embed anywhere", desc: "Your form lives on a shareable link or embeds on your website, we wire it into your site and campaigns during onboarding." },
 ];
 
 const STEPS = [
-  { num: "01", title: "Prospects fill out your form", desc: "Share your unique link or embed the form on your site. Prospects answer questions about their goals, commitment, and investment readiness." },
+  { num: "01", title: "Prospects fill out your form", desc: "We wire the form into your site and campaigns during onboarding. Prospects answer questions about their needs, timeline, and budget." },
   { num: "02", title: "AI identifies serious buyers", desc: "Our AI scores every prospect on intent, budget fit, and readiness, so you know exactly who's ready to actually book and pay." },
-  { num: "03", title: "Qualified leads book instantly", desc: "High-scoring prospects see your Calendly link and book on the spot. Low-intent leads get a polite follow-up." },
+  { num: "03", title: "Qualified leads book instantly", desc: "High-scoring prospects land on your booking calendar and book on the spot. Low-intent leads get a polite follow-up." },
 ];
 
 const PAINS = [
@@ -93,12 +91,12 @@ const PAINS = [
 ];
 
 const FAQS = [
-  { q: "How does LeadGate AI help me close more jobs?", a: "LeadGate AI pre-qualifies every lead that fills out your form using AI scoring. By filtering out price shoppers and people who aren't ready to buy, you only spend time on calls with serious prospects, which means higher close rates and more booked jobs each month." },
-  { q: "Do I need technical skills to set up?", a: "Not at all. Sign up, customize your form questions if you like, and share your unique link, or paste the embed code onto your website. The entire setup takes about 5 minutes." },
-  { q: "Can I customize the questions for my business?", a: "Yes, LeadGate works for any local service business (dental, med spa, roofing, legal, home services, and more) because you build your own questions. Use the Form Builder to add, edit, reorder, and remove the questions you want to ask. Name, email, and phone are always included." },
-  { q: "How does the lead scoring work?", a: "Our AI evaluates each prospect on budget fit, timeline, motivation level, and overall readiness. Each lead gets a score from 1–10. You set the minimum qualifying score, and only leads above that threshold see your booking link." },
-  { q: "How do I get started?", a: "Sign up, customize your form questions if you like, and share your unique link, or paste the embed code onto your website. The entire setup takes about 5 minutes." },
-  { q: "Can I integrate this with my existing website?", a: "Absolutely. You can embed the lead qualification form on any website with a simple iframe code snippet, or just share the direct link on social media, in emails, or anywhere you connect with prospects." },
+  { q: "How do I get LeadGate?", a: "Through ReclaimedHQ. It starts with a free audit of where your current funnel leaks leads. If we're a fit, we build your conversion system done-for-you, and LeadGate runs inside the monthly management plan from day one." },
+  { q: "Can I buy LeadGate on its own?", a: "No, and that's deliberate. LeadGate is the qualification layer of a bigger system: your booking calendar, follow-up automations, and CRM wiring. Standalone, it would be a smart form with nothing behind it. It only produces results running on the system we build and manage for you." },
+  { q: "Do I have to set anything up?", a: "No. Setup is done for you during onboarding: we tailor the qualifying questions to your services and area, set your qualifying threshold, wire the form into your site and campaigns, and connect your booking calendar. You get a dashboard with every scored lead; we handle the plumbing." },
+  { q: "How does the lead scoring work?", a: "Our AI evaluates each prospect on budget fit, timeline, motivation level, and overall readiness. Each lead gets a score from 1–10. Leads at or above your qualifying threshold see your booking calendar instantly; everyone else gets a polite follow-up instead of a slot on your calendar." },
+  { q: "Does it work with my calendar and CRM?", a: "Yes. Qualified leads are routed straight to your booking calendar, and every scored lead lands in your CRM pipeline with its score, the AI's reasoning, and the prospect's answers attached, all wired up as part of your build." },
+  { q: "What happens to the leads it filters out?", a: "They don't vanish. Disqualified leads are tagged and dropped into your nurture pipeline automatically, so price shoppers and not-ready-yets get followed up with over time instead of wasting a call slot today." },
 ];
 
 const WORKFLOW_BEFORE = [
@@ -216,13 +214,6 @@ function BrandLogo({ name }: { name: string }) {
     color: "#e8e2d0",
   };
   switch (name) {
-    case "calendly":
-      return (
-        <div style={wrap}>
-          <svg width="22" height="22" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" strokeWidth="2" /><circle cx="12" cy="12" r="4" fill="currentColor" /></svg>
-          <span>Calendly</span>
-        </div>
-      );
     case "instagram":
       return (
         <div style={wrap}>
@@ -303,7 +294,7 @@ export function Nav({ onCTA }: { onCTA: () => void }) {
   const links = [
     { label: "How It Works", href: "#how" },
     { label: "Features", href: "#features" },
-    { label: "Pricing", href: "#pricing" },
+    { label: "How to Get It", href: "#pricing" },
     { label: "Meet the Founder", href: "/founder" },
     { label: "FAQ", href: "#faq" },
   ];
@@ -390,7 +381,7 @@ export function Nav({ onCTA }: { onCTA: () => void }) {
               textDecoration: "none",
             }}
           >
-            Log in
+            Client login
           </Link>
           <button
             className="lg-btn-gold"
@@ -405,7 +396,7 @@ export function Nav({ onCTA }: { onCTA: () => void }) {
             }}
             onClick={onCTA}
           >
-            Get Started <Icon name="arrow-right" size={14} stroke={2.2} />
+            See If You Qualify <Icon name="arrow-right" size={14} stroke={2.2} />
           </button>
         </div>
 
@@ -467,7 +458,7 @@ export function Nav({ onCTA }: { onCTA: () => void }) {
                 border: "1px solid rgba(255,255,255,0.1)",
               }}
             >
-              Log in
+              Client login
             </Link>
             <button
               className="lg-btn-gold"
@@ -487,7 +478,7 @@ export function Nav({ onCTA }: { onCTA: () => void }) {
                 onCTA();
               }}
             >
-              Get Started <Icon name="arrow-right" size={14} stroke={2.2} />
+              See If You Qualify <Icon name="arrow-right" size={14} stroke={2.2} />
             </button>
           </div>
         </div>
@@ -794,7 +785,7 @@ function Hero({ onCTA, onVideo }: { onCTA: () => void; onVideo: () => void }) {
           </h1>
 
           <p style={{ fontSize: 17, lineHeight: 1.55, color: "#a49e8e", marginTop: 24, marginBottom: 28, maxWidth: 520 }}>
-            The add-on that keeps your system working between builds. LeadGate AI qualifies every inbound lead the second it comes in, so the ones ready to buy get scored and sent straight to your calendar, while price shoppers and tire-kickers get filtered out automatically.
+            LeadGate qualifies every inbound lead the second it arrives and routes serious buyers straight to your calendar, while price shoppers and tire-kickers get filtered out automatically. Included as part of the ReclaimedHQ conversion-recovery service.
           </p>
 
           <RotatingBenefits />
@@ -805,7 +796,7 @@ function Hero({ onCTA, onVideo }: { onCTA: () => void; onVideo: () => void }) {
               onClick={onCTA}
               style={{ padding: "14px 24px", borderRadius: 12, fontSize: 15, display: "inline-flex", alignItems: "center", gap: 10, cursor: "pointer" }}
             >
-              Start Filtering Leads <Icon name="arrow-right" size={15} stroke={2.4} />
+              See If Your Business Qualifies <Icon name="arrow-right" size={15} stroke={2.4} />
             </button>
             <button
               className="lg-btn-ghost"
@@ -973,9 +964,9 @@ function MiniIntegrations() {
     return () => clearInterval(t);
   }, []);
   const items = [
-    { label: "C", color: "#006BFF" },
-    { label: "F", color: "#ffd87c" },
-    { label: "✦", color: "#7fe2a8" },
+    { label: "✓", color: "#7fe2a8" },
+    { label: "9.4", color: "#ffd87c" },
+    { label: "✦", color: "#8ab8ff" },
   ];
   return (
     <div
@@ -1069,7 +1060,7 @@ function scorerVerdict(score: number) {
       bg: "rgba(127,226,168,0.1)",
       border: "rgba(127,226,168,0.3)",
       reason:
-        "Strong budget signal, a real timeline, and genuine commitment. This is a buyer, they'd instantly see your Calendly link and book a call.",
+        "Strong budget signal, a real timeline, and genuine commitment. This is a buyer, they'd instantly see your booking calendar and book a call.",
       outcome: "Sees your booking link \u2192 lands on your calendar",
     };
   if (score >= 4.5)
@@ -1263,7 +1254,7 @@ function LiveScorer({ onCTA }: { onCTA: () => void }) {
                 onClick={onCTA}
                 style={{ marginTop: 22, padding: "13px 20px", borderRadius: 11, fontSize: 14.5, fontWeight: 700, width: "100%", display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 9, cursor: "pointer" }}
               >
-                Score your real leads <Icon name="arrow-right" size={15} stroke={2.4} />
+                See If Your Business Qualifies <Icon name="arrow-right" size={15} stroke={2.4} />
               </button>
             )}
           </div>
@@ -1277,30 +1268,37 @@ function SocialProof() {
   const widgets: { widget: React.ReactNode; title: string; sub: string }[] = [
     { widget: <MiniAIScore />, title: "AI scoring", sub: "1–10 on every lead" },
     { widget: <MiniGate />, title: "Pre-qualified", sub: "before they book" },
-    { widget: <MiniIntegrations />, title: "Calendly-ready", sub: "embeds anywhere" },
+    { widget: <MiniIntegrations />, title: "Booking-ready", sub: "straight to your calendar" },
   ];
   return (
     <section style={{ maxWidth: 1280, margin: "0 auto", padding: "0 32px 32px" }}>
       <div className="lg-social-grid">
         <div className="lg-social-intro" style={{ display: "flex", alignItems: "center", gap: 16 }}>
           <div style={{ display: "flex" }}>
-            {COACH_AVATARS.map((url, i) => (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
+            {SCORE_CHIPS.map((chip, i) => (
+              <div
                 key={i}
-                src={url}
-                alt=""
+                aria-hidden="true"
                 style={{
                   width: 38,
                   height: 38,
                   borderRadius: "50%",
                   border: "2px solid #0d0d0d",
-                  outline: "1px solid rgba(255,216,124,0.35)",
+                  outline: `1px solid ${chip.color}55`,
                   marginLeft: i === 0 ? 0 : -12,
                   zIndex: 10 - i,
-                  objectFit: "cover",
+                  background: "#12100b",
+                  color: chip.color,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  fontSize: 11.5,
+                  fontWeight: 700,
+                  letterSpacing: "-0.02em",
                 }}
-              />
+              >
+                {chip.label}
+              </div>
             ))}
           </div>
           <div>
@@ -1369,10 +1367,10 @@ function HowItWorks() {
           HOW IT WORKS
         </div>
         <h2 style={{ fontSize: "clamp(36px, 4vw, 52px)", margin: 0, letterSpacing: "-0.03em", fontWeight: 600, color: "#f5f1e6" }}>
-          Three steps. <span className="lg-gold-text" style={{ fontWeight: 400 }}>Fifteen minutes.</span>
+          Three steps. <span className="lg-gold-text" style={{ fontWeight: 400 }}>Zero lift.</span>
         </h2>
         <p style={{ fontSize: 16, color: "#a49e8e", maxWidth: 600, margin: "14px auto 0" }}>
-          From signup to gating your first lead, no developer, no setup call.
+          We build and wire the whole thing for you during onboarding. You just watch qualified calls land.
         </p>
       </div>
 
@@ -1689,32 +1687,38 @@ function Cases() {
 }
 
 function Pricing({ onCTA }: { onCTA: () => void }) {
-  const features = [
-    "Unlimited lead qualification",
-    "AI-powered scoring & summaries",
-    "Pre-built qualifying questions",
-    "Custom form questions",
-    "Calendly integration",
-    "Lead analytics dashboard",
-    "Embeddable form for your website",
-    "Priority support",
+  const steps = [
+    {
+      title: "Free audit",
+      desc: "We map exactly where your current funnel leaks leads, and what recovering them is worth.",
+    },
+    {
+      title: "Done-for-you build",
+      desc: "We build your conversion system, booking calendar, follow-up, and LeadGate wired in. Nothing lands on your plate.",
+    },
+    {
+      title: "Monthly management",
+      desc: "LeadGate qualifies every lead while we run and tune the system month over month.",
+    },
   ];
 
   return (
     <section id="pricing" style={{ padding: "80px 32px", maxWidth: 1280, margin: "0 auto" }}>
       <div className="lg-reveal" style={{ textAlign: "center", marginBottom: 56 }}>
         <div style={{ fontSize: 11, letterSpacing: "0.2em", color: "#ffd87c", fontWeight: 600, textTransform: "uppercase", marginBottom: 14 }}>
-          THE ADD-ON
+          HOW TO GET LEADGATE
         </div>
         <h2 style={{ fontSize: "clamp(36px, 4vw, 52px)", margin: 0, letterSpacing: "-0.03em", fontWeight: 600, color: "#f5f1e6" }}>
-          Add it to your setup. <span className="lg-gold-text" style={{ fontWeight: 500 }}>Book more jobs.</span>
+          Not sold standalone. <span className="lg-gold-text" style={{ fontWeight: 500 }}>Included with ReclaimedHQ.</span>
         </h2>
-        <p style={{ fontSize: 16, color: "#a49e8e", maxWidth: 580, margin: "14px auto 0" }}>
-          The optional monthly layer that runs on the system we already built for you. Pays for itself with one extra booked job.
+        <p style={{ fontSize: 16, color: "#a49e8e", maxWidth: 620, margin: "14px auto 0" }}>
+          LeadGate runs on the system we build for you, so it comes as part of the
+          monthly management service that follows your done-for-you build, not as
+          software you set up yourself.
         </p>
       </div>
 
-      <div className="lg-reveal" style={{ maxWidth: 520, margin: "0 auto" }}>
+      <div className="lg-reveal" style={{ maxWidth: 560, margin: "0 auto" }}>
         <div
           className="lg-gold-border"
           style={{
@@ -1728,85 +1732,87 @@ function Pricing({ onCTA }: { onCTA: () => void }) {
         >
           <div className="lg-dot-grid" style={{ position: "absolute", inset: 0, opacity: 0.4, pointerEvents: "none" }} />
           <div style={{ position: "relative" }}>
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 4 }}>
-            <h3 style={{ margin: 0, fontSize: 22, color: "#f5f1e6", letterSpacing: "-0.015em" }}>Monthly Add-On</h3>
-            <div
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 4 }}>
+              <h3 style={{ margin: 0, fontSize: 22, color: "#f5f1e6", letterSpacing: "-0.015em" }}>Part of your monthly plan</h3>
+              <div
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 6,
+                  padding: "5px 11px",
+                  borderRadius: 999,
+                  background: "rgba(255,216,124,0.08)",
+                  border: "1px solid rgba(255,216,124,0.25)",
+                  fontSize: 10,
+                  fontWeight: 600,
+                  color: "#ffd87c",
+                  textTransform: "uppercase",
+                  letterSpacing: "0.08em",
+                }}
+              >
+                <Icon name="check" size={11} stroke={2.5} /> Managed for you
+              </div>
+            </div>
+            <div style={{ fontSize: 13, color: "#8a7d6e", marginBottom: 28 }}>
+              Here&apos;s the path from first call to qualified leads on your calendar.
+            </div>
+
+            <ol style={{ listStyle: "none", padding: 0, margin: "0 0 30px", display: "flex", flexDirection: "column", gap: 18 }}>
+              {steps.map((step, i) => (
+                <li key={i} style={{ display: "flex", alignItems: "flex-start", gap: 14 }}>
+                  <span
+                    style={{
+                      width: 26,
+                      height: 26,
+                      borderRadius: "50%",
+                      flexShrink: 0,
+                      marginTop: 1,
+                      color: "#ffd87c",
+                      background: "rgba(255,216,124,0.1)",
+                      border: "1px solid rgba(255,216,124,0.3)",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontSize: 12,
+                      fontWeight: 700,
+                    }}
+                  >
+                    {i + 1}
+                  </span>
+                  <div>
+                    <div style={{ fontSize: 15, fontWeight: 600, color: "#f5f1e6" }}>{step.title}</div>
+                    <div style={{ fontSize: 13.5, lineHeight: 1.55, color: "#a49e8e", marginTop: 3 }}>{step.desc}</div>
+                  </div>
+                </li>
+              ))}
+            </ol>
+
+            <button
+              className="lg-btn-gold"
+              onClick={onCTA}
               style={{
+                padding: "15px 20px",
+                borderRadius: 12,
+                fontSize: 15.5,
+                cursor: "pointer",
+                fontWeight: 700,
+                width: "100%",
                 display: "inline-flex",
                 alignItems: "center",
-                gap: 6,
-                padding: "5px 11px",
-                borderRadius: 999,
-                background: "rgba(255,216,124,0.08)",
-                border: "1px solid rgba(255,216,124,0.25)",
-                fontSize: 10,
-                fontWeight: 600,
-                color: "#ffd87c",
-                textTransform: "uppercase",
-                letterSpacing: "0.08em",
+                justifyContent: "center",
+                gap: 10,
               }}
             >
-              <Icon name="check" size={11} stroke={2.5} /> Everything included
+              See If Your Business Qualifies <Icon name="arrow-right" size={15} stroke={2.4} />
+            </button>
+
+            <div style={{ textAlign: "center", marginTop: 16, fontSize: 12, color: "#6a6458" }}>
+              Already a client?{" "}
+              <Link href="/login" style={{ color: "#ffd87c", textDecoration: "none", fontWeight: 600 }}>
+                Log in
+              </Link>{" "}
+              — LeadGate is in your dashboard.
             </div>
-          </div>
-          <div style={{ fontSize: 13, color: "#8a7d6e", marginBottom: 26 }}>The ongoing layer that runs after your done-for-you setup.</div>
-
-          <div style={{ display: "flex", alignItems: "baseline", gap: 4, marginBottom: 28 }}>
-            <span className="lg-gold-text" style={{ fontSize: 64, fontWeight: 700, letterSpacing: "-0.035em", lineHeight: 1 }}>
-              $499
-            </span>
-            <span style={{ fontSize: 16, color: "#8a7d6e" }}>/month</span>
-          </div>
-
-          <div className="lg-divider-gold" style={{ marginBottom: 22 }} />
-
-          <ul style={{ listStyle: "none", padding: 0, margin: "0 0 30px", display: "flex", flexDirection: "column", gap: 13 }}>
-            {features.map((f, j) => (
-              <li key={j} style={{ display: "flex", alignItems: "flex-start", gap: 12, fontSize: 15, color: "#e8e2d0" }}>
-                <span
-                  className="lg-gold-text"
-                  style={{
-                    width: 22,
-                    height: 22,
-                    borderRadius: "50%",
-                    flexShrink: 0,
-                    marginTop: 1,
-                    background: "rgba(255,216,124,0.1)",
-                    border: "1px solid rgba(255,216,124,0.3)",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                >
-                  <Icon name="check" size={12} stroke={2.8} />
-                </span>
-                {f}
-              </li>
-            ))}
-          </ul>
-
-          <button
-            className="lg-btn-gold"
-            onClick={onCTA}
-            style={{
-              padding: "15px 20px",
-              borderRadius: 12,
-              fontSize: 15.5,
-              cursor: "pointer",
-              fontWeight: 700,
-              width: "100%",
-              display: "inline-flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: 10,
-            }}
-          >
-            Get Started <Icon name="arrow-right" size={15} stroke={2.4} />
-          </button>
-
-          <div style={{ textAlign: "center", marginTop: 16, fontSize: 12, color: "#6a6458" }}>
-            Pays for itself with one extra booked job. Cancel anytime.
-          </div>
           </div>
         </div>
       </div>
@@ -1919,17 +1925,14 @@ export function Founder() {
 
           <div style={{ display: "flex", alignItems: "center", gap: 16, flexWrap: "wrap" }}>
             <a
-              href={SALES_CALL_URL}
-              target="_blank"
-              rel="noopener noreferrer"
+              href={AUDIT_FUNNEL_URL}
               className="lg-btn-gold"
               style={{ padding: "14px 26px", borderRadius: 12, fontSize: 15, cursor: "pointer", display: "inline-flex", alignItems: "center", gap: 10, textDecoration: "none" }}
             >
-              <Icon name="video" size={17} stroke={2.2} />
-              Book a call with me
+              Get your free audit <Icon name="arrow-right" size={16} stroke={2.2} />
             </a>
             <span style={{ fontSize: 13, color: "#8a7d6e" }}>
-              15 minutes · no pitch, just straight answers
+              Free · no pitch, just straight answers
             </span>
           </div>
         </div>
@@ -1969,7 +1972,7 @@ function FinalCTA({ onCTA }: { onCTA: () => void }) {
               marginBottom: 24,
             }}
           >
-            <Icon name="check" size={12} stroke={2.5} /> Monthly add-on · Set up in 5 minutes
+            <Icon name="check" size={12} stroke={2.5} /> Included with ReclaimedHQ management
           </div>
           <h2 style={{ margin: 0, fontSize: "clamp(40px, 5vw, 64px)", letterSpacing: "-0.035em", fontWeight: 600, color: "#f5f1e6", lineHeight: 1.05 }}>
             Your next call could be
@@ -1985,21 +1988,18 @@ function FinalCTA({ onCTA }: { onCTA: () => void }) {
               onClick={onCTA}
               style={{ padding: "15px 28px", borderRadius: 12, fontSize: 15, cursor: "pointer", display: "inline-flex", alignItems: "center", gap: 10 }}
             >
-              Get Started <Icon name="arrow-right" size={15} stroke={2.4} />
+              See If Your Business Qualifies <Icon name="arrow-right" size={15} stroke={2.4} />
             </button>
-            <a
-              href={SALES_CALL_URL}
-              target="_blank"
-              rel="noopener noreferrer"
+            <Link
+              href="/login"
               className="lg-btn-ghost"
               style={{ padding: "15px 28px", borderRadius: 12, fontSize: 15, cursor: "pointer", fontWeight: 500, display: "inline-flex", alignItems: "center", gap: 10, textDecoration: "none" }}
             >
-              <Icon name="video" size={18} stroke={2} style={{ color: "#ffd87c" }} />
-              Talk to Sales
-            </a>
+              Client login <Icon name="arrow-right" size={15} stroke={2} style={{ color: "#ffd87c" }} />
+            </Link>
           </div>
           <div style={{ marginTop: 20, fontSize: 13, color: "#6a6458" }}>
-            Cancel anytime · No long-term contract · Setup in about 5 minutes
+            Done-for-you setup · Runs inside your monthly ReclaimedHQ plan
           </div>
         </div>
       </div>
@@ -2008,10 +2008,26 @@ function FinalCTA({ onCTA }: { onCTA: () => void }) {
 }
 
 export function Footer() {
+  // Only pages/sections that actually exist. No legal pages exist yet, so no
+  // legal column — do not link to pages that 404.
   const cols = [
-    { title: "Product", links: ["Features", "Pricing", "Case Studies", "Changelog"] },
-    { title: "Company", links: ["About", "Blog", "Careers", "Contact"] },
-    { title: "Legal", links: ["Privacy", "Terms", "Security", "DPA"] },
+    {
+      title: "Product",
+      links: [
+        { label: "How it works", href: "/#how" },
+        { label: "Features", href: "/#features" },
+        { label: "How to get it", href: "/#pricing" },
+        { label: "FAQ", href: "/#faq" },
+      ],
+    },
+    {
+      title: "Company",
+      links: [
+        { label: "Meet the founder", href: "/founder" },
+        { label: "Get your free audit", href: AUDIT_FUNNEL_URL },
+        { label: "Client login", href: "/login" },
+      ],
+    },
   ];
   return (
     <footer
@@ -2041,8 +2057,8 @@ export function Footer() {
             </div>
             <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: 10 }}>
               {col.links.map((l) => (
-                <li key={l}>
-                  <a href="#" style={{ color: "#a49e8e", textDecoration: "none", fontSize: 13 }}>{l}</a>
+                <li key={l.label}>
+                  <a href={l.href} style={{ color: "#a49e8e", textDecoration: "none", fontSize: 13 }}>{l.label}</a>
                 </li>
               ))}
             </ul>
@@ -2192,7 +2208,7 @@ function StickyCTA({ onCTA }: { onCTA: () => void }) {
         onClick={onCTA}
         style={{ padding: "7px 14px", borderRadius: 9, fontSize: 13, fontWeight: 700, display: "inline-flex", alignItems: "center", gap: 6, cursor: "pointer", flexShrink: 0, whiteSpace: "nowrap" }}
       >
-        Get Started <Icon name="arrow-right" size={14} stroke={2.4} />
+        See if you qualify <Icon name="arrow-right" size={14} stroke={2.4} />
       </button>
     </div>
   );
@@ -2214,7 +2230,7 @@ function FounderAssistant() {
               </div>
               <div>
                 <div style={{ fontSize: 14, fontWeight: 600, color: "#f5f1e6", letterSpacing: "-0.01em" }}>
-                  Questions before you buy?
+                  Questions before you start?
                 </div>
                 <div style={{ fontSize: 11.5, color: "#7fe2a8", marginTop: 2, display: "flex", alignItems: "center", gap: 5 }}>
                   <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#7fe2a8", display: "inline-block" }} />
@@ -2230,23 +2246,21 @@ function FounderAssistant() {
           <div className="lg-assistant-body">
             <div className="lg-assistant-bubble">
               Hey, I&apos;m the founder. If you&apos;re weighing whether LeadGate fits your
-              business, grab 15 minutes with me. No pitch, just straight answers.
+              business, start with the free audit. No pitch, just a straight answer
+              on where your leads leak.
             </div>
           </div>
 
           <div className="lg-assistant-foot">
             <a
-              href={SALES_CALL_URL}
-              target="_blank"
-              rel="noopener noreferrer"
+              href={AUDIT_FUNNEL_URL}
               className="lg-btn-gold"
               style={{ padding: "13px 18px", borderRadius: 11, fontSize: 14.5, fontWeight: 700, width: "100%", display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 9, textDecoration: "none" }}
             >
-              <Icon name="video" size={17} stroke={2} />
-              Book a Zoom with the founder
+              Get your free audit <Icon name="arrow-right" size={16} stroke={2.2} />
             </a>
             <div style={{ textAlign: "center", marginTop: 9, fontSize: 11, color: "#6a6458" }}>
-              15-min call · Zoom link sent instantly
+              Free · takes about two minutes
             </div>
           </div>
         </div>
@@ -2266,34 +2280,34 @@ function FounderAssistant() {
 }
 
 export default function LandingPage() {
-  const router = useRouter();
   const [videoOpen, setVideoOpen] = React.useState(false);
   useScrollReveal();
 
-  const goToSignup = React.useCallback(() => {
-    router.push("/signup");
-  }, [router]);
+  // Prospects go to the ReclaimedHQ audit funnel — signup is admin-only.
+  const goToAudit = React.useCallback(() => {
+    window.location.assign(AUDIT_FUNNEL_URL);
+  }, []);
 
   return (
     <div className="lg-root lg-grain">
       <LandingStyles />
-      <Nav onCTA={goToSignup} />
+      <Nav onCTA={goToAudit} />
       <main>
-        <Hero onCTA={goToSignup} onVideo={() => setVideoOpen(true)} />
+        <Hero onCTA={goToAudit} onVideo={() => setVideoOpen(true)} />
         <SocialProof />
         <Logos />
         <HowItWorks />
-        <LiveScorer onCTA={goToSignup} />
+        <LiveScorer onCTA={goToAudit} />
         <Features />
         <Testimonials />
         <Cases />
-        <Pricing onCTA={goToSignup} />
+        <Pricing onCTA={goToAudit} />
         <FAQ />
-        <FinalCTA onCTA={goToSignup} />
+        <FinalCTA onCTA={goToAudit} />
       </main>
       <Footer />
       <VideoModal open={videoOpen} onClose={() => setVideoOpen(false)} />
-      <StickyCTA onCTA={goToSignup} />
+      <StickyCTA onCTA={goToAudit} />
       <FounderAssistant />
     </div>
   );

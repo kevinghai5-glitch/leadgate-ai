@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { signOut, useSession } from "next-auth/react";
 import { cn } from "@/lib/utils";
@@ -17,19 +18,19 @@ import {
   Settings,
   CreditCard,
   LinkIcon,
-  Zap,
   LogOut,
   PanelLeftClose,
   PanelLeftOpen,
   ExternalLink,
   ListChecks,
   Briefcase,
+  ShieldCheck,
 } from "lucide-react";
 
 type NavItem = { name: string; href: string; icon: typeof LayoutDashboard };
 type NavGroup = { label: string; items: NavItem[] };
 
-const navGroups: NavGroup[] = [
+const baseGroups: NavGroup[] = [
   {
     label: "Overview",
     items: [
@@ -53,10 +54,20 @@ const navGroups: NavGroup[] = [
   },
 ];
 
-export function DashboardSidebar() {
+export function DashboardSidebar({ isAdmin = false }: { isAdmin?: boolean }) {
   const pathname = usePathname();
   const [collapsed, setCollapsed] = useState(false);
   const { data: session } = useSession();
+
+  // The Agency group only exists for ReclaimedHQ admins. The /admin page is also
+  // guarded server-side, so hiding the link here is cosmetic, not the real gate.
+  const navGroups: NavGroup[] = isAdmin
+    ? [
+        ...baseGroups.slice(0, 2),
+        { label: "Agency", items: [{ name: "Admin", href: "/dashboard/admin", icon: ShieldCheck }] },
+        ...baseGroups.slice(2),
+      ]
+    : baseGroups;
 
   const formLink =
     typeof window !== "undefined" && session?.user?.id
@@ -79,7 +90,14 @@ export function DashboardSidebar() {
             collapsed ? "justify-center px-2" : "gap-2.5 px-6"
           )}
         >
-          <Zap className="h-6 w-6 flex-shrink-0 text-[#ffd87c]" />
+          <Image
+            src="/leadgate-logo.png"
+            alt="LeadGate AI"
+            width={26}
+            height={26}
+            priority
+            className="flex-shrink-0 rounded-md"
+          />
           {!collapsed && (
             <span className="text-lg font-bold tracking-tight text-white">
               LeadGate AI

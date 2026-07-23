@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState, type ReactNode } from "react";
+import { useSession } from "next-auth/react";
 import { toast } from "sonner";
 import {
   Save,
@@ -11,6 +12,9 @@ import {
   Calendar,
   Sliders,
   Plug,
+  Code,
+  Copy,
+  Check,
 } from "lucide-react";
 
 interface BusinessProfile {
@@ -31,12 +35,19 @@ interface BusinessProfile {
   ghlBookingUrl: string;
 }
 
-type TabId = "about" | "offer" | "qualification" | "booking" | "integrations";
+type TabId =
+  | "about"
+  | "offer"
+  | "qualification"
+  | "embed"
+  | "booking"
+  | "integrations";
 
 const TABS: { id: TabId; label: string; icon: typeof Briefcase }[] = [
   { id: "about", label: "About", icon: Briefcase },
   { id: "offer", label: "Offer & Revenue", icon: DollarSign },
   { id: "qualification", label: "Qualification", icon: Sliders },
+  { id: "embed", label: "Embed Form", icon: Code },
   { id: "booking", label: "Booking Link", icon: Calendar },
   { id: "integrations", label: "GoHighLevel", icon: Plug },
 ];
@@ -111,11 +122,39 @@ const selectCls =
 const btnPrimary =
   "inline-flex items-center gap-2 h-9 px-4 rounded-lg bg-white text-black text-sm font-medium hover:bg-white/90 disabled:opacity-50 disabled:cursor-not-allowed transition";
 
+const btnSecondary =
+  "inline-flex items-center gap-2 h-10 px-4 rounded-lg border border-white/10 bg-white/[0.04] hover:bg-white/[0.08] text-white text-sm font-medium transition whitespace-nowrap";
+
 // ─── Main page ──────────────────────────────────────────────────────
 export default function BusinessProfilePage() {
+  const { data: session } = useSession();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [tab, setTab] = useState<TabId>("about");
+  const [linkCopied, setLinkCopied] = useState(false);
+  const [embedCopied, setEmbedCopied] = useState(false);
+
+  const formLink = useMemo(
+    () =>
+      typeof window !== "undefined" && session?.user?.id
+        ? `${window.location.origin}/form/${session.user.id}`
+        : "",
+    [session?.user?.id]
+  );
+  const embedCode = `<iframe src="${formLink}" width="100%" height="700" frameborder="0" style="border:none;"></iframe>`;
+
+  function copyLink() {
+    navigator.clipboard.writeText(formLink);
+    setLinkCopied(true);
+    toast.success("Form link copied");
+    setTimeout(() => setLinkCopied(false), 1500);
+  }
+  function copyEmbed() {
+    navigator.clipboard.writeText(embedCode);
+    setEmbedCopied(true);
+    toast.success("Embed code copied");
+    setTimeout(() => setEmbedCopied(false), 1500);
+  }
   const [profile, setProfile] = useState<BusinessProfile>({
     name: "",
     businessName: "",
@@ -501,6 +540,56 @@ export default function BusinessProfilePage() {
                 </Field>
               </div>
             </ProfileCard>
+          )}
+
+          {tab === "embed" && (
+            <>
+              <ProfileCard
+                title="Your form link"
+                description="Share this link anywhere — ads, email, social — to collect and qualify leads automatically."
+              >
+                <div className="mt-2 flex items-center gap-2">
+                  <input
+                    value={formLink}
+                    readOnly
+                    className={`${inputCls} font-mono text-white/80`}
+                  />
+                  <button onClick={copyLink} className={btnSecondary}>
+                    {linkCopied ? (
+                      <>
+                        <Check className="h-4 w-4 text-emerald-400" /> Copied
+                      </>
+                    ) : (
+                      <>
+                        <Copy className="h-4 w-4" /> Copy
+                      </>
+                    )}
+                  </button>
+                </div>
+              </ProfileCard>
+
+              <ProfileCard
+                title="Embed on your website"
+                description="Drop this snippet into any page to render your qualifying form inline."
+              >
+                <div className="mt-2 space-y-3">
+                  <pre className="bg-black/40 border border-white/10 rounded-lg p-4 text-xs text-white/70 overflow-x-auto font-mono leading-relaxed">
+                    <code>{embedCode}</code>
+                  </pre>
+                  <button onClick={copyEmbed} className={btnSecondary}>
+                    {embedCopied ? (
+                      <>
+                        <Check className="h-4 w-4 text-emerald-400" /> Copied
+                      </>
+                    ) : (
+                      <>
+                        <Code className="h-4 w-4" /> Copy embed code
+                      </>
+                    )}
+                  </button>
+                </div>
+              </ProfileCard>
+            </>
           )}
 
           {tab === "booking" && (

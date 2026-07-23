@@ -111,7 +111,7 @@ export function Navbar() {
                   Log in
                 </Link>
                 <Button asChild size="sm" className="bg-gradient-to-r from-[#D2AC47] to-[#B08B73] hover:from-[#ECCA66] hover:to-[#D2AC47] text-black text-sm font-semibold rounded-xl px-4 py-2 shadow-[0_0_16px_rgba(210,172,71,0.2)] hover:shadow-[0_0_22px_rgba(210,172,71,0.35)] hover:scale-[1.02] transition-all duration-200">
-                  <Link href="/signup">Get Started</Link>
+                  <a href="https://reclaimed-hq.agency/">See If You Qualify</a>
                 </Button>
               </>
             )}

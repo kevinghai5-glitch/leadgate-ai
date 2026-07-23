@@ -153,15 +153,6 @@ export default function LeadsPage() {
           aVal = a.aiScore || 0;
           bVal = b.aiScore || 0;
           break;
-        case "budget": {
-          const extractNum = (s: string) => {
-            const m = s.match(/[\d,]+/);
-            return m ? parseInt(m[0].replace(/,/g, ""), 10) : 0;
-          };
-          aVal = extractNum(a.budget);
-          bVal = extractNum(b.budget);
-          break;
-        }
         case "createdAt":
         default:
           aVal = new Date(a.createdAt).getTime();
@@ -356,15 +347,6 @@ export default function LeadsPage() {
                   </th>
                   <th className="px-6 py-3">
                     <button
-                      onClick={() => toggleSort("budget")}
-                      className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wider text-white/60 hover:text-white transition-colors"
-                    >
-                      Budget
-                      <SortIcon field="budget" />
-                    </button>
-                  </th>
-                  <th className="px-6 py-3">
-                    <button
                       onClick={() => toggleSort("aiScore")}
                       className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wider text-white/60 hover:text-white transition-colors"
                     >
@@ -425,9 +407,6 @@ export default function LeadsPage() {
                           </p>
                         </div>
                       </div>
-                    </td>
-                    <td className="px-6 py-3.5 text-sm text-white/70">
-                      {lead.budget}
                     </td>
                     <td className="px-6 py-3.5">
                       <span

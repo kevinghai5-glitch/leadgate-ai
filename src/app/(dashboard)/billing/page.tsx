@@ -338,7 +338,7 @@ export default function BillingPage() {
               footer={
                 <button
                   onClick={handlePortal}
-                  disabled={portalLoading || !isPro}
+                  disabled={portalLoading || !isPro || isManaged}
                   className={btnPrimary}
                 >
                   {portalLoading ? (
@@ -389,7 +389,7 @@ export default function BillingPage() {
               footer={
                 <button
                   onClick={handlePortal}
-                  disabled={portalLoading || !isPro}
+                  disabled={portalLoading || !isPro || isManaged}
                   className={btnPrimary}
                 >
                   {portalLoading ? (

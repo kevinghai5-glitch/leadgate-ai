@@ -6,7 +6,6 @@ import {
   UserCheck,
   TrendingUp,
   DollarSign,
-  Calendar,
   ChevronDown,
   ArrowUpRight,
   ArrowDownRight,
@@ -29,8 +28,9 @@ interface Stats {
   qualifiedLeads: number;
   disqualifiedLeads: number;
   qualificationRate: number;
-  projectedRevenue: number;
-  revenueSource: "offer" | "budgets";
+  projectedRevenue: number | null;
+  revenueSource: "offer" | "unset";
+  days: number;
   avgCallMinutes: number;
   offerPrice: number | null;
   closeRate: number;
@@ -70,12 +70,19 @@ type ValueKind = "currency" | "count" | "percent" | "hours";
 const METRIC_LABELS: Record<MetricKey, string> = {
   timeSaved: "Time Saved",
   qualifiedLeads: "Qualified Leads",
-  closeProbability: "Close Probability",
+  closeProbability: "Qualification Rate",
   projectedRevenue: "Projected Revenue",
 };
 
 const PERIODS = ["7D", "30D", "90D", "1Y"] as const;
 type Period = (typeof PERIODS)[number];
+const PERIOD_DAYS: Record<Period, number> = { "7D": 7, "30D": 30, "90D": 90, "1Y": 365 };
+const PERIOD_LABELS: Record<Period, string> = {
+  "7D": "last 7 days",
+  "30D": "last 30 days",
+  "90D": "last 90 days",
+  "1Y": "last 12 months",
+};
 
 // ─── Helpers ─────────────────────────────────────────────────────────
 function ChangePill({ value }: { value: number }) {
@@ -585,17 +592,11 @@ function LeadCard({ lead }: { lead: Lead }) {
             {lead.status}
           </span>
         </div>
-        <div className="mt-5 grid grid-cols-3 gap-3">
+        <div className="mt-5 grid grid-cols-2 gap-3">
           <div>
             <p className="text-[11px] text-gray-500">Score</p>
             <p className="text-sm font-semibold text-white mt-1 tabular-nums">
               {lead.aiScore != null ? `${lead.aiScore}/10` : "—"}
-            </p>
-          </div>
-          <div>
-            <p className="text-[11px] text-gray-500">Budget</p>
-            <p className="text-sm font-semibold text-white mt-1">
-              {lead.budget || "—"}
             </p>
           </div>
           <div>
@@ -676,7 +677,7 @@ export default function DashboardPage() {
   async function loadData() {
     try {
       const [statsRes, leadsRes] = await Promise.all([
-        fetch("/api/leads/stats"),
+        fetch(`/api/leads/stats?days=${PERIOD_DAYS[period]}`),
         fetch("/api/leads"),
       ]);
 
@@ -696,41 +697,40 @@ export default function DashboardPage() {
     }
   }
 
+  // Reload when the period changes, and poll every 60s so the "LIVE" badge is
+  // honest (the dashboard reflects new leads without a manual refresh).
   useEffect(() => {
     loadData();
-  }, []);
+    const id = setInterval(loadData, 60_000);
+    return () => clearInterval(id);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [period]);
 
   const profileMissing = stats?.offerPrice == null;
 
   const dateLabels = useMemo(() => {
     const today = new Date();
-    return Array.from({ length: 7 }, (_, i) =>
-      format(subDays(today, 6 - i), "MMM d")
+    const days = PERIOD_DAYS[period];
+    return Array.from({ length: days }, (_, i) =>
+      format(subDays(today, days - 1 - i), "MMM d")
     );
-  }, []);
-
-  const rangeLabel = useMemo(() => {
-    const today = new Date();
-    const start = subDays(today, 6);
-    return `${format(start, "MMM d")} – ${format(today, "MMM d, yyyy")}`;
-  }, []);
+  }, [period]);
 
   // Derived series per metric
   const seriesByMetric = useMemo<Record<MetricKey, { series: number[]; kind: ValueKind }>>(
     () => {
       if (!stats) {
+        const zeros = new Array(PERIOD_DAYS[period]).fill(0);
         return {
-          timeSaved: { series: [0, 0, 0, 0, 0, 0, 0], kind: "hours" },
-          qualifiedLeads: { series: [0, 0, 0, 0, 0, 0, 0], kind: "count" },
-          closeProbability: { series: [0, 0, 0, 0, 0, 0, 0], kind: "percent" },
-          projectedRevenue: { series: [0, 0, 0, 0, 0, 0, 0], kind: "currency" },
+          timeSaved: { series: zeros, kind: "hours" },
+          qualifiedLeads: { series: zeros, kind: "count" },
+          closeProbability: { series: zeros, kind: "percent" },
+          projectedRevenue: { series: zeros, kind: "currency" },
         };
       }
       const offer = stats.offerPrice ?? 0;
       const close = stats.closeRate / 100;
       const minutes = stats.avgCallMinutes;
-      const avgBudget =
-        stats.qualifiedLeads > 0 ? stats.projectedRevenue / stats.qualifiedLeads : 0;
       return {
         timeSaved: {
           series: stats.series.disqualified.map(
@@ -743,12 +743,12 @@ export default function DashboardPage() {
         projectedRevenue: {
           series: offer
             ? stats.series.qualified.map((q) => Math.round(q * offer * close))
-            : stats.series.qualified.map((q) => Math.round(q * avgBudget)),
+            : stats.series.qualified.map(() => 0),
           kind: "currency",
         },
       };
     },
-    [stats]
+    [stats, period]
   );
 
   const disqualifiedCount = stats?.disqualifiedLeads ?? 0;
@@ -765,18 +765,15 @@ export default function DashboardPage() {
           : `${timeSavedHours}h`,
       qualifiedLeads: (stats?.qualifiedLeads ?? 0).toString(),
       closeProbability: `${stats?.qualificationRate ?? 0}%`,
-      projectedRevenue: `$${(stats?.projectedRevenue ?? 0).toLocaleString()}`,
+      projectedRevenue:
+        stats?.projectedRevenue != null
+          ? `$${stats.projectedRevenue.toLocaleString()}`
+          : "—",
     }),
     [timeSavedHours, disqualifiedCount, minutesPerCall, stats]
   );
 
-  const chartHeader = useMemo(() => {
-    const totalForMetric = seriesByMetric[metric].series.reduce((a, b) => a + b, 0);
-    if (metric === "closeProbability") return cardValues[metric];
-    if (metric === "timeSaved") return cardValues[metric];
-    if (metric === "qualifiedLeads") return cardValues[metric];
-    return cardValues[metric];
-  }, [metric, seriesByMetric, cardValues]);
+  const chartHeader = cardValues[metric];
 
   // ─── Loading ────────────────────────────────────────────────────
   if (loading) {
@@ -848,7 +845,7 @@ export default function DashboardPage() {
       formula: "= leads with status QUALIFIED",
     },
     closeProbability: {
-      title: "Close Probability",
+      title: "Qualification Rate",
       body: "What % of all submitted leads end up qualified. A healthy form lands around 30–70%. Too low → your questions are too strict (or your ad traffic is junk). Too high → you're letting weak leads through.",
       formula: "= qualified ÷ total leads",
     },
@@ -856,12 +853,12 @@ export default function DashboardPage() {
       title: "Projected Revenue",
       body:
         stats?.revenueSource === "offer"
-          ? `Expected revenue from this period's qualified leads, based on your offer price and close rate from your Business Profile.`
-          : "Estimated revenue from this period's qualified leads, summed from the budget ranges they entered on the form. Set an offer price in your Business Profile for a sharper estimate.",
+          ? `Expected revenue from your qualified leads, based on your offer price and close rate from your Business Profile.`
+          : "Set an offer price and close rate in your Business Profile to see projected revenue.",
       formula:
         stats?.revenueSource === "offer"
           ? `= qualified × $${stats?.offerPrice?.toLocaleString()} × ${stats?.closeRate}%`
-          : "= sum of qualified-lead budgets",
+          : undefined,
     },
   };
 
@@ -887,11 +884,6 @@ export default function DashboardPage() {
             Lead qualification system for local service businesses.
           </p>
         </div>
-        <button className="inline-flex items-center gap-2 h-10 px-3.5 rounded-xl border border-white/10 bg-white/[0.03] hover:bg-white/[0.06] hover:border-white/[0.18] text-sm text-gray-200 transition-colors shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]">
-          <Calendar className="h-4 w-4 text-gray-400" />
-          {rangeLabel}
-          <ChevronDown className="h-4 w-4 text-gray-500" />
-        </button>
       </div>
 
       {profileMissing && !error && (
@@ -954,7 +946,7 @@ export default function DashboardPage() {
                 {chartHeader}
               </p>
               <p className="text-xs text-gray-500 mt-0.5">
-                {METRIC_LABELS[metric]} · last 7 days · hover to inspect
+                {METRIC_LABELS[metric]} · {PERIOD_LABELS[period]} · hover to inspect
               </p>
             </div>
             <div className="flex items-center gap-2">

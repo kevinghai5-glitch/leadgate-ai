@@ -444,10 +444,16 @@ export default function LoginPage() {
                 textAlign: "center",
               }}
             >
-              New to LeadGate?{" "}
-              <Link href="/signup" className="lg-auth-link" style={{ fontWeight: 500 }}>
-                Create an account
-              </Link>
+              Not a client yet?{" "}
+              {/* LeadGate is provisioned through ReclaimedHQ — prospects start
+                  with the free audit, they can't self-serve an account. */}
+              <a
+                href="https://reclaimed-hq.agency/"
+                className="lg-auth-link"
+                style={{ fontWeight: 500 }}
+              >
+                See if your business qualifies
+              </a>
             </div>
           </div>
         </div>

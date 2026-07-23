@@ -1,16 +1,16 @@
-import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
-import LandingClient from "./landing-client";
 
+/**
+ * The LeadGate domain is a client portal, not a marketing site. LeadGate is sold
+ * and onboarded through ReclaimedHQ, and clients only reach it after they've
+ * bought the done-for-you service — so there's no one to market to here. The root
+ * goes straight into their tool, or to the login door.
+ *
+ * The old marketing landing is parked at /product (still reachable by direct URL)
+ * if it's ever wanted again — restoring it as the front door is a one-line change.
+ */
 export default async function Page() {
   const session = await auth();
-  if (session?.user) {
-    redirect("/dashboard");
-  }
-  const jar = await cookies();
-  if (jar.get("lg_returning")?.value === "1") {
-    redirect("/login");
-  }
-  return <LandingClient />;
+  redirect(session?.user ? "/dashboard" : "/login");
 }

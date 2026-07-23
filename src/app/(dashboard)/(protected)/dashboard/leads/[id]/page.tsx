@@ -6,7 +6,6 @@ import {
   ArrowLeft,
   Mail,
   Phone,
-  DollarSign,
   Clock,
   Bot,
   Trash2,
@@ -102,6 +101,30 @@ export default function LeadDetailPage({
   const [lead, setLead] = useState<Lead | null>(null);
   const [loading, setLoading] = useState(true);
   const [deleting, setDeleting] = useState(false);
+  const [updatingStatus, setUpdatingStatus] = useState(false);
+
+  async function updateStatus(status: string) {
+    if (!lead || status === lead.status) return;
+    setUpdatingStatus(true);
+    try {
+      const res = await fetch(`/api/leads/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status }),
+      });
+      if (!res.ok) {
+        toast.error("Failed to update status");
+        return;
+      }
+      const updated = await res.json();
+      setLead(updated);
+      toast.success("Status updated");
+    } catch {
+      toast.error("Failed to update status");
+    } finally {
+      setUpdatingStatus(false);
+    }
+  }
 
   useEffect(() => {
     fetch(`/api/leads/${id}`)
@@ -121,7 +144,11 @@ export default function LeadDetailPage({
 
     setDeleting(true);
     try {
-      await fetch(`/api/leads/${id}`, { method: "DELETE" });
+      const res = await fetch(`/api/leads/${id}`, { method: "DELETE" });
+      if (!res.ok) {
+        toast.error("Failed to delete lead");
+        return;
+      }
       toast.success("Lead deleted");
       router.push("/dashboard/leads");
     } catch {
@@ -206,11 +233,22 @@ export default function LeadDetailPage({
           </div>
         </div>
         <div className="flex items-center gap-3">
-          <span
-            className={`inline-flex items-center px-3 py-1 rounded-full text-[10px] font-semibold uppercase tracking-wider border ${statusStyles}`}
-          >
-            {lead.status}
-          </span>
+          <div className="flex items-center gap-2">
+            <span className="text-[10px] font-medium uppercase tracking-wider text-white/40">
+              Status
+            </span>
+            <select
+              value={lead.status}
+              onChange={(e) => updateStatus(e.target.value)}
+              disabled={updatingStatus}
+              aria-label="Lead status"
+              className={`h-9 rounded-lg border pl-3 pr-8 text-[10px] font-semibold uppercase tracking-wider cursor-pointer focus:outline-none focus:ring-1 focus:ring-[#ffd87c]/40 disabled:opacity-50 ${statusStyles}`}
+            >
+              <option value="QUALIFIED" className="bg-[#0d0d0d] text-white normal-case">Qualified</option>
+              <option value="DISQUALIFIED" className="bg-[#0d0d0d] text-white normal-case">Disqualified</option>
+              <option value="PENDING" className="bg-[#0d0d0d] text-white normal-case">Pending</option>
+            </select>
+          </div>
           <button
             className={btnDanger}
             onClick={handleDelete}
@@ -255,18 +293,9 @@ export default function LeadDetailPage({
             title="Form Answers"
             description="What the lead told you on your qualification form."
           >
-            <div className="mt-2 grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <InfoRow icon={DollarSign} label="Budget" value={lead.budget} />
-              <InfoRow icon={Clock} label="Timeline" value={lead.timeline} />
-            </div>
-            <div className="mt-5 pt-5 border-t border-white/[0.06]">
-              <p className="text-[10px] font-medium uppercase tracking-wider text-white/50 mb-2">
-                Responses
-              </p>
-              <p className="text-sm text-white/80 whitespace-pre-wrap leading-relaxed">
-                {lead.problemDescription}
-              </p>
-            </div>
+            <p className="mt-2 text-sm text-white/80 whitespace-pre-wrap leading-relaxed">
+              {lead.problemDescription}
+            </p>
           </DetailCard>
         </div>
 

@@ -13,7 +13,7 @@ interface HeroCTAProps {
 
 export function HeroCTA({
   authedHref = "/dashboard",
-  unauthedHref = "/signup",
+  unauthedHref = "/login",
   className,
   children,
 }: HeroCTAProps) {
